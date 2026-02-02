@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: movie_db_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moviedb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: movie_db_backend
+    command: npm run dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/moviedb
+      PORT: 4000
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"
+
+  #frontend:
+  ##  build: ./frontend
+   # container_name: movie_db_frontend
+# volumes:
+  #  command: npm run dev -- --host
+  #    - ./frontend:/app
+  #    - /app/node_modules
+  #  ports:
+  #    - "5173:5173"
+  #  depends_on:
+  #    - backend
+
+volumes:
+  postgres_data:
