@@ -13,6 +13,9 @@ RUN npm install
 # Copy rest of the backend
 COPY . .
 
+# New
+RUN npx prisma generate
+
 # Expose backend port
 EXPOSE 4000
 
