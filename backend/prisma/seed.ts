@@ -6,6 +6,7 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 async function seedMovies() {
+
   if (!TMDB_API_KEY) {
     throw new Error("TMDB_API_KEY is missing");
   }
@@ -38,7 +39,27 @@ async function seedMovies() {
   }
 
   console.log(`Seeded ${data.results.length} movies`);
+}
 
+async function seedUsers() {
+    
+    const user = await prisma.user.upsert({
+        where: { email: "dev@example.com" },
+        update: {},
+        create: {
+            email: "dev@example.com",
+        },
+    });
+
+    await prisma.watchlist.upsert({
+        where: { id: "default-watchlist" },
+        update: {},
+        create: {
+            id: "default-watchlist",
+            name: "My Watchlist",
+            userId: user.id,
+        },
+    });
 }
 
 
@@ -56,7 +77,7 @@ async function main() {
   await prisma.user.deleteMany();
 
   await seedMovies();
-
+  await seedUsers();  
 }
 
 main()

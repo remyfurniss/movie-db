@@ -19,8 +19,8 @@ model User {
   name      String?
   role      UserRole @default(USER)
 
-  watchlist Watchlist[]
-  ratings   Rating[]
+  watchlists Watchlist[]
+  ratings    Rating[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -35,9 +35,9 @@ model Movie {
   runtime     Int?
   posterUrl   String?
 
-  genres   MovieGenre[]
-  ratings  Rating[]
-  watchlist Watchlist[]
+  genres      MovieGenre[]
+  ratings     Rating[]
+  watchlists  WatchlistItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,14 +79,26 @@ model Rating {
 
 model Watchlist {
   id      String @id @default(uuid())
+  name    String
 
   userId  String
-  movieId String
-
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  items     WatchlistItem[]
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, movieId])
+  @@unique([userId, name])
+}
+
+model WatchlistItem {
+  watchlistId String
+  movieId     String
+
+  watchlist Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([watchlistId, movieId]) // movie appears once per watchlist
 }
