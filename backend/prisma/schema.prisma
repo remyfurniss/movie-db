@@ -16,7 +16,6 @@ enum UserRole {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  password String
   name      String?
   role      UserRole @default(USER)
 
@@ -29,6 +28,7 @@ model User {
 
 model Movie {
   id          String   @id @default(uuid())
+  tmdbId      Int      @unique
   title       String
   description String?
   releaseYear Int?

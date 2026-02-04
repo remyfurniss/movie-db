@@ -2,7 +2,49 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+
+async function seedMovies() {
+  if (!TMDB_API_KEY) {
+    throw new Error("TMDB_API_KEY is missing");
+  }
+
+  const res = await fetch(
+    `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`
+  );
+
+  const data = await res.json();
+
+  for (const movie of data.results) {
+    await prisma.movie.upsert({
+      where: { 
+        tmdbId: movie.id 
+    },
+      update: {
+        title: movie.title,
+        releaseYear: movie.release_date
+          ? Number(movie.release_date.split("-")[0])
+          : null,
+      },
+      create: {
+        tmdbId: movie.id,
+        title: movie.title,
+        releaseYear: movie.release_date
+          ? Number(movie.release_date.split("-")[0])
+          : null,
+      },
+    });
+  }
+
+  console.log(`Seeded ${data.results.length} movies`);
+
+}
+
+
+
 async function main() {
+    
   console.log('Seeding database...');
 
   // Clean up existing data (optional, safe for dev only)
@@ -13,65 +55,12 @@ async function main() {
   await prisma.genre.deleteMany();
   await prisma.user.deleteMany();
 
-  // Seed genres
-  const genres = await prisma.genre.createMany({
-    data: [
-      { name: 'Action' },
-      { name: 'Comedy' },
-      { name: 'Sci-Fi' },
-      { name: 'Drama' },
-      { name: 'Horror' },
-    ],
-  });
-  console.log('Seeded genres');
+  await seedMovies();
 
-  // Seed a test user
-  const user = await prisma.user.create({
-    data: {
-      email: 'test@example.com',
-      password: 'password', // Ideally hashed in real apps
-      role: 'USER',
-    },
-  });
-  console.log('Seeded user');
-
-  // Seed movies
-  const movie1 = await prisma.movie.create({
-    data: {
-      title: 'Inception',
-      description: 'A thief who steals corporate secrets through dream-sharing technology.',
-      releaseYear: 2010,
-    },
-  });
-
-  const movie2 = await prisma.movie.create({
-    data: {
-      title: 'The Dark Knight',
-      description: 'Batman faces the Joker in Gotham City.',
-      releaseYear: 2008,
-    },
-  });
-
-  console.log('Seeded movies');
-
-  // Link movies and genres
-  const allGenres = await prisma.genre.findMany();
-
-  await prisma.movieGenre.createMany({
-    data: [
-      { movieId: movie1.id, genreId: allGenres.find(g => g.name === 'Action')!.id },
-      { movieId: movie1.id, genreId: allGenres.find(g => g.name === 'Sci-Fi')!.id },
-      { movieId: movie2.id, genreId: allGenres.find(g => g.name === 'Action')!.id },
-      { movieId: movie2.id, genreId: allGenres.find(g => g.name === 'Drama')!.id },
-    ],
-  });
-  console.log('Linked movies to genres');
-
-  console.log('Seeding finished.');
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })
