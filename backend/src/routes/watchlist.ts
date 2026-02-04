@@ -31,16 +31,48 @@ router.post("/", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  const watchlists = await prisma.watchlist.findMany({
-    where: { userId },
-    include: {
-      movies: {
-        include: { movie: true },
+  try {
+    const watchlist = await prisma.watchlist.findMany({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            movie: true,
+          },
+        },
       },
-    },
-  });
+    });
 
-  res.json(watchlists);
+    if (!watchlist) {
+      return res.status(404).json({ error: "Watchlist not found" });
+    }
+
+    res.json(watchlist);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Get a specific watchlist
+ */
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const watchlists = await prisma.watchlist.findMany({
+        where: { id },
+        include: {
+            items: {
+                include: { movie: true },
+            },
+        },
+    });
+
+    res.json(watchlists);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /**
