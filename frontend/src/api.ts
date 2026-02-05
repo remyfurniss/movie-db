@@ -43,3 +43,15 @@ export async function addMovieToWatchlist(
   if (!res.ok) throw new Error("Failed to add movie");
   return res.json();
 }
+
+export async function searchMovies(query: string) {
+  const res = await fetch(
+    `${API_URL}/movies?search=${encodeURIComponent(query)}`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch movies");
+  }
+
+  return res.json();
+}

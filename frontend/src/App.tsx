@@ -6,6 +6,8 @@ import {
   createWatchlist,
   addMovieToWatchlist,
 } from "./api";
+import './MovieSearch.tsx'
+import MovieSearch from './MovieSearch.tsx';
 
 type Movie = {
   id: string;
@@ -30,6 +32,7 @@ function App() {
   const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
   const [newName, setNewName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const activeWatchlistId = watchlists[0]?.id;
 
 
   /*
@@ -84,9 +87,15 @@ async function handleAddMovie(watchlistId: string, movieId: string) {
   await refreshWatchlists();
 }
 
-
   return (
     <div style={{ padding: 24 }}>
+      
+      <MovieSearch onAddMovie={(movieId) => {
+          if (!activeWatchlistId) return;
+          handleAddMovie(activeWatchlistId, movieId);
+        }}
+      />
+
       <h1>Watchlists</h1>
 
       <input
