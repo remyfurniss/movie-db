@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import axios from "axios";
 
 const prisma = new PrismaClient();
 
@@ -17,23 +18,75 @@ async function seedMovies() {
 
   const data = await res.json();
 
-  for (const movie of data.results) {
+/*
+for (const item of data.results) {
+  const detailRes = await axios.get(
+    `https://api.themoviedb.org/3/movie/${item.id}`,
+    {
+      params: {
+        api_key: process.env.TMDB_API_KEY
+      }
+    }
+  );
+
+  const movie = detailRes.data;
+
+  console.log(movie); 
+}
+*/
+
+  for (const item of data.results) {
+
+    const detailRes = await axios.get(
+    `https://api.themoviedb.org/3/movie/${item.id}`,
+    {
+      params: {
+        api_key: process.env.TMDB_API_KEY
+      }
+    }
+  );
+
+  const movie = detailRes.data;
+
     await prisma.movie.upsert({
       where: { 
         tmdbId: movie.id 
     },
       update: {
-        title: movie.title,
-        releaseYear: movie.release_date
+        overview: movie.overview ?? null,
+        runtime: movie.runtime ?? null,
+        homepage: movie.homepage ?? null,
+        imdbId: movie.imdb_id ?? null,
+        popularity: movie.popularity ?? null,
+        voteAverage: movie.vote_average ?? null,
+        posterPath: movie.poster_path
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : null,
+        backdropPath: movie.backdrop_path
+            ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+            : null,
+        releaseDate: movie.release_date
           ? Number(movie.release_date.split("-")[0])
-          : null,
+          : null
       },
       create: {
         tmdbId: movie.id,
         title: movie.title,
-        releaseYear: movie.release_date
-          ? Number(movie.release_date.split("-")[0])
-          : null,
+        overview: movie.overview ?? null,
+        runtime: movie.runtime ?? null,
+        homepage: movie.homepage ?? null,
+        imdbId: movie.imdb_id ?? null,
+        popularity: movie.popularity ?? null,
+        voteAverage: movie.vote_average ?? null,
+        posterPath: movie.poster_path
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : null,
+        backdropPath: movie.backdrop_path
+            ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+            : null,
+        releaseDate: movie.release_date
+            ? Number(movie.release_date.split("-")[0])
+            : null
       },
     });
   }

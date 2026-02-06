@@ -27,13 +27,18 @@ model User {
 }
 
 model Movie {
-  id          String   @id @default(uuid())
-  tmdbId      Int      @unique
-  title       String
-  description String?
-  releaseYear Int?
-  runtime     Int?
-  posterUrl   String?
+	id          	String   @id @default(uuid())
+  	tmdbId      	Int      @unique	
+  	title       	String
+  	overview 	String?
+  	releaseDate 	Int?
+  	runtime     	Int?
+	homepage	String?
+	imdbId		String?
+	popularity	Float?
+	posterPath 	String?
+	backdropPath 	String?
+	voteAverage	Float?
 
   genres      MovieGenre[]
   ratings     Rating[]
