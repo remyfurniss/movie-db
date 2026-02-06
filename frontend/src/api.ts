@@ -55,3 +55,9 @@ export async function searchMovies(query: string) {
 
   return res.json();
 }
+
+export async function fetchMovieById(id: string) {
+  const res = await fetch(`${API_URL}/movies/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch movie");
+  return res.json();
+}
