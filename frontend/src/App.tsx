@@ -31,9 +31,11 @@ type Watchlist = {
 function AppRoutes({
   watchlists,
   handleAddMovie,
+  handleCreateWatchlist
 }: {
   watchlists: Watchlist[];
   handleAddMovie: (watchlistId: string, movieId: string) => void;
+  handleCreateWatchlist: (name: string) => Promise<Watchlist>;
 }) {
   const navigate = useNavigate();
 
@@ -54,6 +56,7 @@ function AppRoutes({
           <MovieDetail
             watchlists={watchlists}
             onAddMovie={handleAddMovie}
+            onCreateWatchlist={handleCreateWatchlist}
           />
         }
       />
@@ -91,10 +94,23 @@ async function refreshWatchlists() {
   setWatchlists(data);
 }
 
+/*
 async function handleCreateWatchlist(name: string) {
   await createWatchlist(name);
   await refreshWatchlists();
 }
+*/  
+
+async function handleCreateWatchlist(name: string): Promise<Watchlist> {
+  const newWatchlist = await createWatchlist(name);
+
+  console.log("PARENT RECEIVED:", newWatchlist);
+
+  setWatchlists(prev => [...prev, newWatchlist]);
+
+  return newWatchlist;
+}
+
 
 async function handleAddMovie(watchlistId: string, movieId: string) {
   await addMovieToWatchlist(watchlistId, movieId);
@@ -105,6 +121,7 @@ return (
       <AppRoutes
         watchlists={watchlists}
         handleAddMovie={handleAddMovie}
+        handleCreateWatchlist={handleCreateWatchlist}
       />
   );
 }

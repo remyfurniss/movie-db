@@ -8,7 +8,7 @@ export async function fetchMovies() {
 }
 
 export async function fetchWatchlists() {
-  const res = await fetch(`${API_URL}/watchlists/user/${DEV_USER_ID}`);
+  const res = await fetch(`${API_URL}/watchlists`);
   if (!res.ok) throw new Error("Failed to fetch watchlists");
   return res.json();
 }

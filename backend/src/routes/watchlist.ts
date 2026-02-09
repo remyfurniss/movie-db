@@ -5,47 +5,19 @@ const router = Router();
 
 /**
  * Create a watchlist
- * body: { userId, name }
+ * body: { name }
  */
 router.post("/", async (req, res) => {
-  const { userId, name } = req.body;
+  const { name } = req.body;
 
-  if (!userId || !name) {
-    return res.status(400).json({ error: "userId and name required" });
+  if (!name) {
+    return res.status(400).json({ error: "name required" });
   }
 
   try {
     const watchlist = await prisma.watchlist.create({
-      data: { userId, name },
+      data: { name },
     });
-
-    res.json(watchlist);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/**
- * Get all watchlists for a user
- */
-router.get("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const watchlist = await prisma.watchlist.findMany({
-      where: { userId },
-      include: {
-        items: {
-          include: {
-            movie: true,
-          },
-        },
-      },
-    });
-
-    if (!watchlist) {
-      return res.status(404).json({ error: "Watchlist not found" });
-    }
 
     res.json(watchlist);
   } catch (err: any) {
@@ -73,6 +45,20 @@ router.get("/:id", async (req, res) => {
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
+});
+
+/**
+ * Get all watchlists
+ */
+router.get("/", async (req, res) => {
+    try {
+        const watchlists = await prisma.watchlist.findMany({
+            orderBy: { createdAt: "asc" }});
+        res.json(watchlists);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch watchlists" });
+    }
 });
 
 /**

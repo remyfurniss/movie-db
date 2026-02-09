@@ -6,42 +6,38 @@ const prisma = new PrismaClient();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-async function seedMovies() {
-
-  if (!TMDB_API_KEY) {
+if (!TMDB_API_KEY) {
     throw new Error("TMDB_API_KEY is missing");
   }
 
+async function seedMovies() {
+
+  
+
+    const popularRes = await axios.get(`${TMDB_BASE_URL}/movie/popular`, {
+    params: {
+      api_key: TMDB_API_KEY,
+      language: "en-US",
+      page: 1,
+    },
+  });
+
+
+  /*
   const res = await fetch(
     `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`
   );
 
   const data = await res.json();
-
-/*
-for (const item of data.results) {
-  const detailRes = await axios.get(
-    `https://api.themoviedb.org/3/movie/${item.id}`,
-    {
-      params: {
-        api_key: process.env.TMDB_API_KEY
-      }
-    }
-  );
-
-  const movie = detailRes.data;
-
-  console.log(movie); 
-}
 */
 
-  for (const item of data.results) {
+  for (const item of popularRes.data.results) {
 
     const detailRes = await axios.get(
     `https://api.themoviedb.org/3/movie/${item.id}`,
     {
       params: {
-        api_key: process.env.TMDB_API_KEY
+        api_key: TMDB_API_KEY
       }
     }
   );
@@ -91,26 +87,17 @@ for (const item of data.results) {
     });
   }
 
-  console.log(`Seeded ${data.results.length} movies`);
+  console.log(`Seeded ${popularRes.data.results.length} movies`);
 }
 
-async function seedUsers() {
+async function seedWishlists() {
     
-    const user = await prisma.user.upsert({
-        where: { email: "dev@example.com" },
-        update: {},
-        create: {
-            email: "dev@example.com",
-        },
-    });
-
     await prisma.watchlist.upsert({
-        where: { id: "default-watchlist" },
+        where: { id: "My Watchlist" },
         update: {},
         create: {
             id: "default-watchlist",
             name: "My Watchlist",
-            userId: user.id,
         },
     });
 }
@@ -122,15 +109,16 @@ async function main() {
   console.log('Seeding database...');
 
   // Clean up existing data (optional, safe for dev only)
-  await prisma.rating.deleteMany();
-  await prisma.watchlist.deleteMany();
+  
+ await prisma.watchlistItem.deleteMany();
+await prisma.watchlist.deleteMany();
+await prisma.rating.deleteMany();
   await prisma.movieGenre.deleteMany();
   await prisma.movie.deleteMany();
   await prisma.genre.deleteMany();
-  await prisma.user.deleteMany();
 
   await seedMovies();
-  await seedUsers();  
+  await seedWishlists();  
 }
 
 main()
