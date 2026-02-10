@@ -17,9 +17,10 @@ type Watchlist = {
 type HomeProps = {
   watchlists: Watchlist[];
   onMovieClick: (id: string) => void;
+  onWatchlistClick: (id: string) => void;
 };
 
-export default function Home({watchlists, onMovieClick}: HomeProps) {
+export default function Home({watchlists, onMovieClick, onWatchlistClick}: HomeProps) {
 
   //const [query, setQuery] = useState("");
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
@@ -76,7 +77,7 @@ if (loading) return <p>Loading popular movies...</p>;
             <div
               key={watchlist.id}
               className="movie-card"
-              onClick={() => onMovieClick(watchlist.id)}>
+              onClick={() => onWatchlistClick(watchlist.id)}>
               {watchlist.items[0].movie.posterPath ? (
                 <img src={watchlist.items[0].movie.posterPath} alt={watchlist.name} />
               ) : (

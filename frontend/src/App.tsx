@@ -13,6 +13,7 @@ import Home from './Home.tsx'; // Put in pages foldeer
 import MovieDetail from "./MovieDetail";
 import TopBar from './TopBar.tsx'; // Put in component Folder
 import type { Movie } from "./types/movie";
+import WatchlistDetail from './WatchlistDetail.tsx';
 
 type Watchlist = {
   id: string;
@@ -44,7 +45,7 @@ function AppRoutes({
           <Home
             watchlists={watchlists}
             onMovieClick={(id: string) => navigate(`/movies/${id}`)}
-            //onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
+            onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
           />
         }
       />
@@ -56,6 +57,12 @@ function AppRoutes({
             onAddMovie={handleAddMovie}
             onCreateWatchlist={handleCreateWatchlist}
           />
+        }
+      />
+      <Route
+        path="/watchlists/:id"
+        element={
+          <WatchlistDetail />
         }
       />
     </Routes>
