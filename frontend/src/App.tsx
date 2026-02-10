@@ -6,16 +6,13 @@ import {
   fetchWatchlists,
   createWatchlist,
   addMovieToWatchlist,
+  searchMovies,
 } from "./api";
-import './MovieSearch.tsx'
-import MovieSearch from './MovieSearch';
+//import './MovieSearch.tsx'
+import Home from './Home.tsx'; // Put in pages foldeer
 import MovieDetail from "./MovieDetail";
-
-type Movie = {
-  id: string;
-  title: string;
-  releaseYear?: number;
-};
+import TopBar from './TopBar.tsx'; // Put in component Folder
+import type { Movie } from "./types/movie";
 
 type Watchlist = {
   id: string;
@@ -44,7 +41,7 @@ function AppRoutes({
       <Route
         path="/"
         element={
-          <MovieSearch
+          <Home
             watchlists={watchlists}
             onMovieClick={(id: string) => navigate(`/movies/${id}`)}
           />
@@ -74,55 +71,77 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const activeWatchlistId = watchlists[0]?.id;
   const navigate = useNavigate();
+ const [searchValue, setSearchValue] = useState("");
+  const [searchResults, setSearchResults] = useState<Movie[]>([]);
+const [isSearching, setIsSearching] = useState(false);
+ 
+ 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
 
 useEffect(() => {
-  fetchInitialData();
-}, []);
+  if (!searchValue.trim()) {
+    setSearchResults([]);
+    return;
+  }
 
-async function fetchInitialData() {
-  const [moviesData, watchlistsData] = await Promise.all([
-    fetchMovies(),
-    fetchWatchlists(),
-  ]);
+  const timeout = setTimeout(async () => {
+    try {
+      setIsSearching(true);
+      const results = await searchMovies(searchValue);
+      setSearchResults(results);
+    } finally {
+      setIsSearching(false);
+    }
+  }, 300);
 
-  setMovies(moviesData);
-  setWatchlists(watchlistsData);
-}
+  return () => clearTimeout(timeout);
+}, [searchValue]);
 
-async function refreshWatchlists() {
-  const data = await fetchWatchlists();
-  setWatchlists(data);
-}
+  async function fetchInitialData() {
+    const [moviesData, watchlistsData] = await Promise.all([
+      fetchMovies(),
+      fetchWatchlists(),
+    ]);
 
-/*
-async function handleCreateWatchlist(name: string) {
-  await createWatchlist(name);
-  await refreshWatchlists();
-}
-*/  
+    setMovies(moviesData);
+    setWatchlists(watchlistsData);
+  }
 
-async function handleCreateWatchlist(name: string): Promise<Watchlist> {
-  const newWatchlist = await createWatchlist(name);
-
-  console.log("PARENT RECEIVED:", newWatchlist);
-
-  setWatchlists(prev => [...prev, newWatchlist]);
-
-  return newWatchlist;
-}
+  async function refreshWatchlists() {
+    const data = await fetchWatchlists();
+    setWatchlists(data);
+  }
 
 
-async function handleAddMovie(watchlistId: string, movieId: string) {
-  await addMovieToWatchlist(watchlistId, movieId);
-  await refreshWatchlists();
-}
+  async function handleCreateWatchlist(name: string): Promise<Watchlist> {
+    const newWatchlist = await createWatchlist(name);
+    setWatchlists(prev => [...prev, newWatchlist]);
+    return newWatchlist;
+  }
 
-return (
+
+  async function handleAddMovie(watchlistId: string, movieId: string) {
+    await addMovieToWatchlist(watchlistId, movieId);
+    await refreshWatchlists();
+  }
+
+  return (
+    <div className='app'>
+      <TopBar
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          results={searchResults}
+        />
       <AppRoutes
         watchlists={watchlists}
         handleAddMovie={handleAddMovie}
         handleCreateWatchlist={handleCreateWatchlist}
       />
+    </div>
   );
 }
 

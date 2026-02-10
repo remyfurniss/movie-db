@@ -13,17 +13,17 @@ type Movie = {
   posterPath?: string;
 };
 
-type MovieSearchProps = {
+type HomeProps = {
   watchlists: Watchlist[];
   onMovieClick: (id: string) => void;
 };
 
-export default function MovieSearch({
+export default function Home({
 
   watchlists,
   onMovieClick,
 
-}: MovieSearchProps) {
+}: HomeProps) {
 
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState<Movie[]>([]);

@@ -13,6 +13,24 @@ export async function fetchWatchlists() {
   return res.json();
 }
 
+// Fetch rating for a movie
+export async function fetchRating(movieId: string) {
+  const res = await fetch(`${API_URL}/ratings/${movieId}`);
+  if (!res.ok) throw new Error("Failed to fetch rating");
+  return res.json(); // { score: number | null }
+}
+
+// Submit or update rating
+export async function submitRating(movieId: string, score: number) {
+  const res = await fetch(`${API_URL}/ratings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ movieId, score }),
+  });
+  if (!res.ok) throw new Error("Failed to submit rating");
+  return res.json(); // returns the updated rating
+}
+
 export async function createWatchlist(name: string) {
   const res = await fetch(`${API_URL}/watchlists`, {
     method: "POST",
