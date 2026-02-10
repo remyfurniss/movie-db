@@ -1,6 +1,12 @@
 const API_URL = "http://localhost:4000";
 const DEV_USER_ID = "50de6f83-b409-465e-8269-3344453a08d7";
 
+export async function fetchPopularMovies() {
+  const res = await fetch(`${API_URL}/movies?popular=true&limit=20`);
+  if (!res.ok) throw new Error("Failed to fetch popular movies");
+  return res.json();
+}
+
 export async function fetchMovies() {
   const res = await fetch(`${API_URL}/movies`);
   if (!res.ok) throw new Error("Failed to fetch movies");
