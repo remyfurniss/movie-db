@@ -44,6 +44,7 @@ function AppRoutes({
           <Home
             watchlists={watchlists}
             onMovieClick={(id: string) => navigate(`/movies/${id}`)}
+            //onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
           />
         }
       />
@@ -125,6 +126,7 @@ useEffect(() => {
 
 
   async function handleAddMovie(watchlistId: string, movieId: string) {
+    console.log("Adding movie", movieId, "to watchlist", watchlistId);
     await addMovieToWatchlist(watchlistId, movieId);
     await refreshWatchlists();
   }

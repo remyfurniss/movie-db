@@ -8,6 +8,9 @@ import type { Movie } from "./types/movie";
 type Watchlist = {
   id: string;
   name: string;
+  items: {
+    movie: Movie;
+  }[];
 };
 
 
@@ -16,9 +19,9 @@ type HomeProps = {
   onMovieClick: (id: string) => void;
 };
 
-export default function Home({onMovieClick}: HomeProps) {
+export default function Home({watchlists, onMovieClick}: HomeProps) {
 
-  const [query, setQuery] = useState("");
+  //const [query, setQuery] = useState("");
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,27 +47,46 @@ if (loading) return <p>Loading popular movies...</p>;
 
   return (
     <div className="home-container">
+      {/* Popular Movies*/}
       <h2>Popular Movies</h2>
       <div className="movies-scroll-wrapper">
-      <div className="movies-scroll">
-        {popularMovies.map((movie) => (
-          <div
-            key={movie.id}
-            className="movie-card"
-            onClick={() => onMovieClick(movie.id)}
-          >
-            {movie.posterPath ? (
-              <img src={movie.posterPath} alt={movie.title} />
-            ) : (
-              <div className="placeholder">No Image</div>
-            )}
-            <p>{movie.title}</p>
-          </div>
-        ))}
+        <div className="movies-scroll">
+          {popularMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => onMovieClick(movie.id)}>
+              {movie.posterPath ? (
+                <img src={movie.posterPath} alt={movie.title} />
+              ) : (
+                <div className="placeholder">No Image</div>
+              )}
+              <p>{movie.title}</p>
+            </div>
+          ))}
+        </div>
       </div>
-      </div>
+      {/* Popular Movies*/}
       <h2>Recomended Movies</h2>
+      {/* Watchlists*/}
       <h2>Watchlists</h2>
+      <div className="movies-scroll-wrapper">
+        <div className="movies-scroll">
+          {watchlists.map((watchlist) => (
+            <div
+              key={watchlist.id}
+              className="movie-card"
+              onClick={() => onMovieClick(watchlist.id)}>
+              {watchlist.items[0].movie.posterPath ? (
+                <img src={watchlist.items[0].movie.posterPath} alt={watchlist.name} />
+              ) : (
+                <div className="placeholder">No Image</div>
+              )}
+              <p>{watchlist.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -51,14 +51,20 @@ router.get("/:id", async (req, res) => {
  * Get all watchlists
  */
 router.get("/", async (req, res) => {
-    try {
-        const watchlists = await prisma.watchlist.findMany({
-            orderBy: { createdAt: "asc" }});
-        res.json(watchlists);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to fetch watchlists" });
-    }
+  try {
+    const watchlists = await prisma.watchlist.findMany({
+      orderBy: { createdAt: "asc" },
+      include: {
+        items: {
+          include: { movie: true }, 
+        },
+      },
+    });
+    res.json(watchlists);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch watchlists" });
+  }
 });
 
 /**
