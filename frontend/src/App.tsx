@@ -135,6 +135,7 @@ useEffect(() => {
           searchValue={searchValue}
           onSearchChange={setSearchValue}
           results={searchResults}
+          onSelectMovie={() => setSearchValue("")}
         />
       <AppRoutes
         watchlists={watchlists}

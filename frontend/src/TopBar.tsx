@@ -8,12 +8,14 @@ type Props = {
   searchValue: string;
   onSearchChange: (value: string) => void;
   results: Movie[];
+  onSelectMovie: () => void;
 };
 
 export default function TopBar({
   searchValue,
   onSearchChange,
   results,
+  onSelectMovie,
 }: Props) {
   const showDropdown = searchValue.trim() !== "" && results.length > 0;
     const navigate = useNavigate();
@@ -23,6 +25,13 @@ export default function TopBar({
 
   return (
     <div className="search-container">
+        {/* Home Button */}
+      <button
+        className="home-btn"
+        onClick={() => navigate("/")}
+      >
+        Home
+      </button>
 
   <input
     type="text"
@@ -33,12 +42,11 @@ export default function TopBar({
 
   {searchValue.trim() && results.length > 0 && (
   <div className="search-dropdown">
-    console.log("SEARCH VALUE:", searchValue);
     {results.map(movie => (
       <div
         key={movie.id}
         className="search-item"
-        onClick={() => navigate(`/movies/${movie.id}`)}
+        onClick={() => {navigate(`/movies/${movie.id}`); onSelectMovie();}}
       >
         {movie.title}
       </div>
