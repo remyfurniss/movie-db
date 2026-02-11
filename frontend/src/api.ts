@@ -63,9 +63,25 @@ export async function addMovieToWatchlist(
       body: JSON.stringify({ movieId }),
     }
   );
-
   if (!res.ok) throw new Error("Failed to add movie");
   return res.json();
+}
+
+export async function removeMovieFromWatchlist(
+  watchlistId: string,
+  movieId: string
+) {
+       console.log("DELETE", watchlistId, movieId);
+
+  const res = await fetch(
+    `/watchlists/${watchlistId}/movies/${movieId}`,
+    { method: "DELETE" }
+  );
+
+  if (!res.ok) {
+    console.log("DELETE", watchlistId, movieId);
+    throw new Error("Failed to remove movie");
+  }
 }
 
 export async function searchMovies(query: string) {

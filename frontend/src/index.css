@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html, body, #root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -380,4 +386,90 @@ button:focus-visible {
   .movie-card p {
     font-size: 0.8rem;
   }
+}
+
+/* WatchlistDetail */
+
+.watchlist-panel {
+  width: 100%;
+  max-width: 1400px;        /* feels premium on desktop */
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.watchlist-title {
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* SAME IDEA AS HORIZONTAL SHOWCASE */
+.watchlist-scroll-wrapper {
+  max-height: 70vh;         /* scrolls inside, not page */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+}
+
+/* subtle scrollbar */
+.watchlist-scroll-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.watchlist-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 6px;
+}
+
+.watchlist-scroll {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ROW */
+.watchlist-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px;
+  background: #141414;
+  border-radius: 10px;
+  transition: background 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+}
+
+.watchlist-row:hover {
+  background: #1d1d1d;
+  transform: translateY(-1px);
+}
+
+.watchlist-row img {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.poster-placeholder {
+  width: 60px;
+  height: 90px;
+  background: #333;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border-radius: 6px;
+}
+
+.movie-title {
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

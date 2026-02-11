@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Watchlist } from "./types/watchlist"; // define type separately
-import { fetchWatchlists } from "./api";
+import { fetchWatchlists, removeMovieFromWatchlist } from "./api";
+
 
 type WatchlistItem = {
   movie: {
@@ -11,10 +12,17 @@ type WatchlistItem = {
   };
 };
 
-export default function WatchlistDetail() {
+type WatchlistDetailProps = {
+  watchlists: Watchlist[];
+  refreshWatchlists: () => Promise<void>;
+}
+
+export default function WatchlistDetail({ watchlists, refreshWatchlists }: WatchlistDetailProps) {
   const { id } = useParams<{ id: string }>();
   const [watchlist, setWatchlist] = useState<Watchlist | null>(null);
   const [loading, setLoading] = useState(true);
+
+  
 
   useEffect(() => {
     if (!id) return;
@@ -33,42 +41,54 @@ export default function WatchlistDetail() {
     load();
   }, [id]);
 
+
   if (loading) return <p>Loading watchlist...</p>;
   if (!watchlist) return <p>Watchlist not found</p>;
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>{watchlist.name}</h1>
+  const handleRemoveMovie = async (movieId: string) => {
+  await removeMovieFromWatchlist(watchlist.id, movieId);
+  await refreshWatchlists();
+};
 
-      {watchlist.items.length === 0 ? (
-        <p>No movies in this watchlist.</p>
-      ) : (
-        <div style={{ display: "flex", gap: 12, overflowX: "auto" }}>
-          {watchlist.items.map((item: WatchlistItem) => (
-            <div key={item.movie.id} style={{ minWidth: 150 }}>
-              {item.movie.posterPath ? (
-                <img
-                  src={item.movie.posterPath}
-                  alt={item.movie.title}
-                  style={{ width: "100%", borderRadius: 8 }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    height: 225,
-                    backgroundColor: "#ccc",
-                    borderRadius: 8,
-                  }}
-                >
-                  No Image
-                </div>
-              )}
-              <p>{item.movie.title}</p>
-            </div>
-          ))}
+  return (
+  <div className="watchlist-panel">
+  <h2 className="watchlist-title">{watchlist.name}</h2>
+
+  <div className="watchlist-scroll-wrapper">
+    <div className="watchlist-scroll">
+      {watchlist.items.map((item) => (
+        <div
+          key={item.movie.id}
+          className="watchlist-row">
+          <div className="watchlist-left">
+            {item.movie.posterPath ? (
+              <img
+                src={item.movie.posterPath}
+                alt={item.movie.title}
+              />
+            ) : (
+              <div className="poster-placeholder">No Image</div>
+            )}
+
+            <span className="movie-title">
+              {item.movie.title}
+            </span>
+          </div>
+          
+          <button
+            className="movie-remove"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemoveMovie(item.movie.id);
+            }}>
+            x
+          </button>
+
+          
         </div>
-      )}
+      ))}
     </div>
-  );
+  </div>
+</div>
+);
 }

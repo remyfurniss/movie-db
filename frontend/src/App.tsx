@@ -6,6 +6,7 @@ import {
   fetchWatchlists,
   createWatchlist,
   addMovieToWatchlist,
+  removeMovieFromWatchlist,
   searchMovies,
 } from "./api";
 //import './MovieSearch.tsx'
@@ -29,11 +30,13 @@ type Watchlist = {
 function AppRoutes({
   watchlists,
   handleAddMovie,
-  handleCreateWatchlist
+  handleCreateWatchlist,
+  refreshWatchlists
 }: {
   watchlists: Watchlist[];
   handleAddMovie: (watchlistId: string, movieId: string) => void;
   handleCreateWatchlist: (name: string) => Promise<Watchlist>;
+  refreshWatchlists: () => Promise<void>
 }) {
   const navigate = useNavigate();
 
@@ -62,7 +65,9 @@ function AppRoutes({
       <Route
         path="/watchlists/:id"
         element={
-          <WatchlistDetail />
+          <WatchlistDetail 
+            watchlists={watchlists}
+            refreshWatchlists={refreshWatchlists}/>
         }
       />
     </Routes>
@@ -119,10 +124,17 @@ useEffect(() => {
     setWatchlists(watchlistsData);
   }
 
+  /*
   async function refreshWatchlists() {
     const data = await fetchWatchlists();
     setWatchlists(data);
   }
+*/
+
+  async function refreshWatchlists(): Promise<void> {
+  const data = await fetchWatchlists();
+  setWatchlists(data);
+}
 
 
   async function handleCreateWatchlist(name: string): Promise<Watchlist> {
@@ -138,6 +150,8 @@ useEffect(() => {
     await refreshWatchlists();
   }
 
+
+
   return (
     <div className='app'>
       <TopBar
@@ -150,6 +164,7 @@ useEffect(() => {
         watchlists={watchlists}
         handleAddMovie={handleAddMovie}
         handleCreateWatchlist={handleCreateWatchlist}
+        refreshWatchlists={refreshWatchlists}
       />
     </div>
   );

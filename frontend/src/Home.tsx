@@ -78,7 +78,7 @@ if (loading) return <p>Loading popular movies...</p>;
               key={watchlist.id}
               className="movie-card"
               onClick={() => onWatchlistClick(watchlist.id)}>
-              {watchlist.items[0].movie.posterPath ? (
+              {watchlist.items[0]?.movie?.posterPath ? (
                 <img src={watchlist.items[0].movie.posterPath} alt={watchlist.name} />
               ) : (
                 <div className="placeholder">No Image</div>
