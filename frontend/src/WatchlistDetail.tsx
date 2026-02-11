@@ -19,30 +19,15 @@ type WatchlistDetailProps = {
 
 export default function WatchlistDetail({ watchlists, refreshWatchlists }: WatchlistDetailProps) {
   const { id } = useParams<{ id: string }>();
-  const [watchlist, setWatchlist] = useState<Watchlist | null>(null);
+  //const [watchlist, setWatchlist] = useState<Watchlist | null>(null);
   const [loading, setLoading] = useState(true);
 
   
 
-  useEffect(() => {
-    if (!id) return;
-
-    const load = async () => {
-      setLoading(true);
-      try {
-        const allWatchlists = await fetchWatchlists();
-        const found = allWatchlists.find((wl: Watchlist) => wl.id === id);
-        setWatchlist(found || null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [id]);
+  const watchlist = watchlists.find(wl => wl.id === id) || null;
 
 
-  if (loading) return <p>Loading watchlist...</p>;
+  //if (loading) return <p>Loading watchlist...</p>;
   if (!watchlist) return <p>Watchlist not found</p>;
 
   const handleRemoveMovie = async (movieId: string) => {
