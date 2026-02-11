@@ -388,6 +388,28 @@ button:focus-visible {
   }
 }
 
+.add-watchlist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed #666;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.add-watchlist-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.03);
+}
+
+.add-icon {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
 /* WatchlistDetail */
 
 .watchlist-panel {
