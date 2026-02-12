@@ -410,6 +410,34 @@ button:focus-visible {
   margin-bottom: 8px;
 }
 
+.genre-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+
+  justify-content: center;   /* ✅ horizontal center */
+  align-items: center;       /* optional, vertical alignment */
+  text-align: center;        /* keeps text nicely centered */
+}
+
+.genre-bubble {
+  padding: 6px 14px;
+  background-color: #1f2937;  /* dark gray */
+  color: white;
+  font-size: 14px;
+  border-radius: 999px;       /* makes it pill shaped */
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.genre-bubble:hover {
+  background-color: #374151;  /* lighter on hover */
+  transform: translateY(-1px);
+}
+
 /* WatchlistDetail */
 
 .watchlist-panel {

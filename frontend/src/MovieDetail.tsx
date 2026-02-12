@@ -83,12 +83,21 @@ export default function MovieDetail({
                 )}
 
                 <div className="movie-detail-info">
-                    <h2>Overview</h2>
+                    {movie.genres && movie.genres.length > 0 && (
+  <div className="genre-container">
+    {movie.genres.map((genre: any) => (
+      <span key={genre.id} className="genre-bubble">
+        {genre.name}
+      </span>
+    ))}
+  </div>
+)}
                     <p>{movie.overview || "No description available."}</p>
                 </div>
             </div>
 
             {/* MAKE BETTER AND CHANGE CLASS NAME*/}
+
             <div className="movie-detail-content">
                 <p>{`${movie.voteAverage} / 10`}</p>
                 <p>{movie.popularity}</p>
@@ -110,7 +119,8 @@ export default function MovieDetail({
                         </button>
                         );
                     })}
-                    </div>
+                </div>
+
             </div>
 
 

@@ -67,7 +67,7 @@ router.get("/search", async (req, res) => {
 // Get a movie by ID
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-    
+
   if (!id) {
     return res.status(400).json({ error: "Movie id is required" });
   }
@@ -75,13 +75,26 @@ router.get("/:id", async (req, res) => {
   try {
     const movie = await prisma.movie.findUnique({
       where: { id },
+      include: {
+        genres: {
+          include: {
+            genre: true,
+          },
+        },
+      },
     });
 
     if (!movie) {
       return res.status(404).json({ error: "Movie not found" });
     }
 
-    res.json(movie);
+    // 🔥 Flatten MovieGenre -> Genre
+    const formattedMovie = {
+      ...movie,
+      genres: movie.genres.map((mg) => mg.genre),
+    };
+
+    res.json(formattedMovie);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -106,7 +119,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.movie.delete({ where: { id: Number(id) } });
+    await prisma.movie.delete({ where: { id } });
     res.json({ message: "Movie deleted" });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
