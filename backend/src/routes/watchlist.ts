@@ -108,4 +108,17 @@ router.delete("/:watchlistId/movies/:movieId", async (req, res) => {
   }
 });
 
+/**
+ * delete watchlist
+ */
+router.delete("/:watchlistId", async (req, res) => {
+  const { watchlistId } = req.params;
+
+  await prisma.watchlist.delete({
+    where: { id: watchlistId },
+  });
+
+  res.json({ message: "Watchlist deleted" });
+});
+
 export default router;

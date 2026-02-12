@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Watchlist } from "./types/watchlist"; // define type separately
-import { fetchWatchlists, removeMovieFromWatchlist } from "./api";
+import { fetchWatchlists, removeMovieFromWatchlist, deleteWatchlist } from "./api";
 
 
 type WatchlistItem = {
@@ -22,7 +22,7 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
   //const [watchlist, setWatchlist] = useState<Watchlist | null>(null);
   const [loading, setLoading] = useState(true);
 
-  
+  const navigate = useNavigate();
 
   const watchlist = watchlists.find(wl => wl.id === id) || null;
 
@@ -34,6 +34,19 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
   await removeMovieFromWatchlist(watchlist.id, movieId);
   await refreshWatchlists();
 };
+
+async function handleDeleteWatchlist() {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this watchlist? This cannot be undone."
+  );
+
+  if (!confirmed) return;
+
+  await deleteWatchlist(id!);
+  await refreshWatchlists();
+
+  navigate("/"); // go back home
+}
 
   return (
   <div className="watchlist-panel">
@@ -74,6 +87,12 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
       ))}
     </div>
   </div>
+  <button
+  className="delete-watchlist-btn"
+  onClick={handleDeleteWatchlist}
+>
+  Delete Watchlist
+</button>
 </div>
 );
 }

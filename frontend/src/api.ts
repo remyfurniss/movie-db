@@ -71,7 +71,6 @@ export async function removeMovieFromWatchlist(
   watchlistId: string,
   movieId: string
 ) {
-       console.log("DELETE", watchlistId, movieId);
 
   const res = await fetch(
     `/watchlists/${watchlistId}/movies/${movieId}`,
@@ -79,7 +78,6 @@ export async function removeMovieFromWatchlist(
   );
 
   if (!res.ok) {
-    console.log("DELETE", watchlistId, movieId);
     throw new Error("Failed to remove movie");
   }
 }
@@ -100,4 +98,15 @@ export async function fetchMovieById(id: string) {
   const res = await fetch(`${API_URL}/movies/${id}`);
   if (!res.ok) throw new Error("Failed to fetch movie");
   return res.json();
+}
+
+
+export async function deleteWatchlist(watchlistId: string) {
+  const res = await fetch(`/watchlists/${watchlistId}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete watchlist");
+  }
 }
