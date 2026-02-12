@@ -32,10 +32,11 @@ model Movie {
 }
 
 model Genre {
-  id    String @id @default(uuid())
-  name  String @unique
+	id    	String @id @default(uuid())
+	tmdbId  Int    @unique
+  	name  	String @unique
 
-  movies MovieGenre[]
+  	movieGenres MovieGenre[]
 }
 
 model MovieGenre {

@@ -44,7 +44,25 @@ async function seedMovies() {
 
   const movie = detailRes.data;
 
-    await prisma.movie.upsert({
+  /*
+  // ✅ FIRST ensure genres exist
+  for (const g of movie.genres) {
+      await prisma.genre.upsert({
+        where: { tmdbId: g.id },
+        update: {},
+        create: {
+          tmdbId: g.id,
+          name: g.name
+        }
+      });
+    }
+*/
+
+
+
+
+// ✅ Upsert movie WITHOUT genres first
+    const dbMovie = await prisma.movie.upsert({
       where: { 
         tmdbId: movie.id 
     },
@@ -64,6 +82,7 @@ async function seedMovies() {
         releaseDate: movie.release_date
           ? Number(movie.release_date.split("-")[0])
           : null
+  
       },
       create: {
         tmdbId: movie.id,
@@ -82,9 +101,40 @@ async function seedMovies() {
             : null,
         releaseDate: movie.release_date
             ? Number(movie.release_date.split("-")[0])
-            : null
+            : null  
       },
     });
+
+     // ✅ Remove old relations (important for reseeding)
+    await prisma.movieGenre.deleteMany({
+      where: { movieId: dbMovie.id }
+    });
+
+    // ✅ Recreate relations
+    for (const genre of movie.genres) {
+
+      const genreRecord = await prisma.genre.upsert({
+        where: { tmdbId: genre.id },
+        update: { name: genre.name }, // keeps name updated
+    create: {
+      tmdbId: genre.id,
+      name: genre.name,
+    },
+ 
+      });
+
+  
+
+
+    await prisma.movieGenre.create({
+        data: {
+          movieId: dbMovie.id,
+          genreId: genreRecord.id, // ✅ USE UUID HERE
+        },
+      });
+    
+    }
+
   }
 
   console.log(`Seeded ${popularRes.data.results.length} movies`);
