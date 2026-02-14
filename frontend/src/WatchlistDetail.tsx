@@ -54,7 +54,7 @@ async function handleDeleteWatchlist() {
 
   <div className="watchlist-scroll-wrapper">
     <div className="watchlist-scroll">
-      {watchlist.items.map((item) => (
+      {watchlist.items?.map((item) => (
         <div
           key={item.movie.id}
           className="watchlist-row"

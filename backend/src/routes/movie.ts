@@ -6,6 +6,8 @@ import { Prisma } from "@prisma/client";
 
 const router = Router();
 
+
+
 // GET /movies/tmdb/:tmdbId
 router.get("/tmdb/:tmdbId", async (req, res) => {
 
@@ -73,7 +75,8 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
             ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
             : null,
           voteAverage: data.vote_average,
-        },
+          voteCount: data.vote_count
+                },
       });
 
       // ✅ insert genres (safe upsert)
@@ -132,6 +135,34 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
   }
 
 });
+
+router.put("/:id/watched", async (req, res) => {
+  const { id } = req.params;
+  
+
+  try {
+    const existing = await prisma.movie.findUnique({
+      where: { id },
+      select: { watched: true },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    const movie = await prisma.movie.update({
+      where: { id },
+      data: {
+        watched: !existing.watched,
+      },
+    });
+
+    res.json(movie);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 router.get("/search", async (req, res) => {
   const q = req.query.q as string;

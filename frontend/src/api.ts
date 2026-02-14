@@ -125,3 +125,15 @@ export async function fetchMovieByTmdbId(tmdbId: string) {
   if (!res.ok) throw new Error("Failed to fetch movie");
   return res.json();
 }
+
+export async function toggleWatched(movieId: string) {
+  const res = await fetch(`/movies/${movieId}/watched`, {
+    method: "PUT",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update watched status");
+  }
+
+  return res.json();
+}

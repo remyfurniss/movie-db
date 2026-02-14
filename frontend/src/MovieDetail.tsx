@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchMovieById, fetchRating, submitRating, fetchMovieByTmdbId } from "./api";
+import { fetchMovieById, fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "./api";
 import TopBar from "./TopBar";
 
 type Watchlist = {
@@ -29,6 +29,7 @@ export default function MovieDetail({
 }: Props){
 
     const { id, tmdbId } = useParams();
+    const [watched, setWatched] = useState(false);
     const [movie, setMovie] = useState<any>(null);
     const [selected, setSelected] = useState("");
     const [showWatchlistModal, setShowWatchlistModal] = useState(false);
@@ -50,6 +51,12 @@ export default function MovieDetail({
         setRating(updated.score);
     }
 
+    async function handleToggleWatched() {
+        console.log("WATCH TOGGLE ID:", movie.id);
+        const updated = await toggleWatched(movie.id);
+        setWatched(updated.watched);
+    }
+
     /*
     useEffect(() => {
     if (!id) return;
@@ -62,9 +69,11 @@ export default function MovieDetail({
     if (tmdbId) {
       const data = await fetchMovieByTmdbId(tmdbId);
       setMovie(data);
+      setWatched(data.watched);
     } else if (id) {
       const data = await fetchMovieById(id);
       setMovie(data);
+      setWatched(data.watched);
     }
   }
 
@@ -140,8 +149,14 @@ export default function MovieDetail({
             </div>
 
 
-            {/* watch list button*/}
-            <div>
+            {/* watched and watch list button*/}
+            <div className="movie-actions">
+                <button
+    className={`watched-btn ${watched ? "active" : ""}`}
+    onClick={handleToggleWatched}
+  >
+    {watched ? "✓ Watched" : "👁 Mark as watched"}
+  </button>
                 <button className="watchlist-btn" onClick={() => setShowWatchlistModal(true)}>
                     + Add to Watchlist
                 </button>

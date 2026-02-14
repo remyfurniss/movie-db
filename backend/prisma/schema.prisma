@@ -20,6 +20,9 @@ model Movie {
 	posterPath 	String?
 	backdropPath 	String?
 	voteAverage	Float?
+	voteCount 	Int?
+
+	watched      Boolean  @default(false)
 
 	genres      MovieGenre[]
   	rating     Rating?

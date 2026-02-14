@@ -204,6 +204,19 @@ button:focus-visible {
   color: #ccc;
 }
 
+.movie-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.watched-btn.active {
+  background: #22c55e;
+  color: white;
+}
+
 /* Top Bar */
 
 .icon-button {
