@@ -8,6 +8,7 @@ import {
   addMovieToWatchlist,
   removeMovieFromWatchlist,
   searchMovies,
+  searchTmdbMovies
 } from "./api";
 //import './MovieSearch.tsx'
 import Home from './Home.tsx'; // Put in pages foldeer
@@ -64,6 +65,16 @@ function AppRoutes({
         }
       />
       <Route
+        path="/movies/tmdb/:tmdbId"
+        element={
+          <MovieDetail
+            watchlists={watchlists}
+            onAddMovie={handleAddMovie}
+            onCreateWatchlist={handleCreateWatchlist}
+          />
+        }
+      />
+      <Route
         path="/watchlists/:id"
         element={
           <WatchlistDetail 
@@ -96,6 +107,8 @@ const [isSearching, setIsSearching] = useState(false);
     fetchInitialData();
   }, []);
 
+
+  /*
 useEffect(() => {
   if (!searchValue.trim()) {
     setSearchResults([]);
@@ -111,6 +124,22 @@ useEffect(() => {
       setIsSearching(false);
     }
   }, 300);
+  
+
+  return () => clearTimeout(timeout);
+}, [searchValue]);*/
+
+
+useEffect(() => {
+  if (!searchValue.trim()) {
+    setSearchResults([]);
+    return;
+  }
+
+  const timeout = setTimeout(async () => {
+    const data = await searchTmdbMovies(searchValue);
+    setSearchResults(data);
+  }, 300); // debounce
 
   return () => clearTimeout(timeout);
 }, [searchValue]);

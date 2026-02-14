@@ -110,3 +110,18 @@ export async function deleteWatchlist(watchlistId: string) {
     throw new Error("Failed to delete watchlist");
   }
 }
+
+export async function searchTmdbMovies(query: string) {
+  const res = await fetch(
+    `${API_URL}/tmdb/search?q=${encodeURIComponent(query)}`
+  );
+
+  if (!res.ok) throw new Error("TMDB search failed");
+  return res.json();
+}
+
+export async function fetchMovieByTmdbId(tmdbId: string) {
+  const res = await fetch(`/movies/tmdb/${tmdbId}`);
+  if (!res.ok) throw new Error("Failed to fetch movie");
+  return res.json();
+}

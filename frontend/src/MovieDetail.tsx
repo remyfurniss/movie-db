@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchMovieById, fetchRating, submitRating } from "./api";
+import { fetchMovieById, fetchRating, submitRating, fetchMovieByTmdbId } from "./api";
 import TopBar from "./TopBar";
 
 type Watchlist = {
@@ -28,7 +28,7 @@ export default function MovieDetail({
     onCreateWatchlist
 }: Props){
 
-    const { id } = useParams();
+    const { id, tmdbId } = useParams();
     const [movie, setMovie] = useState<any>(null);
     const [selected, setSelected] = useState("");
     const [showWatchlistModal, setShowWatchlistModal] = useState(false);
@@ -50,10 +50,26 @@ export default function MovieDetail({
         setRating(updated.score);
     }
 
+    /*
     useEffect(() => {
     if (!id) return;
     fetchMovieById(id).then(setMovie);
     }, [id]);
+    */
+
+    useEffect(() => {
+  async function loadMovie() {
+    if (tmdbId) {
+      const data = await fetchMovieByTmdbId(tmdbId);
+      setMovie(data);
+    } else if (id) {
+      const data = await fetchMovieById(id);
+      setMovie(data);
+    }
+  }
+
+  loadMovie();
+}, [id, tmdbId]);
 
     if (!movie) return <p>Loading…</p>;
 

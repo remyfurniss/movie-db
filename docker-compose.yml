@@ -28,6 +28,8 @@ services:
     ports:
       - "4000:4000"
       - "5555:5555"
+    env_file:
+      - ./backend/.env  
 
   #frontend:
   ##  build: ./frontend

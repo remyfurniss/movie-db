@@ -33,6 +33,7 @@ export default function TopBar({
         Home
       </button>
 
+
   <input
     type="text"
     value={searchValue}
@@ -46,8 +47,10 @@ export default function TopBar({
       <div
         key={movie.id}
         className="search-item"
-        onClick={() => {navigate(`/movies/${movie.id}`); onSelectMovie();}}
-      >
+        onClick={() => {
+            //navigate(`/movies/${movie.id}`); 
+            navigate(`/movies/tmdb/${movie.tmdbId}`);
+            onSelectMovie();}}>
         {movie.title}
       </div>
     ))}
