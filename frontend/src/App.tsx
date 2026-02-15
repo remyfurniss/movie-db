@@ -48,7 +48,7 @@ function AppRoutes({
         element={
           <Home
             watchlists={watchlists}
-            onMovieClick={(id: string) => navigate(`/movies/${id}`)}
+            onMovieClick={(tmdbId: string) => navigate(`/movies/tmdb/${tmdbId}`)}
             onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
             onCreateWatchlist={handleCreateWatchlist}
           />

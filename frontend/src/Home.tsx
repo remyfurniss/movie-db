@@ -57,7 +57,10 @@ if (loading) return <p>Loading popular movies...</p>;
             <div
               key={movie.id}
               className="movie-card"
-              onClick={() => onMovieClick(movie.id)}>
+              onClick={() => {
+  if (!movie.tmdbId) return;
+  onMovieClick(movie.tmdbId);
+}}>
               {movie.posterPath ? (
                 <img src={movie.posterPath} alt={movie.title} />
               ) : (
@@ -95,9 +98,11 @@ if (loading) return <p>Loading popular movies...</p>;
          if (name) onCreateWatchlist(name);
       }}
     >
-      <div className="add-icon">+</div>
+      <div className="add-icon">
+        +
+      </div>
       <p>Add Watchlist</p>
-    </div>
+      </div>
         </div>
       </div>
     </div>
