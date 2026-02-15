@@ -45,13 +45,27 @@ export default function TopBar({
   <div className="search-dropdown">
     {results.map(movie => (
       <div
-        key={movie.id}
+        key={movie.tmdbId}
         className="search-item"
         onClick={() => {
             //navigate(`/movies/${movie.id}`); 
             navigate(`/movies/tmdb/${movie.tmdbId}`);
             onSelectMovie();}}>
-        {movie.title}
+               
+                <img
+          src={movie.posterPath || "https://via.placeholder.com/40x60?text=🎬"}
+          alt={movie.title}
+          className="search-poster"
+        />
+
+         
+        <div className="search-text">
+          <div className="search-title">{movie.title}</div>
+          {movie.releaseDate && (
+            <div className="search-year">{movie.releaseDate}</div>
+          )}
+        </div>
+        
       </div>
     ))}
   </div>
