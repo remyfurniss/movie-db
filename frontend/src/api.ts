@@ -35,11 +35,11 @@ export async function fetchRating(movieId: string) {
 }
 
 // Submit or update rating
-export async function submitRating(movieId: string, score: number) {
+export async function submitRating(tmdbId: string, score: number) {
   const res = await fetch(`${API_URL}/ratings`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ movieId, score }),
+    body: JSON.stringify({ tmdbId, score }),
   });
   if (!res.ok) throw new Error("Failed to submit rating");
   return res.json(); // returns the updated rating
@@ -61,14 +61,14 @@ export async function createWatchlist(name: string) {
 
 export async function addMovieToWatchlist(
   watchlistId: string,
-  movieId: string
+  tmdbId: string
 ) {
   const res = await fetch(
     `${API_URL}/watchlists/${watchlistId}/movies`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ movieId }),
+      body: JSON.stringify({ tmdbId }),
     }
   );
   if (!res.ok) throw new Error("Failed to add movie");
@@ -134,8 +134,8 @@ export async function fetchMovieByTmdbId(tmdbId: string) {
   return res.json();
 }
 
-export async function toggleWatched(movieId: string) {
-  const res = await fetch(`/movies/${movieId}/watched`, {
+export async function toggleWatched(tmdbId: string) {
+  const res = await fetch(`/movies/${tmdbId}/watched`, {
     method: "PUT",
   });
 

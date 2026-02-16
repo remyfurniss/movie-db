@@ -47,13 +47,13 @@ export default function MovieDetail({
     }, [id]);
 
     async function handleRating(score: number) {
-        const updated = await submitRating(id!, score);
+        const updated = await submitRating(tmdbId!, score);
         setRating(updated.score);
     }
 
     async function handleToggleWatched() {
-        console.log("WATCH TOGGLE ID:", movie.id);
-        const updated = await toggleWatched(movie.id);
+        console.log("WATCH TOGGLE ID:", movie.tmdbId);
+        const updated = await toggleWatched(movie.tmdbId);
         setWatched(updated.watched);
     }
 
@@ -64,13 +64,20 @@ export default function MovieDetail({
     }, [id]);
     */
 
+
+
+
+
+
     useEffect(() => {
   async function loadMovie() {
     if (tmdbId) {
+        console.log("by TMDBID");
       const data = await fetchMovieByTmdbId(tmdbId);
       setMovie(data);
       setWatched(data.watched);
     } else if (id) {
+        console.log("by ID");
       const data = await fetchMovieById(id);
       setMovie(data);
       setWatched(data.watched);
@@ -79,6 +86,11 @@ export default function MovieDetail({
 
   loadMovie();
 }, [id, tmdbId]);
+
+
+
+
+
 
     if (!movie) return <p>Loading…</p>;
 
@@ -171,7 +183,7 @@ export default function MovieDetail({
                             {watchlists.map(wl => (
                                 <li key={wl.id}>
                                     <button onClick={() => {
-                                        onAddMovie(wl.id, movie!.id);
+                                        onAddMovie(wl.id, movie!.tmdbId);/////////////THIS NEEDS FIXING
                                         setShowWatchlistModal(false);}}>
                                     {wl.name}
                                     </button>
@@ -213,7 +225,7 @@ export default function MovieDetail({
                                     const created = await onCreateWatchlist(newWatchlistName);
                                     setNewWatchlistName("");
                                     setShowCreateWatchlist(false);
-                                    onAddMovie(created.id, movie!.id);
+                                    onAddMovie(created.id, movie!.tmdbId); ///Auto adds to databse -- REMOCE
                                 }}>
                             Create
                             </button>

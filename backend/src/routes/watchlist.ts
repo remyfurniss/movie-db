@@ -1,5 +1,7 @@
 import { Router } from "express";
 import prisma from "../prismaClient";
+import {getOrCreateMovie} from "../services/getOrCreateMovie"
+
 
 const router = Router();
 
@@ -72,19 +74,41 @@ router.get("/", async (req, res) => {
  */
 router.post("/:watchlistId/movies", async (req, res) => {
   const { watchlistId } = req.params;
-  const { movieId } = req.body;
+  const tmdbId = Number(req.body.tmdbId);
 
-  if (!movieId) {
-    return res.status(400).json({ error: "movieId required" });
+  if (Number.isNaN(tmdbId)) {
+    return res.status(400).json({ error: "tmdbId required" });
   }
 
   try {
+    // ensure movie exists in DB
+    const movie = await getOrCreateMovie(tmdbId);
+
+    // prevent duplicates (Maybe not need)
+    const existing = await prisma.watchlistItem.findUnique({
+      where: {
+        watchlistId_movieId: {
+          watchlistId,
+          movieId: movie.id,
+        },
+      },
+    });
+
+    if (existing) {
+      return res.json({ message: "Movie already in watchlist" });
+    }
+
+    // create relation using LOCAL movie id
     await prisma.watchlistItem.create({
-      data: { watchlistId, movieId },
+      data: {
+        watchlistId,
+        movieId: movie.id,
+      },
     });
 
     res.json({ message: "Movie added to watchlist" });
   } catch (err: any) {
+    console.error("Add to watchlist error:", err);
     res.status(500).json({ error: err.message });
   }
 });

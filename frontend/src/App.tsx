@@ -174,9 +174,9 @@ useEffect(() => {
   }
 
 
-  async function handleAddMovie(watchlistId: string, movieId: string) {
-    console.log("Adding movie", movieId, "to watchlist", watchlistId);
-    await addMovieToWatchlist(watchlistId, movieId);
+  async function handleAddMovie(watchlistId: string, tmdbID: string) {
+    console.log("Adding movie", tmdbID, "to watchlist", watchlistId);
+    await addMovieToWatchlist(watchlistId, tmdbID);
     await refreshWatchlists();
   }
 

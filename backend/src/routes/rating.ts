@@ -1,5 +1,7 @@
 import { Router } from "express";
 import prisma from "../prismaClient";
+import {getOrCreateMovie} from "../services/getOrCreateMovie"
+
 
 const router = Router();
 
@@ -8,21 +10,30 @@ const router = Router();
  * body: { movieId, score }
  */
 router.post("/", async (req, res) => {
-  const { movieId, score } = req.body;
+  const tmdbId = Number(req.body.tmdbId);
+  const { score } = req.body;
 
-  if (!movieId || score == null) {
-    return res.status(400).json({ error: "movieId and score required" });
+  if (Number.isNaN(tmdbId) || score == null) {
+    return res.status(400).json({ error: "tmdbId and score required" });
   }
 
   try {
+    // ensure movie exists
+    const movie = await getOrCreateMovie(tmdbId);
+
+    // upsert by LOCAL movieId
     const rating = await prisma.rating.upsert({
-      where: { movieId },
+      where: { movieId: movie.id },
       update: { score },
-      create: { movieId, score },
+      create: {
+        movieId: movie.id,
+        score,
+      },
     });
 
     res.json(rating);
   } catch (err: any) {
+    console.error("Rating upsert error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -43,7 +54,5 @@ router.get("/:movieId", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 export default router;

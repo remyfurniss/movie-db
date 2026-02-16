@@ -2,17 +2,74 @@ import { Router } from "express";
 import prisma from "../prismaClient";
 import axios from "axios";
 import { Prisma } from "@prisma/client"; 
+import {getOrCreateMovie} from "../services/getOrCreateMovie"
 
 
 const router = Router();
 
 
-
 // GET /movies/tmdb/:tmdbId
 router.get("/tmdb/:tmdbId", async (req, res) => {
+  const tmdbId = Number(req.params.tmdbId);
 
-  console.log("TMDB route hit:", req.params.tmdbId);
-  console.log("TMDB token exists:", !!process.env.TMDB_TOKEN);
+  // check local DB first
+  const localMovie = await prisma.movie.findUnique({
+    where: { tmdbId },
+  });
+
+  if (localMovie) {
+    return res.json({
+      ...localMovie
+      });
+  }
+
+  console.log("before")
+
+  // fetch from TMDB
+  const response = await axios.get(
+    `https://api.themoviedb.org/3/movie/${tmdbId}`,
+    {
+      params: {
+        api_key: process.env.TMDB_API_KEY,
+      },
+    }
+  );
+
+  
+
+  const m = response.data;
+
+  console.log(m);
+
+  // normalize but DO NOT save
+  return res.json({
+    tmdbId: m.id,
+    title: m.title,
+    posterPath: m.poster_path
+      ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+      : null,
+    backdropPath: m.backdrop_path
+          ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`
+          : null,
+    releaseDate: m.release_date
+            ? Number(m.release_date.slice(0, 4))
+            : null,
+    overview: m.overview,
+    voteAverage: m.vote_average,
+    genres: m.genres?.map((g: any) => g.name) ?? [],
+    runtime: m.runtime,
+    homepage: m.homepage,
+    imdbId: m.imdb_id,
+    voteCount: m.vote_count,
+    popularity: m.popularity,
+  });
+
+});
+
+
+/*
+// GET /movies/tmdb/:tmdbId
+router.get("/tmdb/:tmdbId", async (req, res) => {
 
   try {
     const tmdbId = Number(req.params.tmdbId);
@@ -113,7 +170,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
         }
       }
 
-      // 🔁 re-fetch with genres
+      //  re-fetch with genres
       movie = await prisma.movie.findUnique({
         where: { tmdbId },
         include: movieInclude,
@@ -124,7 +181,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
       return res.status(500).json({ error: "Movie creation failed" });
     }
 
-    // ✅ flatten genres for frontend
+    //  flatten genres for frontend
     return res.json({
       ...movie,
       genres: movie.genres.map((mg) => mg.genre),
@@ -135,30 +192,31 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
   }
 
 });
+*/
 
-router.put("/:id/watched", async (req, res) => {
-  const { id } = req.params;
-  
 
+router.put("/:tmdbId/watched", async (req, res) => {
   try {
-    const existing = await prisma.movie.findUnique({
-      where: { id },
-      select: { watched: true },
-    });
+    const tmdbId = Number(req.params.tmdbId);
 
-    if (!existing) {
-      return res.status(404).json({ error: "Movie not found" });
+    if (Number.isNaN(tmdbId)) {
+      return res.status(400).json({ error: "Invalid tmdbId" });
     }
 
-    const movie = await prisma.movie.update({
-      where: { id },
+    // ✅ ensures movie exists in DB
+    const movie = await getOrCreateMovie(tmdbId);
+
+    // ✅ toggle watched
+    const updatedMovie = await prisma.movie.update({
+      where: { id: movie.id }, // ← use DB id here
       data: {
-        watched: !existing.watched,
+        watched: !movie.watched,
       },
     });
 
-    res.json(movie);
+    res.json(updatedMovie);
   } catch (err: any) {
+    console.error("Toggle watched error:", err);
     res.status(500).json({ error: err.message });
   }
 });

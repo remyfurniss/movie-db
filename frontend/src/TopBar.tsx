@@ -20,8 +20,6 @@ export default function TopBar({
   const showDropdown = searchValue.trim() !== "" && results.length > 0;
     const navigate = useNavigate();
 
-        //console.log("SEARCH VALUE:", searchValue);
-        console.log("TopBar results:", results);
 
   return (
     <div className="search-container">

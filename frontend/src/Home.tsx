@@ -32,6 +32,7 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
       try {
         setLoading(true);
         const data = await fetchPopularMovies(); // fetch from api.ts
+        console.log(data);
         setPopularMovies(data.slice(0, 20)); // take top 20
       } catch (err) {
         console.error("Failed to fetch movies:", err);
