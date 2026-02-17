@@ -21,6 +21,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
           genre: true,
         },
       },
+      rating: true,
     },
   });
 
@@ -30,6 +31,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
       ...localMovie,
       // flatten MovieGenre -> Genre
       genres: localMovie.genres.map((mg) => mg.genre),
+      rating: localMovie.rating?.score ?? null, // flatten for frontend
     });
   }
 

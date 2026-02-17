@@ -77,7 +77,8 @@ export default function MovieDetail({
       setMovie(data);
       console.log(data);
       setWatched(data.watched);
-    } else if (id) {
+      setRating(data.rating);
+    } else if (id) {////dont need
         console.log("by ID");
       const data = await fetchMovieById(id);
       setMovie(data);
@@ -103,7 +104,6 @@ export default function MovieDetail({
                 <p>
                     {movie.releaseDate && movie.releaseDate}
                     {movie.runtime && ` • ${movie.runtime} min`}
-                    {console.log(movie.genres)}
                 </p>
             </div>
         
