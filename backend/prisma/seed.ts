@@ -81,7 +81,8 @@ async function seedMovies() {
             : null,
         releaseDate: movie.release_date
           ? Number(movie.release_date.split("-")[0])
-          : null
+          : null,
+        voteCount: movie.vote_count,
   
       },
       create: {
@@ -101,7 +102,8 @@ async function seedMovies() {
             : null,
         releaseDate: movie.release_date
             ? Number(movie.release_date.split("-")[0])
-            : null  
+            : null,
+        voteCount: movie.vote_count,
       },
     });
 
