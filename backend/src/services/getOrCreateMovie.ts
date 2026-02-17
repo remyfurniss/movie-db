@@ -27,6 +27,9 @@ export async function getOrCreateMovie(tmdbId: number) {
 
   const data = response.data;
 
+  console.log("genre data:")
+  console.log(data.genres)
+
   // 🧱 create movie
   const createdMovie = await prisma.movie.create({
     data: {
@@ -51,7 +54,7 @@ export async function getOrCreateMovie(tmdbId: number) {
     },
   });
 
-  // 🎭 genres
+  // genres
   if (data.genres?.length) {
     for (const g of data.genres) {
       const genre = await prisma.genre.upsert({

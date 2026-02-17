@@ -131,6 +131,7 @@ export async function searchTmdbMovies(query: string) {
 export async function fetchMovieByTmdbId(tmdbId: string) {
   const res = await fetch(`/movies/tmdb/${tmdbId}`);
   if (!res.ok) throw new Error("Failed to fetch movie");
+  //console.log(res.json());
   return res.json();
 }
 

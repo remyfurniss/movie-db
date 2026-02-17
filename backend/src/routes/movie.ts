@@ -12,18 +12,27 @@ const router = Router();
 router.get("/tmdb/:tmdbId", async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
 
-  // check local DB first
+   // check local DB first (WITH RELATIONS)
   const localMovie = await prisma.movie.findUnique({
     where: { tmdbId },
+    include: {
+      genres: {
+        include: {
+          genre: true,
+        },
+      },
+    },
   });
+
 
   if (localMovie) {
     return res.json({
-      ...localMovie
-      });
+      ...localMovie,
+      // flatten MovieGenre -> Genre
+      genres: localMovie.genres.map((mg) => mg.genre),
+    });
   }
 
-  console.log("before")
 
   // fetch from TMDB
   const response = await axios.get(
@@ -56,7 +65,10 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
             : null,
     overview: m.overview,
     voteAverage: m.vote_average,
-    genres: m.genres?.map((g: any) => g.name) ?? [],
+    genres: m.genres?.map((g: any) => ({
+      id: g.id,
+      name: g.name,
+    })) ?? [],
     runtime: m.runtime,
     homepage: m.homepage,
     imdbId: m.imdb_id,

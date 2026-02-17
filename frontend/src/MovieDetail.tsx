@@ -44,7 +44,7 @@ export default function MovieDetail({
     useEffect(() => {
         if (!id) return;
         fetchRating(id).then(data => setRating(data.score));
-    }, [id]);
+    }, [tmdbId]);
 
     async function handleRating(score: number) {
         const updated = await submitRating(tmdbId!, score);
@@ -67,14 +67,15 @@ export default function MovieDetail({
 
 
 
-
+////DONT NEED FETCH BY ID
 
     useEffect(() => {
   async function loadMovie() {
     if (tmdbId) {
         console.log("by TMDBID");
-      const data = await fetchMovieByTmdbId(tmdbId);
+      const data = await fetchMovieByTmdbId(tmdbId);//failed in here
       setMovie(data);
+      console.log(data);
       setWatched(data.watched);
     } else if (id) {
         console.log("by ID");
@@ -85,7 +86,7 @@ export default function MovieDetail({
   }
 
   loadMovie();
-}, [id, tmdbId]);
+}, [tmdbId]);
 
 
 
@@ -102,6 +103,7 @@ export default function MovieDetail({
                 <p>
                     {movie.releaseDate && movie.releaseDate}
                     {movie.runtime && ` • ${movie.runtime} min`}
+                    {console.log(movie.genres)}
                 </p>
             </div>
         
@@ -120,6 +122,7 @@ export default function MovieDetail({
                 )}
 
                 <div className="movie-detail-info">
+                    
                     {movie.genres && movie.genres.length > 0 && (
   <div className="genre-container">
     {movie.genres.map((genre: any) => (
