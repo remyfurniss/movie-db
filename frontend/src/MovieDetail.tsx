@@ -40,6 +40,7 @@ export default function MovieDetail({
     const [search, setSearch] = useState("");
     const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
     const navigate = useNavigate();
+    const [showSetRating, setShowSetRating] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -49,6 +50,10 @@ export default function MovieDetail({
     async function handleRating(score: number) {
         const updated = await submitRating(tmdbId!, score);
         setRating(updated.score);
+        setMovie((movie) =>
+    movie ? { ...movie, rating: updated.score } : movie
+  );
+
     }
 
     async function handleToggleWatched() {
@@ -94,6 +99,8 @@ export default function MovieDetail({
 
 
 
+
+
     if (!movie) return <p>Loading…</p>;
 
     return (
@@ -129,10 +136,10 @@ export default function MovieDetail({
     <span className="label">YOUR RATING</span>
     <button
       className="rating-block clickable"
-      onClick={() =>
-        document.getElementById("rating-section")?.scrollIntoView({ behavior: "smooth" })
-      }
-    >
+      onClick={() => {
+        document.getElementById("rating-section")?.scrollIntoView({ behavior: "smooth" });
+        setShowSetRating(true);}
+      }>
      
       <span className="star user">★</span>
       <span className="value">{movie.rating ?? "-"} / 10</span>
@@ -181,28 +188,6 @@ export default function MovieDetail({
 
             {/* MAKE BETTER AND CHANGE CLASS NAME*/}
 
-            <div className="movie-detail-content">
-                <div className="rating">
-                    {range(10).map((value) => {
-                        const activeValue = hovered ?? rating ?? 0;
-                        const isActive = value <= activeValue;
-
-                        return (
-                        <button
-                            key={value}
-                            className={`star ${isActive ? "active" : ""}`}
-                            onMouseEnter={() => setHovered(value)}
-                            onMouseLeave={() => setHovered(null)}
-                            onClick={() => handleRating(value)}
-                            aria-label={`Rate ${value}`}
-                        >
-                            ★
-                        </button>
-                        );
-                    })}
-                </div>
-
-            </div>
 
 
             {/* watched and watch list button*/}
@@ -277,6 +262,42 @@ export default function MovieDetail({
                     </div>
                 </div>
             )}
+
+
+{showSetRating && (
+  <div
+    className="rating-popup-backdrop"
+    onClick={() => setShowSetRating(false)}
+  >
+    <div className="rating-popup">
+      {/* Title above stars */}
+      <h3 className="rating-popup-title">RATE THIS MOVIE</h3>
+
+      {/* Stars */}
+      <div className="star-container">
+        {range(10).map((value) => {
+          const activeValue = hovered ?? rating ?? 0;
+          const isActive = value <= activeValue;
+
+          return (
+            <button
+              key={value}
+              className={`star ${isActive ? "active" : ""}`}
+              onMouseEnter={() => setHovered(value)}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => handleRating(value)}
+              aria-label={`Rate ${value}`}
+            >
+              ★
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+)}
+
+
         </div>
     );
 }
