@@ -127,12 +127,16 @@ export default function MovieDetail({
   {/* Your Rating */}
   <div className="stat">
     <span className="label">YOUR RATING</span>
-    <div className="rating-block">
+    <button
+      className="rating-block clickable"
+      onClick={() =>
+        document.getElementById("rating-section")?.scrollIntoView({ behavior: "smooth" })
+      }
+    >
+     
       <span className="star user">★</span>
-      <span className="value clickable" onClick={() => document.getElementById("rating-section")?.scrollIntoView({ behavior: "smooth" })}>
-        {movie.rating ?? "-"} / 10
-      </span>
-    </div>
+      <span className="value">{movie.rating ?? "-"} / 10</span>
+    </button>
   </div>
 
   {/* Popularity */}
