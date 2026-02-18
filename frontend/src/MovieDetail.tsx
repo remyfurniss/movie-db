@@ -98,14 +98,39 @@ export default function MovieDetail({
 
     return (
         <div>
-            {/* Movie Title and year and runtime*/}
-            <div>
-                <h1>{movie.title}</h1>
-                <p>
-                    {movie.releaseDate && movie.releaseDate}
-                    {movie.runtime && ` • ${movie.runtime} min`}
-                </p>
-            </div>
+{/* Movie Title and stats */}
+<div className="movie-header">
+  <div className="movie-header-left">
+    <h1>{movie.title}</h1>
+    <p>
+      {movie.releaseDate && movie.releaseDate}
+      {movie.runtime && ` • ${movie.runtime} min`}
+    </p>
+  </div>
+
+  <div className="movie-header-right">
+    <div className="stat">
+      <span className="label">TMDB RATING</span>
+      <span className="value">
+        <span className="star tmdb">★</span>
+        {movie.voteAverage?.toFixed(1)} / 10
+      </span>
+    </div>
+
+    <div className="stat">
+      <span className="label">YOUR RATING</span>
+        <span className="value">
+            <span className="star user">★</span>
+            {movie.rating ?? "-"} / 10
+        </span>
+    </div>
+
+    <div className="stat">
+      <span className="label">POPULARITY</span>
+      <span className="value">{`🔥 ${movie.popularity?.toFixed(0)}`}</span>
+    </div>
+  </div>
+</div>
         
             {/* Movie Backdrop */}
             {movie.backdropPath && (
@@ -139,8 +164,9 @@ export default function MovieDetail({
             {/* MAKE BETTER AND CHANGE CLASS NAME*/}
 
             <div className="movie-detail-content">
-                <p>{`${movie.voteAverage} / 10`}</p>
-                <p>{movie.popularity}</p>
+                <p>{`${movie.voteAverage.toFixed(1)} / 10`}</p>
+                <p>{movie.voteCount}</p>
+                <p>{movie.popularity.toFixed(1)}</p>
                 <div className="rating">
                     {range(10).map((value) => {
                         const activeValue = hovered ?? rating ?? 0;
