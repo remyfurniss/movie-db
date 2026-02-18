@@ -79,6 +79,21 @@ button:focus-visible {
   }
 }
 
+.clickable {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px; /* nice spacing */
+}
+
+.clickable:hover {
+  opacity: 0.8;
+}
+
 .movie-header {
   margin-top: 0;
   display: flex;
@@ -124,8 +139,36 @@ button:focus-visible {
 .movie-header-right {
   display: flex;        /* ⭐ THIS FIXES THE STACKING */
   gap: 20px;            /* space between stats */
-  align-items: center;
+  /*align-items: center;*/
+  align-items: stretch;
 }
+
+.subtext {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+  opacity: 0.85;
+}
+
+.rating-block {
+  display: flex;
+  align-items: center; 
+  gap: 6px;
+  flex: 1;
+}
+
+.rating-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.star.tmdb {
+  color: #f5c518; /* gold */
+  font-size: 18px;
+  line-height: 1;
+}
+
 
 .stat {
   display: flex;
@@ -142,6 +185,12 @@ button:focus-visible {
 .value {
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+.value {
+  display: flex;
+  align-items: center; /* aligns stars/fire icon with number */
+  gap: 4px; /* space between star/icon and number */
 }
 
 .movie-meta {

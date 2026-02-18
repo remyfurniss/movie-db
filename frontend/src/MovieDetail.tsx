@@ -109,27 +109,41 @@ export default function MovieDetail({
   </div>
 
   <div className="movie-header-right">
-    <div className="stat">
-      <span className="label">TMDB RATING</span>
-      <span className="value">
-        <span className="star tmdb">★</span>
-        {movie.voteAverage?.toFixed(1)} / 10
-      </span>
-    </div>
+  {/* TMDB Rating */}
+  <div className="stat">
+    <span className="label">TMDB RATING</span>
 
-    <div className="stat">
-      <span className="label">YOUR RATING</span>
-        <span className="value">
-            <span className="star user">★</span>
-            {movie.rating ?? "-"} / 10
-        </span>
-    </div>
-
-    <div className="stat">
-      <span className="label">POPULARITY</span>
-      <span className="value">{`🔥 ${movie.popularity?.toFixed(0)}`}</span>
+    <div className="rating-block">
+      <span className="star tmdb">★</span>
+      <div className="rating-text">
+        <span className="value">{movie.voteAverage?.toFixed(1) ?? "-"} / 10</span>
+        {movie.voteCount && (
+          <span className="subtext">{movie.voteCount.toLocaleString()} votes</span>
+        )}
+      </div>
     </div>
   </div>
+
+  {/* Your Rating */}
+  <div className="stat">
+    <span className="label">YOUR RATING</span>
+    <div className="rating-block">
+      <span className="star user">★</span>
+      <span className="value clickable" onClick={() => document.getElementById("rating-section")?.scrollIntoView({ behavior: "smooth" })}>
+        {movie.rating ?? "-"} / 10
+      </span>
+    </div>
+  </div>
+
+  {/* Popularity */}
+  <div className="stat">
+    <span className="label">POPULARITY</span>
+    <div className="rating-block">
+      <span className="star popularity">🔥</span>
+      <span className="value">{movie.popularity?.toFixed(0)}</span>
+    </div>
+  </div>
+</div>
 </div>
         
             {/* Movie Backdrop */}
@@ -164,9 +178,6 @@ export default function MovieDetail({
             {/* MAKE BETTER AND CHANGE CLASS NAME*/}
 
             <div className="movie-detail-content">
-                <p>{`${movie.voteAverage.toFixed(1)} / 10`}</p>
-                <p>{movie.voteCount}</p>
-                <p>{movie.popularity.toFixed(1)}</p>
                 <div className="rating">
                     {range(10).map((value) => {
                         const activeValue = hovered ?? rating ?? 0;
