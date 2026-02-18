@@ -183,25 +183,23 @@ export default function MovieDetail({
   </div>
 )}
                     <p>{movie.overview || "No description available."}</p>
-                </div>
-            </div>
-
-            {/* MAKE BETTER AND CHANGE CLASS NAME*/}
-
-
-
-            {/* watched and watch list button*/}
+                    {/* watched and watch list button*/}
             <div className="movie-actions">
                 <button
     className={`watched-btn ${watched ? "active" : ""}`}
     onClick={handleToggleWatched}
   >
-    {watched ? "✓ Watched" : "👁 Mark as watched"}
+    {watched ? "✓ Watched" : "Mark as watched"}
   </button>
                 <button className="watchlist-btn" onClick={() => setShowWatchlistModal(true)}>
                     + Add to Watchlist
                 </button>
             </div>
+                </div>
+            </div>
+
+            {/* MAKE BETTER AND CHANGE CLASS NAME*/}
+
 
             {/* Show watchlist popup*/}
             {showWatchlistModal && (

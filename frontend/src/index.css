@@ -612,15 +612,25 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border: 2px dashed #666;
-  background: rgba(255, 255, 255, 0.05);
+  border: none;
   transition: all 0.2s ease;
 }
 
-.add-watchlist-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.03);
+.add-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3; /* matches movie posters */
+  background: #333;
+
+  border: 2px dashed #8c8c8cbe; /* ← border now only here */
+  border-radius: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+
+
 
 .add-icon {
   font-size: 48px;
@@ -731,6 +741,34 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   font-size: 11px;
+  border-radius: 6px;
+}
+
+.poster-wrapper {
+  width: 120px;        /* choose your size */
+  height: 180px;       /* maintain poster ratio */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.poster-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* prevents stretching */
+  border-radius: 6px;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a;
+  color: #aaa;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
 }
 
