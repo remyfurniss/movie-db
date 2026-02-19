@@ -19,6 +19,14 @@ html, body, #root {
   padding: 0;
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; /* 🚨 prevents page scroll */
+  min-height: 0;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -668,9 +676,15 @@ button:focus-visible {
 
 /* WatchlistDetail */
 
+
+
 .watchlist-panel {
   margin: 0 auto; /* centers on large screens */
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+  min-height: 0;
 }
 
 .watchlist-title {
@@ -699,7 +713,13 @@ button:focus-visible {
 .watchlist-scroll-wrapper {
   width: 100%;
   box-sizing: border-box;
+
+  flex: 1;              /* ⭐ fills remaining space */
+  overflow-y: auto;     /* ⭐ enables vertical scroll */
+  min-height: 0;        /* ⭐ VERY IMPORTANT in flex layouts */
 }
+
+
 
 /* subtle scrollbar */
 .watchlist-scroll-wrapper::-webkit-scrollbar {
