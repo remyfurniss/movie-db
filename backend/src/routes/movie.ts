@@ -29,6 +29,8 @@ router.get("/recommendations", async (req, res) => {
       return res.json([]);
     }
 
+    const watchedSet = new Set(tmdbIds);
+
     const results = await Promise.all(
       tmdbIds.map(id => getRecommendationsForMovie(id))
     );
@@ -36,14 +38,18 @@ router.get("/recommendations", async (req, res) => {
 
     const flat = results.flat();
 
-    const map = new Map();
-    for (const m of flat) {
-      if (!map.has(m.id)) {
-        map.set(m.id, m);
-      }
-    }
+// remove already watched movies
+const filtered = flat.filter(m => !watchedSet.has(m.id));
 
-    const unique = Array.from(map.values());
+// dedupe
+const map = new Map();
+for (const m of filtered) {
+  if (!map.has(m.id)) {
+    map.set(m.id, m);
+  }
+}
+
+const unique = Array.from(map.values());
 
     unique.sort(
       (a, b) =>
