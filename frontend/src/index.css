@@ -544,7 +544,7 @@ button:focus-visible {
   width: 100%;
   overflow-x: hidden; /* prevent page scroll */
   box-sizing: border-box;
-  padding: 0 16px;   /* optional padding */
+  padding: 0 0px;   /* optional padding */
 }
 
 /* Actual scrollable row */
@@ -669,10 +669,8 @@ button:focus-visible {
 /* WatchlistDetail */
 
 .watchlist-panel {
+  margin: 0 auto; /* centers on large screens */
   width: 100%;
-  max-width: 1400px;        /* feels premium on desktop */
-  margin: 0 auto;
-  padding: 16px;
 }
 
 .watchlist-title {
@@ -681,12 +679,26 @@ button:focus-visible {
   font-weight: 600;
 }
 
+.movie-remove {
+
+  max-width: 600px;
+  margin: 40px auto;
+  display: block;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #d32f2f;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
 /* SAME IDEA AS HORIZONTAL SHOWCASE */
 .watchlist-scroll-wrapper {
-  max-height: 70vh;         /* scrolls inside, not page */
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* subtle scrollbar */
@@ -708,16 +720,25 @@ button:focus-visible {
 
 /* ROW */
 .watchlist-row {
-  width: 100%;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 14px;
-  background: #141414;
+  justify-content: space-between;
+  background: #383838;
+  width: 100%;
+  box-sizing: border-box;   /* ⭐ critical */
+  padding: 10px 14px;
   border-radius: 10px;
-  transition: background 0.2s ease, transform 0.1s ease;
-  cursor: pointer;
 }
+
+.watchlist-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1; /* ⭐ allows it to take remaining space */
+  min-width: 0; /* prevents text overflow issues */
+}
+
+
 
 .watchlist-row:hover {
   background: #1d1d1d;
