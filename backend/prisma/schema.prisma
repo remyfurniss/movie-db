@@ -27,6 +27,8 @@ model Movie {
 	genres      MovieGenre[]
   	rating     Rating?
   	watchlists  WatchlistItem[]
+	watchHistory	WatchHistory?
+
 
 	createdAt DateTime @default(now())
         updatedAt DateTime @updatedAt
@@ -84,4 +86,12 @@ model WatchlistItem {
   createdAt DateTime @default(now())
 
   @@id([watchlistId, movieId]) // movie appears once per watchlist
+}
+
+model WatchHistory {
+	id        	Int      	@id @default(autoincrement())
+	movieId   	String		@unique
+	watchedAt	DateTime	@default(now())
+
+	movie 		Movie 		@relation(fields: [movieId], references: [id])
 }

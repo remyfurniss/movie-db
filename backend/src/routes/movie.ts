@@ -3,10 +3,64 @@ import prisma from "../prismaClient";
 import axios from "axios";
 import { Prisma } from "@prisma/client"; 
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
-
+import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
 
 const router = Router();
 
+router.get("/movie/recommendations", async (req, res) => {
+  try {
+    const watched = await prisma.watchHistory.findMany({
+      orderBy: { watchedAt: "desc" },
+      take: 8,
+      select: {
+        movie: { select: { tmdbId: true } },
+      },
+    });
+
+    const tmdbIds = watched.map(w => w.movie.tmdbId);
+
+    if (tmdbIds.length === 0) {
+      return res.json([]);
+    }
+
+    const results = await Promise.all(
+      tmdbIds.map(id => getRecommendationsForMovie(id))
+    );
+
+    const flat = results.flat();
+
+    const map = new Map();
+    for (const m of flat) {
+      if (!map.has(m.id)) {
+        map.set(m.id, m);
+      }
+    }
+
+    const unique = Array.from(map.values());
+
+    unique.sort(
+      (a, b) =>
+        (b.vote_average * b.vote_count) -
+        (a.vote_average * a.vote_count)
+    );
+
+    const top20 = unique.slice(0, 20).map((m: any) => ({
+      tmdbId: m.id,
+      title: m.title,
+      posterPath: m.poster_path
+        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+        : null,
+      voteAverage: m.vote_average,
+      releaseDate: m.release_date
+        ? Number(m.release_date.slice(0, 4))
+        : null,
+    }));
+
+    res.json(top20);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // GET /movies/tmdb/:tmdbId
 router.get("/tmdb/:tmdbId", async (req, res) => {
