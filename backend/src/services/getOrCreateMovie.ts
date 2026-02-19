@@ -51,6 +51,7 @@ export async function getOrCreateMovie(tmdbId: number) {
         : null,
       voteAverage: data.vote_average,
       voteCount: data.vote_count,
+      watchHistory: data.watch_history,
     },
   });
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPopularMovies } from "./api";
+import { fetchPopularMovies, fetchRecommendedMovies } from "./api";
 import { Link } from "react-router-dom";
 import type { Movie } from "./types/movie";
 
@@ -25,6 +25,7 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
 
   //const [query, setQuery] = useState("");
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
+  const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -33,6 +34,9 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
         setLoading(true);
         const data = await fetchPopularMovies(); // fetch from api.ts
         setPopularMovies(data.slice(0, 20)); // take top 20
+
+        const data2 = await fetchRecommendedMovies(); // fetch from api.ts        
+        setRecommendedMovies(data2); // take top 20
       } catch (err) {
         console.error("Failed to fetch movies:", err);
       } finally {
@@ -58,9 +62,8 @@ if (loading) return <p>Loading popular movies...</p>;
               key={movie.id}
               className="movie-card"
               onClick={() => {
-  if (!movie.tmdbId) return;
-  onMovieClick(movie.tmdbId);
-}}>
+                if (!movie.tmdbId) return;
+                onMovieClick(movie.tmdbId);}}>
               {movie.posterPath ? (
                 <img src={movie.posterPath} alt={movie.title} />
               ) : (
@@ -73,6 +76,25 @@ if (loading) return <p>Loading popular movies...</p>;
       </div>
       {/* Popular Movies*/}
       <h2>Recomended Movies</h2>
+      <div className="movies-scroll-wrapper">
+        <div className="movies-scroll">
+          {recommendedMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => {
+                if (!movie.tmdbId) return;
+                onMovieClick(movie.tmdbId);}}>
+              {movie.posterPath ? (
+                <img src={movie.posterPath} alt={movie.title} />
+              ) : (
+                <div className="placeholder">No Image</div>
+              )}
+              <p>{movie.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
       {/* Watchlists*/}
       <h2>Watchlists</h2>
       <div className="movies-scroll-wrapper">

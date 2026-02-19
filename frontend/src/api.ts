@@ -9,6 +9,12 @@ export async function fetchPopularMovies() {
 }
 */
 
+export async function fetchRecommendedMovies() {
+    const res = await fetch(`${API_URL}/movies/recommendations`);
+    if (!res.ok) throw new Error("Failed to fetch recommended movies");
+    return res.json();
+}
+
 export async function fetchPopularMovies() {
   const res = await fetch(`${API_URL}/tmdb/popular`);
   if (!res.ok) throw new Error("Failed to fetch popular movies");
@@ -146,3 +152,4 @@ export async function toggleWatched(tmdbId: string) {
 
   return res.json();
 }
+

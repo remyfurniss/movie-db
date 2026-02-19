@@ -4,11 +4,15 @@ import axios from "axios";
 import { Prisma } from "@prisma/client"; 
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
+import console from "node:console";
 
 const router = Router();
 
-router.get("/movie/recommendations", async (req, res) => {
+router.get("/recommendations", async (req, res) => {
+
+  console.log("A");
   try {
+    console.log("B");
     const watched = await prisma.watchHistory.findMany({
       orderBy: { watchedAt: "desc" },
       take: 8,
@@ -17,7 +21,12 @@ router.get("/movie/recommendations", async (req, res) => {
       },
     });
 
+    console.log("C");
+    console.log(watched);
+
     const tmdbIds = watched.map(w => w.movie.tmdbId);
+
+    console.log(tmdbIds);
 
     if (tmdbIds.length === 0) {
       return res.json([]);
@@ -26,6 +35,8 @@ router.get("/movie/recommendations", async (req, res) => {
     const results = await Promise.all(
       tmdbIds.map(id => getRecommendationsForMovie(id))
     );
+
+    console.log(results);
 
     const flat = results.flat();
 
@@ -262,6 +273,33 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
 });
 */
 
+/*
+router.put("/:tmdbId/watched", async (req, res) => {
+  try {
+    const tmdbId = Number(req.params.tmdbId);
+
+    if (Number.isNaN(tmdbId)) {
+      return res.status(400).json({ error: "Invalid tmdbId" });
+    }
+
+    // ensures movie exists in DB
+    const movie = await getOrCreateMovie(tmdbId);
+
+    // toggle watched
+    const updatedMovie = await prisma.movie.update({
+      where: { id: movie.id }, // ← use DB id here
+      data: {
+        watched: !movie.watched,
+      },
+    });
+
+    res.json(updatedMovie);
+  } catch (err: any) {
+    console.error("Toggle watched error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+*/
 
 router.put("/:tmdbId/watched", async (req, res) => {
   try {
@@ -271,18 +309,37 @@ router.put("/:tmdbId/watched", async (req, res) => {
       return res.status(400).json({ error: "Invalid tmdbId" });
     }
 
-    // ✅ ensures movie exists in DB
+    // ensure the movie exists in DB
     const movie = await getOrCreateMovie(tmdbId);
 
-    // ✅ toggle watched
-    const updatedMovie = await prisma.movie.update({
-      where: { id: movie.id }, // ← use DB id here
-      data: {
-        watched: !movie.watched,
-      },
+    // check if movie is already marked as watched
+    const existing = await prisma.watchHistory.findUnique({
+      where: { movieId: movie.id }, // movie.id is the DB string UUID
     });
 
-    res.json(updatedMovie);
+    let watched: boolean;
+
+    if (existing) {
+      // If exists → unwatch
+      await prisma.watchHistory.delete({
+        where: { movieId: movie.id },
+      });
+      watched = false;
+    } else {
+      // If not → mark as watched
+      await prisma.watchHistory.create({
+        data: { movieId: movie.id },
+      });
+      watched = true;
+    }
+    
+    // return JSON with current watched state
+    res.json({
+      movieId: movie.id,
+      tmdbId: movie.tmdbId,
+      title: movie.title,
+      watched,
+    });
   } catch (err: any) {
     console.error("Toggle watched error:", err);
     res.status(500).json({ error: err.message });
