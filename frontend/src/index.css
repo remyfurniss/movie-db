@@ -25,6 +25,7 @@ html, body, #root {
   
   overflow: hidden; /* 🚨 prevents page scroll */
   min-height: 0;
+  height: 100vh;
 }
 
 a {
