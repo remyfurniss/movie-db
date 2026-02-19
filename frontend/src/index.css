@@ -22,7 +22,7 @@ html, body, #root {
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  
   overflow: hidden; /* 🚨 prevents page scroll */
   min-height: 0;
 }
@@ -625,6 +625,11 @@ button:focus-visible {
 }
 
 .add-poster {
+
+
+  overflow: hidden;
+
+
   width: 100%;
   aspect-ratio: 2 / 3; /* matches movie posters */
   background: #333;
@@ -786,8 +791,10 @@ button:focus-visible {
 }
 
 .poster-wrapper {
-  width: 120px;        /* choose your size */
-  height: 180px;       /* maintain poster ratio */
+
+width: 100%;
+  aspect-ratio: 2 / 3; /* matches movie posters */
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -797,6 +804,7 @@ button:focus-visible {
 .poster-wrapper img {
   width: 100%;
   height: 100%;
+  
   object-fit: cover; /* prevents stretching */
   border-radius: 6px;
 }
