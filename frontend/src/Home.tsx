@@ -32,11 +32,11 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
     async function loadMovies() {
       try {
         setLoading(true);
-        const data = await fetchPopularMovies(); // fetch from api.ts
-        setPopularMovies(data.slice(0, 20)); // take top 20
+        const popData = await fetchPopularMovies(); // fetch from api.ts
+        setPopularMovies(popData.slice(0, 20)); // take top 20
 
-        const data2 = await fetchRecommendedMovies(); // fetch from api.ts        
-        setRecommendedMovies(data2); // take top 20
+        const recData = await fetchRecommendedMovies();     
+        setRecommendedMovies(recData); 
       } catch (err) {
         console.error("Failed to fetch movies:", err);
       } finally {
@@ -100,39 +100,36 @@ if (loading) return <p>Loading popular movies...</p>;
       <div className="movies-scroll-wrapper">
         <div className="movies-scroll">
           {watchlists.map((watchlist) => (
-  <div
-    key={watchlist.id}
-    className="movie-card"
-    onClick={() => onWatchlistClick(watchlist.id)}
-  >
-    <div className="poster-wrapper">
-      {watchlist.items?.[0]?.movie?.posterPath ? (
-        <img
-          src={watchlist.items[0].movie.posterPath}
-          alt={watchlist.name}
-        />
-      ) : (
-        <div className="placeholder">No Image</div>
-      )}
-    </div>
+            <div
+              key={watchlist.id}
+              className="movie-card"
+              onClick={() => onWatchlistClick(watchlist.id)}
+            >
+              <div className="poster-wrapper">
+                {watchlist.items?.[0]?.movie?.posterPath ? (
+                  <img
+                    src={watchlist.items[0].movie.posterPath}
+                    alt={watchlist.name}
+                  />
+                ) : (
+                  <div className="placeholder">No Image</div>
+                )}
+              </div>
 
-    <p>{watchlist.name}</p>
-  </div>
-))}
+              <p>{watchlist.name}</p>
+            </div>
+          ))}
           {/* ➕ Add Watchlist Card */}
-<div
-  className="movie-card add-watchlist-card"
-  onClick={() => {
-    const name = prompt("Enter watchlist name");
-    if (name) onCreateWatchlist(name);
-  }}
->
-  <div className="add-poster">
-    <div className="add-icon">+</div>
-  </div>
-
-  <p className="movie-title">Add Watchlist</p>
-</div>
+          <div
+            className="movie-card add-watchlist-card"
+            onClick={() => {
+              const name = prompt("Enter watchlist name");
+              if (name) onCreateWatchlist(name);}}>
+            <div className="add-poster">
+              <div className="add-icon">+</div>
+            </div>
+            <p className="movie-title">Add Watchlist</p>
+          </div>
         </div>
       </div>
     </div>

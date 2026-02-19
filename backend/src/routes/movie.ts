@@ -5,14 +5,13 @@ import { Prisma } from "@prisma/client";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
 import console from "node:console";
+import { watch } from "node:fs";
 
 const router = Router();
 
 router.get("/recommendations", async (req, res) => {
 
-  console.log("A");
   try {
-    console.log("B");
     const watched = await prisma.watchHistory.findMany({
       orderBy: { watchedAt: "desc" },
       take: 8,
@@ -21,12 +20,10 @@ router.get("/recommendations", async (req, res) => {
       },
     });
 
-    console.log("C");
-    console.log(watched);
+
 
     const tmdbIds = watched.map(w => w.movie.tmdbId);
 
-    console.log(tmdbIds);
 
     if (tmdbIds.length === 0) {
       return res.json([]);
@@ -36,7 +33,6 @@ router.get("/recommendations", async (req, res) => {
       tmdbIds.map(id => getRecommendationsForMovie(id))
     );
 
-    console.log(results);
 
     const flat = results.flat();
 
@@ -87,6 +83,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
         },
       },
       rating: true,
+      watchHistory: true,
     },
   });
 
@@ -97,6 +94,7 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
       // flatten MovieGenre -> Genre
       genres: localMovie.genres.map((mg) => mg.genre),
       rating: localMovie.rating?.score ?? null, // flatten for frontend
+      watched: !!localMovie.watchHistory, 
     });
   }
 
@@ -114,8 +112,6 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
   
 
   const m = response.data;
-
-  console.log(m);
 
   // normalize but DO NOT save
   return res.json({

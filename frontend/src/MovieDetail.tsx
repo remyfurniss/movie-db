@@ -81,7 +81,11 @@ export default function MovieDetail({
       const data = await fetchMovieByTmdbId(tmdbId);//failed in here
       setMovie(data);
       console.log(data);
-      setWatched(data.watched);
+
+            setWatched(data.watched);
+        
+
+      
       setRating(data.rating);
     } else if (id) {////dont need
         console.log("by ID");
