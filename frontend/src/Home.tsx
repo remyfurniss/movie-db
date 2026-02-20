@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, fetchRecommendedMovies } from "./api";
+import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "./api";
 import { Link } from "react-router-dom";
 import type { Movie } from "./types/movie";
 
@@ -26,17 +26,23 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
   //const [query, setQuery] = useState("");
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
+  const [recentlyWatchedMovies, setRecentlyWatchedMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function loadMovies() {
       try {
         setLoading(true);
+
         const popData = await fetchPopularMovies(); // fetch from api.ts
         setPopularMovies(popData.slice(0, 20)); // take top 20
 
         const recData = await fetchRecommendedMovies();     
         setRecommendedMovies(recData); 
+
+        const hisData = await fetchRecentlyWatchedMovies();     
+        setRecentlyWatchedMovies(hisData); 
+
       } catch (err) {
         console.error("Failed to fetch movies:", err);
       } finally {
@@ -99,7 +105,7 @@ if (loading) return <p>Loading popular movies...</p>;
           ))}
         </div>
       </div>
-      <h2>Watchlists</h2>
+
       {/* Watchlists*/}
 
       <h2>Watchlists</h2>
@@ -136,6 +142,28 @@ if (loading) return <p>Loading popular movies...</p>;
             </div>
             <p className="movie-title">Add Watchlist</p>
           </div>
+        </div>
+      </div>
+
+      {/* Recently Watched */}
+      <h2>Recently Watched</h2>
+      <div className="movies-scroll-wrapper">
+        <div className="movies-scroll">
+          {recentlyWatchedMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="movie-card"
+              onClick={() => {
+                if (!movie.tmdbId) return;
+                onMovieClick(movie.tmdbId);}}>
+              {movie.posterPath ? (
+                <img src={movie.posterPath} alt={movie.title} />
+              ) : (
+                <div className="placeholder">No Image</div>
+              )}
+              <p>{movie.title}</p>
+            </div>
+          ))}
         </div>
       </div>
 

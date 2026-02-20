@@ -9,6 +9,32 @@ import { watch } from "node:fs";
 
 const router = Router();
 
+// GET /movies/recentlywatched
+router.get("/recentlywatched", async (req, res) => {
+  try {
+    const watched = await prisma.watchHistory.findMany({
+      orderBy: { watchedAt: "desc" },
+      take: 20,
+      include: {
+        movie: true,
+      },
+    });
+
+    const movies = watched.map((w) => ({
+      tmdbId: w.movie.tmdbId,
+      title: w.movie.title,
+      posterPath: w.movie.posterPath,
+      voteAverage: w.movie.voteAverage,
+      releaseDate: w.movie.releaseDate,
+    }));
+
+    res.json(movies);
+  } catch (err: any) {
+    console.error("Recently watched error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/recommendations", async (req, res) => {
 
   try {

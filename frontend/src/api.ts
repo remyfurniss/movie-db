@@ -9,6 +9,13 @@ export async function fetchPopularMovies() {
 }
 */
 
+
+export async function fetchRecentlyWatchedMovies() {
+    const res = await fetch(`${API_URL}/movies/recentlywatched`);
+    if (!res.ok) throw new Error("Failed to fetch recently watched movies");
+    return res.json();
+}
+
 export async function fetchRecommendedMovies() {
     const res = await fetch(`${API_URL}/movies/recommendations`);
     if (!res.ok) throw new Error("Failed to fetch recommended movies");
