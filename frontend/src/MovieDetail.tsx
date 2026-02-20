@@ -222,7 +222,9 @@ export default function MovieDetail({
                                 {watchlists.map((watchlist) => (
                                     <div key={watchlist.id}
                                         className="movie-card"
-                                        onClick={() => onAddMovieToWatchlist(watchlist.id, movie!.tmdbId)}>
+                                        onClick={() => {
+                                            onAddMovieToWatchlist(watchlist.id, movie!.tmdbId);
+                                            setShowWatchlistModal(false);}}>
 
                                         <div className="poster-wrapper">
                                             {watchlist.items?.[0]?.movie?.posterPath ? (
