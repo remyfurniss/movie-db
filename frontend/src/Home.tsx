@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "./api";
 import { Link } from "react-router-dom";
 import type { Movie } from "./types/movie";
+import AddWatchlistPopup from "./components/AddWatchlistPopup";
+
 
 
 
@@ -27,6 +29,8 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [recentlyWatchedMovies, setRecentlyWatchedMovies] = useState<Movie[]>([]);
+      const [showAddWatchlistPopup, setShowAddWatchlistPopup] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -133,15 +137,19 @@ if (loading) return <p>Loading popular movies...</p>;
           ))}
           {/* ➕ Add Watchlist Card */}
           <div
-            className="movie-card add-watchlist-card"
-            onClick={() => {
-              const name = prompt("Enter watchlist name");
-              if (name) onCreateWatchlist(name);}}>
-            <div className="add-poster">
-              <div className="add-icon">+</div>
-            </div>
-            <p className="movie-title">Add Watchlist</p>
-          </div>
+                                    className="movie-card add-watchlist-card"
+                                    onClick={() => {
+                                        setShowAddWatchlistPopup(true);}}>
+
+                                    <div className="add-poster">
+
+                                        <div className="add-icon">+</div>
+
+                                    </div>
+
+                                    <p className="movie-title">Add Watchlist</p>
+                                    
+                                </div>
         </div>
       </div>
 
@@ -166,6 +174,13 @@ if (loading) return <p>Loading popular movies...</p>;
           ))}
         </div>
       </div>
+
+
+      <AddWatchlistPopup
+        isOpen={showAddWatchlistPopup}
+        onClose={() => setShowAddWatchlistPopup(false)}
+        onCreateWatchlist={onCreateWatchlist}
+      />
 
     </div>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchMovieById, fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "./api";
+import AddWatchlistPopup from "./components/AddWatchlistPopup";
 import TopBar from "./TopBar";
 
 type Watchlist = {
@@ -33,7 +34,7 @@ export default function MovieDetail({
     const [movie, setMovie] = useState<any>(null);
     const [selected, setSelected] = useState("");
     const [showWatchlistModal, setShowWatchlistModal] = useState(false);
-    const [showAddWatchlistModal, setShowAddWatchlistModal] = useState(false);
+    const [showAddWatchlistPopup, setShowAddWatchlistPopup] = useState(false);
     const [showCreateWatchlist, setShowCreateWatchlist] = useState(false);
     const [newWatchlistName, setNewWatchlistName] = useState("");
     const [rating, setRating] = useState<number | null>(null);
@@ -245,7 +246,7 @@ export default function MovieDetail({
                                 <div
                                     className="movie-card add-watchlist-card"
                                     onClick={() => {
-                                        setShowAddWatchlistModal(true);}}>
+                                        setShowAddWatchlistPopup(true);}}>
 
                                     <div className="add-poster">
 
@@ -263,7 +264,11 @@ export default function MovieDetail({
             )}
             
         
+
+
+        
         {/* Show add watchlist popup*/}
+        {/*
         {showAddWatchlistModal && (
   <div
     className="modal-overlay"
@@ -311,6 +316,13 @@ export default function MovieDetail({
     </div>
   </div>
 )}
+*/}
+
+<AddWatchlistPopup
+  isOpen={showAddWatchlistPopup}
+  onClose={() => setShowAddWatchlistPopup(false)}
+  onCreateWatchlist={onCreateWatchlist}
+/>
 
 
 
