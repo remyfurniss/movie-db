@@ -53,7 +53,9 @@ if (loading) return <p>Loading popular movies...</p>;
 
   return (
     <div className="home-container">
+
       {/* Popular Movies*/}
+
       <h2>Popular Movies</h2>
       <div className="movies-scroll-wrapper">
         <div className="movies-scroll">
@@ -74,7 +76,9 @@ if (loading) return <p>Loading popular movies...</p>;
           ))}
         </div>
       </div>
+
       {/* Popular Movies*/}
+
       <h2>Recomended Movies</h2>
       <div className="movies-scroll-wrapper">
         <div className="movies-scroll">
@@ -95,7 +99,9 @@ if (loading) return <p>Loading popular movies...</p>;
           ))}
         </div>
       </div>
+      <h2>Watchlists</h2>
       {/* Watchlists*/}
+
       <h2>Watchlists</h2>
       <div className="movies-scroll-wrapper">
         <div className="movies-scroll">
@@ -132,6 +138,7 @@ if (loading) return <p>Loading popular movies...</p>;
           </div>
         </div>
       </div>
+
     </div>
   );
 }
