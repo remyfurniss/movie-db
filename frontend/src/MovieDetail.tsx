@@ -33,6 +33,7 @@ export default function MovieDetail({
     const [movie, setMovie] = useState<any>(null);
     const [selected, setSelected] = useState("");
     const [showWatchlistModal, setShowWatchlistModal] = useState(false);
+    const [showAddWatchlistModal, setShowAddWatchlistModal] = useState(false);
     const [showCreateWatchlist, setShowCreateWatchlist] = useState(false);
     const [newWatchlistName, setNewWatchlistName] = useState("");
     const [rating, setRating] = useState<number | null>(null);
@@ -242,8 +243,7 @@ export default function MovieDetail({
                                 <div
                                     className="movie-card add-watchlist-card"
                                     onClick={() => {
-                                        const name = prompt("Enter watchlist name");
-                                        if (name) onCreateWatchlist(name);}}>
+                                        setShowAddWatchlistModal(true);}}>
 
                                     <div className="add-poster">
 
@@ -261,6 +261,56 @@ export default function MovieDetail({
             )}
             
         
+        {/* Show add watchlist popup*/}
+        {showAddWatchlistModal && (
+  <div
+    className="modal-overlay"
+    onClick={() => setShowAddWatchlistModal(false)}
+  >
+    <div className="modal add-watchlist-modal" onClick={e => e.stopPropagation()}>
+      <h3 className="rating-popup-title">ENTER WATCHLIST NAME</h3>
+
+      <input
+        className="watchlist-input"
+        type="text"
+        placeholder="e.g. Movies to Watch 🍿"
+        value={newWatchlistName}
+        onChange={(e) => setNewWatchlistName(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && newWatchlistName.trim()) {
+            onCreateWatchlist(newWatchlistName.trim());
+            setShowAddWatchlistModal(false);
+            setNewWatchlistName("");
+          }
+        }}
+        autoFocus
+      />
+
+      <div className="modal-buttons">
+        <button
+          className="cancel-btn"
+          onClick={() => setShowAddWatchlistModal(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          className="confirm-btn"
+          disabled={!newWatchlistName.trim()}
+          onClick={() => {
+            onCreateWatchlist(newWatchlistName.trim());
+            setShowAddWatchlistModal(false);
+            setNewWatchlistName("");
+          }}
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
 
 {showSetRating && (

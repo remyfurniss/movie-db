@@ -418,6 +418,80 @@ button:focus-visible {
   color: #eaeaea;
 }
 
+/* Modal sizing improvement */
+.add-watchlist-modal {
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+/* Input styling */
+.watchlist-input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 16px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.watchlist-input::placeholder {
+  color: #888;
+}
+
+.watchlist-input:focus {
+  border-color: #e50914; /* Netflix red vibe */
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+}
+
+/* Buttons row */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Cancel button */
+.cancel-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #2a2a2a;
+}
+
+/* Confirm button */
+.confirm-btn {
+  background: #e50914;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.confirm-btn:hover {
+  transform: translateY(-1px);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 /* TOP BAR */
 
