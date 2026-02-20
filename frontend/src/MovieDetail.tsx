@@ -18,13 +18,13 @@ type Movie = {
 
 type Props = {
     watchlists: Watchlist[];
-    onAddMovie: (watchlistId: string, movieId: string) => void;
+    onAddMovieToWatchlist: (watchlistId: string, movieId: string) => void;
     onCreateWatchlist: (name: string) => Promise<Watchlist>;
 }
 
 export default function MovieDetail({
     watchlists,
-    onAddMovie,
+    onAddMovieToWatchlist,
     onCreateWatchlist
 }: Props){
 
@@ -207,63 +207,60 @@ export default function MovieDetail({
 
             {/* Show watchlist popup*/}
             {showWatchlistModal && (
-                <div className="modal-overlay" onClick={() => setShowWatchlistModal(false)}>
+                <div className="modal-overlay" 
+                    onClick={() => setShowWatchlistModal(false)}>
+
                     <div className="modal" onClick={e => e.stopPropagation()}>
-                        <h3>Watchlists</h3>
-                        <ul>
-                            {watchlists.map(wl => (
-                                <li key={wl.id}>
-                                    <button onClick={() => {
-                                        onAddMovie(wl.id, movie!.tmdbId);/////////////THIS NEEDS FIXING
-                                        setShowWatchlistModal(false);}}>
-                                    {wl.name}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                        <hr style={{ width: "100%" }} />
-                        <button onClick={() => setShowCreateWatchlist(true)} style={{ marginTop: 12 }}>
-                        + Create new watchlist
-                        </button>    
+
+                        <h3 className="rating-popup-title">ADD TO WATCHLIST</h3> {/* chagen calss anem */}
+
+                        <div className="movies-scroll-wrapper">
+
+                            <div className="movies-scroll">
+
+                                {watchlists.map((watchlist) => (
+                                    <div key={watchlist.id}
+                                        className="movie-card"
+                                        onClick={() => onAddMovieToWatchlist(watchlist.id, movie!.tmdbId)}>
+
+                                        <div className="poster-wrapper">
+                                            {watchlist.items?.[0]?.movie?.posterPath ? (
+                                            <img
+                                                src={watchlist.items[0].movie.posterPath}
+                                                alt={watchlist.name}
+                                            />
+                                            ) : (
+                                            <div className="placeholder">No Image</div>
+                                            )}
+                                        </div>
+
+                                        <p>{watchlist.name}</p>
+                                    </div>
+                                ))}
+
+                                {/* ➕ Add Watchlist Card */}
+                                <div
+                                    className="movie-card add-watchlist-card"
+                                    onClick={() => {
+                                        const name = prompt("Enter watchlist name");
+                                        if (name) onCreateWatchlist(name);}}>
+
+                                    <div className="add-poster">
+
+                                        <div className="add-icon">+</div>
+
+                                    </div>
+
+                                    <p className="movie-title">Add Watchlist</p>
+                                    
+                                </div>
+                            </div>
+                        </div>  
                     </div>
                 </div>
             )}
             
-            {/* Show create watchlist popup*/}
-            {showCreateWatchlist && (
-                <div 
-                    className="modal-overlay"
-                    onClick={() => setShowCreateWatchlist(false)}>
-                    <div 
-                        className="modal" 
-                        onClick={e => e.stopPropagation()}>
-                        <h3>Create watchlist</h3>
-                        <input
-                            type="text"
-                            placeholder="Watchlist name"
-                            value={newWatchlistName}
-                            onChange={e => setNewWatchlistName(e.target.value)}
-                            style={{ width: "100%" }}/>
-                        <div 
-                            style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                            <button 
-                                onClick={() => setShowCreateWatchlist(false)}>
-                            Cancel
-                            </button>
-                            <button
-                                disabled={!newWatchlistName.trim()}
-                                onClick={async () => {
-                                    const created = await onCreateWatchlist(newWatchlistName);
-                                    setNewWatchlistName("");
-                                    setShowCreateWatchlist(false);
-                                    onAddMovie(created.id, movie!.tmdbId); ///Auto adds to databse -- REMOCE
-                                }}>
-                            Create
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        
 
 
 {showSetRating && (

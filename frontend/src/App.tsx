@@ -30,12 +30,12 @@ type Watchlist = {
 
 function AppRoutes({
   watchlists,
-  handleAddMovie,
+  handleAddMovieToWatchlist,
   handleCreateWatchlist,
   refreshWatchlists
 }: {
   watchlists: Watchlist[];
-  handleAddMovie: (watchlistId: string, movieId: string) => void;
+  handleAddMovieToWatchlist: (watchlistId: string, movieId: string) => void;
   handleCreateWatchlist: (name: string) => Promise<Watchlist>;
   refreshWatchlists: () => Promise<void>
 }) {
@@ -59,7 +59,7 @@ function AppRoutes({
         element={
           <MovieDetail
             watchlists={watchlists}
-            onAddMovie={handleAddMovie}
+            onAddMovieToWatchlist={handleAddMovieToWatchlist}
             onCreateWatchlist={handleCreateWatchlist}
           />
         }
@@ -69,7 +69,7 @@ function AppRoutes({
         element={
           <MovieDetail
             watchlists={watchlists}
-            onAddMovie={handleAddMovie}
+            onAddMovieToWatchlist={handleAddMovieToWatchlist}
             onCreateWatchlist={handleCreateWatchlist}
           />
         }
@@ -174,7 +174,7 @@ useEffect(() => {
   }
 
 
-  async function handleAddMovie(watchlistId: string, tmdbID: string) {
+  async function handleAddMovieToWatchlist(watchlistId: string, tmdbID: string) {
     console.log("Adding movie", tmdbID, "to watchlist", watchlistId);
     await addMovieToWatchlist(watchlistId, tmdbID);
     await refreshWatchlists();
@@ -192,7 +192,7 @@ useEffect(() => {
         />
       <AppRoutes
         watchlists={watchlists}
-        handleAddMovie={handleAddMovie}
+        handleAddMovieToWatchlist={handleAddMovieToWatchlist}
         handleCreateWatchlist={handleCreateWatchlist}
         refreshWatchlists={refreshWatchlists}
       />
