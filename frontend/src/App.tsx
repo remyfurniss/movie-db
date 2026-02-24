@@ -7,7 +7,7 @@ import {
   createWatchlist,
   addMovieToWatchlist,
   searchTmdbMovies
-} from "./api";
+} from "./api/api";
 
 import Home from './pages/Home'; 
 import MovieDetail from "./pages/MovieDetail";
