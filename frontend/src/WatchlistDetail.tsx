@@ -10,6 +10,8 @@ type WatchlistDetailProps = {
 export default function WatchlistDetail({ watchlists, refreshWatchlists }: WatchlistDetailProps) {
   
   const { id } = useParams<{ id: string }>();
+
+  //Get watchlist
   const watchlist = watchlists.find(wl => wl.id === id) || null;
 
   if (!watchlist) return <p>Watchlist not found</p>;
@@ -17,11 +19,13 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
   const navigateToMovie = (tmdbId: number | string) => navigate(`/movies/tmdb/${tmdbId}`);
   const navigate = useNavigate();
 
+  //Remove movie
   const handleRemoveMovie = async (movieId: string) => {
     await removeMovieFromWatchlist(watchlist.id, movieId);
     await refreshWatchlists();
   };
 
+  //Delete movie
   async function handleDeleteWatchlist() {
     const confirmed = window.confirm(
       "Are you sure you want to delete this watchlist? This cannot be undone."
@@ -57,6 +61,7 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
                   {item.movie.title}
                 </span>
               </div>
+              {/* Remove movie button */}
               <button
                 className="movie-remove"
                 onClick={(e) => {
@@ -68,6 +73,7 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
           ))}
         </div>
       </div>
+      {/* Delete watchlist button */}
       <button
         className="delete-watchlist-btn"
         onClick={handleDeleteWatchlist}>

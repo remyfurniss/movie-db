@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "./api";
-import { Link } from "react-router-dom";
+
 import type { Movie } from "./types/movie";
 import type { Watchlist } from "./types/watchlist";
 
 import AddWatchlistPopup from "./components/AddWatchlistPopup";
 import MovieRow from "./components/MovieRow";
 import WatchlistRow from "./components/WatchlistRow";
-
-/*
-type Watchlist = {
-  id: string;
-  name: string;
-  items: {
-    movie: Movie;
-  }[];
-};
-*/
 
 type HomeProps = {
   watchlists: Watchlist[];
@@ -68,37 +58,31 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
       <MovieRow
         title={"Popular Movies"}
         movies={popularMovies}
-        onMovieClick={onMovieClick}
-      />
+        onMovieClick={onMovieClick}/>
 
       {/* Recommended Movies */}
       <MovieRow
         title={"Recommended Movies"}
         movies={recommendedMovies}
-        onMovieClick={onMovieClick}
-      />
-
+        onMovieClick={onMovieClick}/>
 
       {/* Watchlists */}
       <WatchlistRow
         watchlists={watchlists}
         onWatchlistClick={onWatchlistClick}
-        onAddWatchlist={() => setShowAddWatchlistPopup(true)}
-      />
+        onAddWatchlist={() => setShowAddWatchlistPopup(true)}/>
 
       {/* Recently Watched */}
       <MovieRow
         title={"Recently Watched"}
         movies={recentlyWatchedMovies}
-        onMovieClick={onMovieClick}
-      />
+        onMovieClick={onMovieClick}/>
 
       {/* Watchlist Popup */}
       <AddWatchlistPopup
         isOpen={showAddWatchlistPopup}
         onClose={() => setShowAddWatchlistPopup(false)}
-        onCreateWatchlist={onCreateWatchlist}
-      />
+        onCreateWatchlist={onCreateWatchlist}/>
 
     </div>
   );

@@ -1,32 +1,21 @@
 import './App.css'
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import {
-  fetchMovies,
   fetchWatchlists,
   createWatchlist,
   addMovieToWatchlist,
-  removeMovieFromWatchlist,
-  searchMovies,
   searchTmdbMovies
 } from "./api";
-//import './MovieSearch.tsx'
-import Home from './Home.tsx'; // Put in pages foldeer
-import MovieDetail from "./MovieDetail";
-import TopBar from './TopBar.tsx'; // Put in component Folder
-import type { Movie } from "./types/movie";
-import WatchlistDetail from './WatchlistDetail.tsx';
 
-type Watchlist = {
-  id: string;
-  name: string;
-  items: {
-    movie: {
-      id: string;
-      title: string;
-    };
-  }[];
-};
+import Home from './Home'; 
+import MovieDetail from "./MovieDetail";
+import TopBar from './TopBar'; 
+import WatchlistDetail from './WatchlistDetail';
+
+import type { Movie } from "./types/movie";
+import type { Watchlist } from "./types/watchlist";
 
 function AppRoutes({
   watchlists,
@@ -39,6 +28,7 @@ function AppRoutes({
   handleCreateWatchlist: (name: string) => Promise<Watchlist>;
   refreshWatchlists: () => Promise<void>
 }) {
+
   const navigate = useNavigate();
 
   return (
@@ -86,101 +76,60 @@ function AppRoutes({
   );
 }
 
-
-
 function App() {
 
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
-  const [newName, setNewName] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const activeWatchlistId = watchlists[0]?.id;
-  const navigate = useNavigate();
- const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
-const [isSearching, setIsSearching] = useState(false);
- 
- 
-  const [loading, setLoading] = useState(false);
 
+  //Fetch initial Data
   useEffect(() => {
     fetchInitialData();
   }, []);
 
-
-  /*
-useEffect(() => {
-  if (!searchValue.trim()) {
-    setSearchResults([]);
-    return;
-  }
-
-  const timeout = setTimeout(async () => {
-    try {
-      setIsSearching(true);
-      const results = await searchMovies(searchValue);
-      setSearchResults(results);
-    } finally {
-      setIsSearching(false);
+  //Set search results
+  useEffect(() => {
+    if (!searchValue.trim()) {
+      setSearchResults([]);
+      return;
     }
-  }, 300);
-  
 
-  return () => clearTimeout(timeout);
-}, [searchValue]);*/
+    const timeout = setTimeout(async () => {
+      const data = await searchTmdbMovies(searchValue);
+      setSearchResults(data);
+    }, 300);
 
+    return () => clearTimeout(timeout);
+    }, [searchValue]);
 
-useEffect(() => {
-  if (!searchValue.trim()) {
-    setSearchResults([]);
-    return;
-  }
-
-  const timeout = setTimeout(async () => {
-    const data = await searchTmdbMovies(searchValue);
-    setSearchResults(data);
-  }, 300); // debounce
-
-  return () => clearTimeout(timeout);
-}, [searchValue]);
-
+  //Fetch initial Data
   async function fetchInitialData() {
-    const [moviesData, watchlistsData] = await Promise.all([
-      fetchMovies(),
-      fetchWatchlists(),
-    ]);
-
-    setMovies(moviesData);
-    setWatchlists(watchlistsData);
+    try {
+      const watchlistsData = await fetchWatchlists();
+      setWatchlists(watchlistsData);
+    } catch (err) {
+      console.error("Failed to fetch watchlists:", err);
+    }
   }
 
-  /*
-  async function refreshWatchlists() {
+  //Refresh watchlists
+  async function refreshWatchlists(): Promise<void> {
     const data = await fetchWatchlists();
     setWatchlists(data);
   }
-*/
 
-  async function refreshWatchlists(): Promise<void> {
-  const data = await fetchWatchlists();
-  setWatchlists(data);
-}
-
-
+  //Create watchlists
   async function handleCreateWatchlist(name: string): Promise<Watchlist> {
     const newWatchlist = await createWatchlist(name);
     setWatchlists(prev => [...prev, newWatchlist]);
     return newWatchlist;
   }
 
-
-  async function handleAddMovieToWatchlist(watchlistId: string, tmdbID: string) {
-    console.log("Adding movie", tmdbID, "to watchlist", watchlistId);
+  //Add movie to watchlist
+  async function handleAddMovieToWatchlist(watchlistId: string, tmdbID: number) {
     await addMovieToWatchlist(watchlistId, tmdbID);
     await refreshWatchlists();
   }
-
-
 
   return (
     <div className='app'>

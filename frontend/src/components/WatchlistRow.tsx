@@ -1,4 +1,3 @@
-import type { Movie } from "../types/movie";
 import type { Watchlist } from "../types/watchlist";
 
 type WatchlistRowProps = {

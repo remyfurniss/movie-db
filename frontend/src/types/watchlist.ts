@@ -3,7 +3,8 @@ import type { Movie } from "./movie";
 export interface Watchlist {
     id: string;
     name: string;
-    items?: {
+    //Change to movies
+    items?: { 
         movie: Movie;
     }[];
 }
