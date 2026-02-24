@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "../api";
+import { fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "../api/api";
 
 import AddWatchlistPopup from "../components/AddWatchlistPopup";
 import SetRatingPopup from "../components/SetRatingPopup";

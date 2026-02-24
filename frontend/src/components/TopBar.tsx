@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
-import type { Movie } from "./types/movie";
+import type { Movie } from "../types/movie";
 
 type TopbarProps = {
     searchValue: string;

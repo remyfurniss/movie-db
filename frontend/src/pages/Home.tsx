@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api";
+import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api/api";
 
 import type { Movie } from "../types/movie";
 import type { Watchlist } from "../types/watchlist";
