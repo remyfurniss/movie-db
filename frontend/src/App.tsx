@@ -11,7 +11,7 @@ import {
 
 import Home from './pages/Home'; 
 import MovieDetail from "./pages/MovieDetail";
-import TopBar from './TopBar'; 
+import TopBar from './components/TopBar'; 
 import WatchlistDetail from './pages/WatchlistDetail';
 
 import type { Movie } from "./types/movie";
