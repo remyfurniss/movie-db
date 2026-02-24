@@ -10,7 +10,7 @@ import type { Movie } from "./types/movie";
 import type { Watchlist } from "./types/watchlist";
 
 
-type Props = {
+type MovieDetailProps = {
     watchlists: Watchlist[];
     onAddMovieToWatchlist: (watchlistId: string, tmdbId: number) => void;
     onCreateWatchlist: (name: string) => Promise<Watchlist>;
@@ -20,11 +20,10 @@ export default function MovieDetail({
     watchlists,
     onAddMovieToWatchlist,
     onCreateWatchlist
-}: Props){
+}: MovieDetailProps){
 
     const { tmdbId } = useParams<{ tmdbId: string }>();
     const tmdbIdNumber = tmdbId ? Number(tmdbId) : undefined;
-
 
     const [watched, setWatched] = useState(false);
     const [movie, setMovie] = useState<Movie | null>(null);
@@ -33,6 +32,7 @@ export default function MovieDetail({
     const [rating, setRating] = useState<number | null>(null);
     const [showSetRating, setShowSetRating] = useState(false);
 
+    // Loads user rating
     useEffect(() => {
         if (!tmdbIdNumber) return;
         async function loadRating() {
@@ -46,6 +46,7 @@ export default function MovieDetail({
         loadRating();
     }, [tmdbIdNumber]);
 
+    // Handles user rating
     async function handleRating(score: number) {
         if (!tmdbIdNumber) return; 
         const updated = await submitRating(tmdbIdNumber, score);
@@ -55,12 +56,14 @@ export default function MovieDetail({
         );
     }
 
+    // Handles is watched button
     async function handleToggleWatched() {
         if (!movie?.tmdbId) return;
         const updated = await toggleWatched(movie.tmdbId);
         setWatched(updated.watched);
     }
 
+    // Fetches movie data
     useEffect(() => {
         if (!tmdbIdNumber) return; 
         const loadMovie = async () => {
