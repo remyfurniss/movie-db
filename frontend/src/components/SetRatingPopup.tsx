@@ -4,7 +4,7 @@ type SetRatingPopupProps = {
     isOpen: boolean;
     rating: number | null;
     onClose: () => void;
-    onRate: (value: number) => void;
+    onRate: (value: number | null) => void;
 };
 
 export default function SetRatingPopup({
@@ -38,12 +38,11 @@ export default function SetRatingPopup({
                         return (
                             <button
                                 key={value}
-                                className={`star ${isActive ? "active" : ""}`}
+                                className={`star ${value <= (hovered ?? rating ?? 0) ? "active" : ""}`}
                                 onMouseEnter={() => setHovered(value)}
                                 onMouseLeave={() => setHovered(null)}
-                                onClick={() => onRate(value)}
-                                aria-label={`Rate ${value}`}
-                            >
+                                onClick={() => onRate(rating === value ? null : value)}
+                                aria-label={`Rate ${value}`}>
                                 ★
                             </button>
                         );

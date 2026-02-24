@@ -13,13 +13,20 @@ router.post("/", async (req, res) => {
   const tmdbId = Number(req.body.tmdbId);
   const { score } = req.body;
 
-  if (Number.isNaN(tmdbId) || score == null) {
-    return res.status(400).json({ error: "tmdbId and score required" });
+  if (Number.isNaN(tmdbId)) {
+    return res.status(400).json({ error: "Invalid tmdbId" });
   }
 
   try {
     // ensure movie exists
     const movie = await getOrCreateMovie(tmdbId);
+
+    if (score === null) {
+      // remove rating if it exists
+      await prisma.rating.deleteMany({ where: { movieId: movie.id } });
+      return res.json({ movieId: movie.id, score: null });
+    }
+
 
     // upsert by LOCAL movieId
     const rating = await prisma.rating.upsert({

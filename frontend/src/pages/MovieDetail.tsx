@@ -47,9 +47,10 @@ export default function MovieDetail({
     }, [tmdbIdNumber]);
 
     // Handles user rating
-    async function handleRating(score: number) {
-        if (!tmdbIdNumber) return; 
-        const updated = await submitRating(tmdbIdNumber, score);
+    async function handleRating(newScore: number | null) {
+        if (!tmdbIdNumber) return;
+
+        const updated = await submitRating(tmdbIdNumber, newScore ?? null); 
         setRating(updated.score);
         setMovie((prevMovie) =>
             prevMovie ? { ...prevMovie, rating: updated.score } : prevMovie

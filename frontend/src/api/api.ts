@@ -48,7 +48,7 @@ export async function fetchRating(tmdbId: number) {
 }
 
 // Submit or update rating
-export async function submitRating(tmdbId: number, score: number) {
+export async function submitRating(tmdbId: number, score: number | null) {
   const res = await fetch(`${API_URL}/ratings`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
