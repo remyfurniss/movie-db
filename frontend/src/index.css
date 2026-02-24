@@ -822,7 +822,7 @@ button:focus-visible {
 }
 
 /* ROW */
-.watchlist-row {
+.watchlist-item-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -843,12 +843,12 @@ button:focus-visible {
 
 
 
-.watchlist-row:hover {
+.watchlist-item-row:hover {
   background: #1d1d1d;
   transform: translateY(-1px);
 }
 
-.watchlist-row img {
+.watchlist-item-row img {
   width: 60px;
   height: 90px;
   object-fit: cover;

@@ -57,7 +57,7 @@ async function handleDeleteWatchlist() {
       {watchlist.items?.map((item) => (
         <div
           key={item.movie.id}
-          className="watchlist-row"
+          className="watchlist-item-row"
           
           onClick={() => navigate(`/movies/tmdb/${item.movie.tmdbId}`)}>
           <div className="watchlist-left">

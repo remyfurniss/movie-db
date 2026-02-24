@@ -3,5 +3,5 @@ export interface Movie {
   title: string;
   releaseDate?: number;
   posterPath?: string;
-  tmdbId?: string;
+  tmdbId?: number;
 }

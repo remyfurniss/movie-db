@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type Props = {
+type AddWatchlistPopupProps = {
   isOpen: boolean;
   onClose: () => void;
   onCreateWatchlist: (name: string) => void;
@@ -10,7 +10,7 @@ export default function AddWatchlistPopup({
   isOpen,
   onClose,
   onCreateWatchlist,
-}: Props) {
+}: AddWatchlistPopupProps) {
   const [name, setName] = useState("");
 
   if (!isOpen) return null;
