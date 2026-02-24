@@ -13,6 +13,8 @@ import Home from './pages/Home';
 import MovieDetail from "./pages/MovieDetail";
 import TopBar from './components/TopBar'; 
 import WatchlistDetail from './pages/WatchlistDetail';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 import type { Movie } from "./types/movie";
 import type { Watchlist } from "./types/watchlist";
@@ -72,6 +74,18 @@ function AppRoutes({
             refreshWatchlists={refreshWatchlists}/>
         }
       />
+      <Route 
+        path="/login" 
+        element={
+          <Login/>
+        } 
+      />
+      <Route 
+        path="/register" 
+        element={
+          <Register/>
+        } 
+        />
     </Routes>
   );
 }

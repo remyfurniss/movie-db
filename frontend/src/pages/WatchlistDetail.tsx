@@ -52,11 +52,13 @@ export default function WatchlistDetail({ watchlists, refreshWatchlists }: Watch
                 if (!item.movie.tmdbId) return;
                 navigateToMovie(item.movie.tmdbId);}}>
               <div className="watchlist-left">
+                {/* Movie poster */}
                 {item.movie.posterPath ? 
                 (<img
                     src={item.movie.posterPath}
                     alt={item.movie.title}/>) : 
                 (<div className="poster-placeholder">No Image</div>)}
+                {/* Movie title */}
                 <span className="movie-title">
                   {item.movie.title}
                 </span>

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import axios from "axios";
+import { email } from 'zod';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,16 @@ if (!TMDB_API_KEY) {
 
 async function seedMovies() {
 
+
+  const user = await prisma.user.upsert({
+    where: {email: "demo@example.com"},
+    update: {},
+    create: {
+      email: "demo@example.com",
+      password: "seeded"
+    }
+  });
+    
   
 
     const popularRes = await axios.get(`${TMDB_BASE_URL}/movie/popular`, {
@@ -140,18 +151,21 @@ async function seedMovies() {
   }
 
   console.log(`Seeded ${popularRes.data.results.length} movies`);
+  return user;
 }
 
-async function seedWishlists() {
-    
-    await prisma.watchlist.upsert({
-        where: { id: "My Watchlist" },
-        update: {},
-        create: {
-            id: "default-watchlist",
-            name: "My Watchlist",
-        },
-    });
+async function seedWishlists(userId: string) {
+  await prisma.watchlist.upsert({
+      where: { id: "My Watchlist" },
+      update: {},
+      create: {
+          id: "default-watchlist",
+          name: "My Watchlist",
+          user: {
+            connect: { id: userId },
+          },
+      },
+  });
 }
 
 
@@ -169,8 +183,8 @@ await prisma.rating.deleteMany();
   await prisma.movie.deleteMany();
   await prisma.genre.deleteMany();
 
-  await seedMovies();
-  await seedWishlists();  
+  const user = await seedMovies();
+  await seedWishlists(user.id);  
 }
 
 main()
