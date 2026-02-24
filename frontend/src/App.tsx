@@ -9,10 +9,10 @@ import {
   searchTmdbMovies
 } from "./api";
 
-import Home from './Home'; 
-import MovieDetail from "./MovieDetail";
+import Home from './pages/Home'; 
+import MovieDetail from "./pages/MovieDetail";
 import TopBar from './TopBar'; 
-import WatchlistDetail from './WatchlistDetail';
+import WatchlistDetail from './pages/WatchlistDetail';
 
 import type { Movie } from "./types/movie";
 import type { Watchlist } from "./types/watchlist";

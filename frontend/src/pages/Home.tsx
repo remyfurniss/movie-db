@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "./api";
+import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api";
 
-import type { Movie } from "./types/movie";
-import type { Watchlist } from "./types/watchlist";
+import type { Movie } from "../types/movie";
+import type { Watchlist } from "../types/watchlist";
 
-import AddWatchlistPopup from "./components/AddWatchlistPopup";
-import MovieRow from "./components/MovieRow";
-import WatchlistRow from "./components/WatchlistRow";
+import AddWatchlistPopup from "../components/AddWatchlistPopup";
+import MovieRow from "../components/MovieRow";
+import WatchlistRow from "../components/WatchlistRow";
 
 type HomeProps = {
   watchlists: Watchlist[];
