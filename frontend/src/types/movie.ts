@@ -1,7 +1,16 @@
 export interface Movie {
-  id: string;
+  id: string;             
+  tmdbId?: number;        
   title: string;
-  releaseDate?: number;
+  releaseDate?: number;  
   posterPath?: string;
-  tmdbId?: number;
+  backdropPath?: string;
+  overview?: string;
+  runtime?: number;       
+  genres?: { id: number; name: string }[];
+  voteAverage?: number;   
+  voteCount?: number;     
+  popularity?: number;    
+  rating?: number;        
+  watched?: boolean;    
 }

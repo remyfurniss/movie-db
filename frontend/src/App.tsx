@@ -35,7 +35,7 @@ function AppRoutes({
   refreshWatchlists
 }: {
   watchlists: Watchlist[];
-  handleAddMovieToWatchlist: (watchlistId: string, movieId: string) => void;
+  handleAddMovieToWatchlist: (watchlistId: string, tmdbId: number) => void;
   handleCreateWatchlist: (name: string) => Promise<Watchlist>;
   refreshWatchlists: () => Promise<void>
 }) {

@@ -41,14 +41,14 @@ export async function fetchWatchlists() {
 }
 
 // Fetch rating for a movie
-export async function fetchRating(movieId: string) {
-  const res = await fetch(`${API_URL}/ratings/${movieId}`);
+export async function fetchRating(tmdbId: number) {
+  const res = await fetch(`${API_URL}/ratings/${tmdbId}`);
   if (!res.ok) throw new Error("Failed to fetch rating");
   return res.json(); // { score: number | null }
 }
 
 // Submit or update rating
-export async function submitRating(tmdbId: string, score: number) {
+export async function submitRating(tmdbId: number, score: number) {
   const res = await fetch(`${API_URL}/ratings`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ export async function createWatchlist(name: string) {
 
 export async function addMovieToWatchlist(
   watchlistId: string,
-  tmdbId: string
+  tmdbId: number
 ) {
   const res = await fetch(
     `${API_URL}/watchlists/${watchlistId}/movies`,
@@ -141,14 +141,14 @@ export async function searchTmdbMovies(query: string) {
   return res.json();
 }
 
-export async function fetchMovieByTmdbId(tmdbId: string) {
+export async function fetchMovieByTmdbId(tmdbId: number) {
   const res = await fetch(`/movies/tmdb/${tmdbId}`);
   if (!res.ok) throw new Error("Failed to fetch movie");
   //console.log(res.json());
   return res.json();
 }
 
-export async function toggleWatched(tmdbId: string) {
+export async function toggleWatched(tmdbId: number) {
   const res = await fetch(`/movies/${tmdbId}/watched`, {
     method: "PUT",
   });
