@@ -1,4 +1,6 @@
 const API_URL = "http://localhost:4000";
+
+//NEED TO CHANGE IN FUTURE
 const DEV_USER_ID = "50de6f83-b409-465e-8269-3344453a08d7";
 
 // Fetch Recently Watched Moives
@@ -86,7 +88,7 @@ export async function removeMovieFromWatchlist(
 ) {
 
   const res = await fetch(
-    `/watchlists/${watchlistId}/movies/${movieId}`,
+    `${API_URL}/watchlists/${watchlistId}/movies/${movieId}`,
     { method: "DELETE" }
   );
 
@@ -97,7 +99,7 @@ export async function removeMovieFromWatchlist(
 
 // Delete a Watchlist
 export async function deleteWatchlist(watchlistId: string) {
-  const res = await fetch(`/watchlists/${watchlistId}`, {
+  const res = await fetch(`${API_URL}/watchlists/${watchlistId}`, {
     method: "DELETE",
   });
 
@@ -118,14 +120,14 @@ export async function searchTmdbMovies(query: string) {
 
 // Fetch movie by TMDBID
 export async function fetchMovieByTmdbId(tmdbId: number) {
-  const res = await fetch(`/movies/tmdb/${tmdbId}`);
+  const res = await fetch(`${API_URL}/movies/tmdb/${tmdbId}`);
   if (!res.ok) throw new Error("Failed to fetch movie");
   return res.json();
 }
 
 // Toggle watched //////MAYBE DELETE THIS
 export async function toggleWatched(tmdbId: number) {
-  const res = await fetch(`/movies/${tmdbId}/watched`, {
+  const res = await fetch(`${API_URL}/movies/${tmdbId}/watched`, {
     method: "PUT",
   });
 
