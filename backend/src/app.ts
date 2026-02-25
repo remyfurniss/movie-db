@@ -5,7 +5,7 @@ import genreRoutes from "./routes/genre";
 import ratingRoutes from "./routes/rating";
 import watchlistRoutes from "./routes/watchlist";
 import tmdbRoutes from "./routes/tmdb";
-
+import authRoutes from "./routes/auth";
 
 const app = express();
 
@@ -16,6 +16,7 @@ app.use("/genres", genreRoutes);
 app.use("/ratings", ratingRoutes);
 app.use("/watchlists", watchlistRoutes);
 app.use("/tmdb", tmdbRoutes);
+app.use("/auth", authRoutes);
 
 
 app.get("/health", (_req, res) => {

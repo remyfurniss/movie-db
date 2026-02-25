@@ -1,39 +1,28 @@
 const API_URL = "http://localhost:4000";
 const DEV_USER_ID = "50de6f83-b409-465e-8269-3344453a08d7";
 
-/*
-export async function fetchPopularMovies() {
-  const res = await fetch(`${API_URL}/movies?popular=true&limit=20`);
-  if (!res.ok) throw new Error("Failed to fetch popular movies");
-  return res.json();
-}
-*/
-
-
+// Fetch Recently Watched Moives
 export async function fetchRecentlyWatchedMovies() {
     const res = await fetch(`${API_URL}/movies/recentlywatched`);
     if (!res.ok) throw new Error("Failed to fetch recently watched movies");
     return res.json();
 }
 
+// Fetch Recommened Movies
 export async function fetchRecommendedMovies() {
     const res = await fetch(`${API_URL}/movies/recommendations`);
     if (!res.ok) throw new Error("Failed to fetch recommended movies");
     return res.json();
 }
 
+// Fetch Popular Movies
 export async function fetchPopularMovies() {
   const res = await fetch(`${API_URL}/tmdb/popular`);
   if (!res.ok) throw new Error("Failed to fetch popular movies");
   return res.json();
 }
 
-export async function fetchMovies() {
-  const res = await fetch(`${API_URL}/movies`);
-  if (!res.ok) throw new Error("Failed to fetch movies");
-  return res.json();
-}
-
+// Fetch Watchlists
 export async function fetchWatchlists() {
   const res = await fetch(`${API_URL}/watchlists`);
   if (!res.ok) throw new Error("Failed to fetch watchlists");
@@ -58,6 +47,7 @@ export async function submitRating(tmdbId: number, score: number | null) {
   return res.json(); // returns the updated rating
 }
 
+// Create a Watchlist
 export async function createWatchlist(name: string) {
   const res = await fetch(`${API_URL}/watchlists`, {
     method: "POST",
@@ -72,6 +62,7 @@ export async function createWatchlist(name: string) {
   return res.json();
 }
 
+// Add a movie to a Watchlist
 export async function addMovieToWatchlist(
   watchlistId: string,
   tmdbId: number
@@ -88,6 +79,7 @@ export async function addMovieToWatchlist(
   return res.json();
 }
 
+// Remove a movie from a Watchlist
 export async function removeMovieFromWatchlist(
   watchlistId: string,
   movieId: string
@@ -103,25 +95,7 @@ export async function removeMovieFromWatchlist(
   }
 }
 
-export async function searchMovies(query: string) {
-  const res = await fetch(
-    `${API_URL}/movies?search=${encodeURIComponent(query)}`
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch movies");
-  }
-
-  return res.json();
-}
-
-export async function fetchMovieById(id: string) {
-  const res = await fetch(`${API_URL}/movies/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch movie");
-  return res.json();
-}
-
-
+// Delete a Watchlist
 export async function deleteWatchlist(watchlistId: string) {
   const res = await fetch(`/watchlists/${watchlistId}`, {
     method: "DELETE",
@@ -132,6 +106,7 @@ export async function deleteWatchlist(watchlistId: string) {
   }
 }
 
+// Search TMDB API by string
 export async function searchTmdbMovies(query: string) {
   const res = await fetch(
     `${API_URL}/tmdb/search?q=${encodeURIComponent(query)}`
@@ -141,13 +116,14 @@ export async function searchTmdbMovies(query: string) {
   return res.json();
 }
 
+// Fetch movie by TMDBID
 export async function fetchMovieByTmdbId(tmdbId: number) {
   const res = await fetch(`/movies/tmdb/${tmdbId}`);
   if (!res.ok) throw new Error("Failed to fetch movie");
-  //console.log(res.json());
   return res.json();
 }
 
+// Toggle watched //////MAYBE DELETE THIS
 export async function toggleWatched(tmdbId: number) {
   const res = await fetch(`/movies/${tmdbId}/watched`, {
     method: "PUT",
@@ -160,6 +136,7 @@ export async function toggleWatched(tmdbId: number) {
   return res.json();
 }
 
+// Login
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
@@ -171,6 +148,7 @@ export async function login(email: string, password: string) {
   return res.json();
 }
 
+// Register
 export async function register(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
