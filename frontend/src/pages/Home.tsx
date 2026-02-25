@@ -22,8 +22,6 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
 
   const { user } = useAuth();
 
-  console.log(user);
-
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [recentlyWatchedMovies, setRecentlyWatchedMovies] = useState<Movie[]>([]);
@@ -32,6 +30,7 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
 
   // Always call useEffect
   useEffect(() => {
+
     if (!user) return; // don't fetch if not logged in
 
     async function loadMovies() {
@@ -69,10 +68,19 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
         onMovieClick={onMovieClick}/>
 
       {/* Recommended Movies */}
-      <MovieRow
+      {recommendedMovies.length > 0 ? (
+  <MovieRow
         title={"Recommended Movies"}
         movies={recommendedMovies}
         onMovieClick={onMovieClick}/>
+) : (
+  <section className="recently-watched-placeholder">
+    <h2>Recommend</h2>
+    <div className="placeholder-message">
+      You haven’t watched any movies yet 🎬
+    </div>
+  </section>
+)}
 
       {/* Watchlists */}
       <WatchlistRow
@@ -81,10 +89,20 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
         onAddWatchlist={() => setShowAddWatchlistPopup(true)}/>
 
       {/* Recently Watched */}
-      <MovieRow
-        title={"Recently Watched"}
-        movies={recentlyWatchedMovies}
-        onMovieClick={onMovieClick}/>
+{recentlyWatchedMovies.length > 0 ? (
+  <MovieRow
+    title="Recently Watched"
+    movies={recentlyWatchedMovies}
+    onMovieClick={onMovieClick}
+  />
+) : (
+  <section className="recently-watched-placeholder">
+    <h2>Recently Watched</h2>
+    <div className="placeholder-message">
+      You haven’t watched any movies yet 🎬
+    </div>
+  </section>
+)}
 
       {/* Watchlist Popup */}
       <AddWatchlistPopup

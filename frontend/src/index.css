@@ -757,6 +757,17 @@ button:focus-visible {
   transform: translateY(-1px);
 }
 
+.recently-watched-placeholder {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.recently-watched-placeholder .placeholder-message {
+  padding: 2rem;
+  border-radius: 8px;
+  font-style: italic;
+}
+
 /* WatchlistDetail */
 
 

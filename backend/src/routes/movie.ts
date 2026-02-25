@@ -44,10 +44,7 @@ router.get("/recommendations", async (req, res) => {
       },
     });
 
-
-
     const tmdbIds = watched.map(w => w.movie.tmdbId);
-
 
     if (tmdbIds.length === 0) {
       return res.json([]);
@@ -55,10 +52,11 @@ router.get("/recommendations", async (req, res) => {
 
     const watchedSet = new Set(tmdbIds);
 
+    console.log(watchedSet);
+
     const results = await Promise.all(
       tmdbIds.map(id => getRecommendationsForMovie(id))
     );
-
 
     const flat = results.flat();
 

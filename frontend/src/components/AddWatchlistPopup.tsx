@@ -12,7 +12,6 @@ export default function AddWatchlistPopup({
   onCreateWatchlist,
 }: AddWatchlistPopupProps) {
   const [name, setName] = useState("");
-  console.log("IN");
 
   if (!isOpen) return null;
 
