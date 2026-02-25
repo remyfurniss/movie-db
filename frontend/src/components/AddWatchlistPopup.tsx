@@ -12,6 +12,7 @@ export default function AddWatchlistPopup({
   onCreateWatchlist,
 }: AddWatchlistPopupProps) {
   const [name, setName] = useState("");
+  console.log("IN");
 
   if (!isOpen) return null;
 
@@ -29,7 +30,7 @@ export default function AddWatchlistPopup({
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="rating-popup-title">Enter Watchlist Name</h3>
-
+        
         <input
           className="watchlist-input"
           type="text"

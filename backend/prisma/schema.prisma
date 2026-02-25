@@ -35,7 +35,7 @@ model Movie {
 	watched      Boolean  @default(false)
 
 	genres      MovieGenre[]
-  	rating     Rating?
+  	rating     Rating[]
   	watchlists  WatchlistItem[]
 	watchHistory	WatchHistory?
 
@@ -65,31 +65,33 @@ model MovieGenre {
 }
 
 model Rating {
-  id      String @id @default(uuid())
-  score   Int
+  id        String @id @default(uuid())
+  score     Int
 
-  user   User   @relation(fields: [userId], references: [id])
-userId String
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
 
-  movieId String @unique
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movie     Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, movieId]) // ✅ CRITICAL FIX
 }
 
 model Watchlist {
-  id      String @id @default(uuid())
-  name    String
+  id        String @id @default(uuid())
+  name      String
 
-  user   User   @relation(fields: [userId], references: [id])
-userId String
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
 
   items     WatchlistItem[]
 
   createdAt DateTime @default(now())
 
-  @@unique([name])
+  @@unique([userId, name]) // ✅ THIS is correct
 }
 
 model WatchlistItem {

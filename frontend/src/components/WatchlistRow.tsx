@@ -35,7 +35,7 @@ export default function WatchlistRow({
                     {/* ➕ Add Watchlist Card */}
                     <div
                         className="movie-card add-watchlist-card"
-                        onClick={() => {onAddWatchlist}}>
+                        onClick={() => onAddWatchlist()}>
                         <div className="add-poster">
                             <div className="add-icon">+</div>
                         </div>

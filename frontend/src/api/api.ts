@@ -33,18 +33,31 @@ export async function fetchWatchlists() {
 
 // Fetch rating for a movie
 export async function fetchRating(tmdbId: number) {
-  const res = await fetch(`${API_URL}/ratings/${tmdbId}`);
+  const token = localStorage.getItem("token"); // or wherever you store it
+
+  const res = await fetch(`${API_URL}/ratings/${tmdbId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   if (!res.ok) throw new Error("Failed to fetch rating");
   return res.json(); // { score: number | null }
 }
 
 // Submit or update rating
 export async function submitRating(tmdbId: number, score: number | null) {
+  const token = localStorage.getItem("token"); // grab token
+
   const res = await fetch(`${API_URL}/ratings`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`, 
+    },
     body: JSON.stringify({ tmdbId, score }),
   });
+
   if (!res.ok) throw new Error("Failed to submit rating");
   return res.json(); // returns the updated rating
 }

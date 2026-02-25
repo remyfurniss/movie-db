@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api/api";
+import { useAuth } from "../context/authContext";
 
 import type { Movie } from "../types/movie";
 import type { Watchlist } from "../types/watchlist";
@@ -7,6 +8,8 @@ import type { Watchlist } from "../types/watchlist";
 import AddWatchlistPopup from "../components/AddWatchlistPopup";
 import MovieRow from "../components/MovieRow";
 import WatchlistRow from "../components/WatchlistRow";
+
+import Login from "./Login"
 
 type HomeProps = {
   watchlists: Watchlist[];
@@ -17,28 +20,31 @@ type HomeProps = {
 
 export default function Home({watchlists, onMovieClick, onWatchlistClick, onCreateWatchlist}: HomeProps) {
 
+  const { user } = useAuth();
+
+  console.log(user);
+
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [recentlyWatchedMovies, setRecentlyWatchedMovies] = useState<Movie[]>([]);
   const [showAddWatchlistPopup, setShowAddWatchlistPopup] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Always call useEffect
   useEffect(() => {
+    if (!user) return; // don't fetch if not logged in
+
     async function loadMovies() {
       try {
         setLoading(true);
+        const popData = await fetchPopularMovies();
+        setPopularMovies(popData.slice(0, 20));
 
-        //fetch most popular movies
-        const popData = await fetchPopularMovies(); 
-        setPopularMovies(popData.slice(0, 20)); // take top 20
+        const recData = await fetchRecommendedMovies();
+        setRecommendedMovies(recData);
 
-        //fetch receommneded movies
-        const recData = await fetchRecommendedMovies();     
-        setRecommendedMovies(recData); 
-
-        //fetch recently watched movies
-        const hisData = await fetchRecentlyWatchedMovies();     
-        setRecentlyWatchedMovies(hisData); 
+        const hisData = await fetchRecentlyWatchedMovies();
+        setRecentlyWatchedMovies(hisData);
       } catch (err) {
         console.error("Failed to fetch movies:", err);
       } finally {
@@ -47,7 +53,9 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
     }
 
     loadMovies();
-  }, []);
+  }, [user]); // runs only when user is logged in
+
+  if (!user) return <Login />;
 
   if (loading) return <p>Loading data...</p>;
 

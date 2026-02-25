@@ -9,6 +9,8 @@ import {
   searchTmdbMovies
 } from "./api/api";
 
+import { useAuth, AuthProvider } from "./context/authContext";
+
 import Home from './pages/Home'; 
 import MovieDetail from "./pages/MovieDetail";
 import TopBar from './components/TopBar'; 
@@ -90,11 +92,23 @@ function AppRoutes({
   );
 }
 
+function AppWrapper() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
+
 function App() {
+
+  const { user } = useAuth();
 
   const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
+
+  
 
   //Fetch initial Data
   useEffect(() => {
@@ -145,6 +159,11 @@ function App() {
     await refreshWatchlists();
   }
 
+  // If not logged in, render login page immediately
+  if (!user) {
+    return <Login />;
+  }
+
   return (
     <div className='app'>
       <TopBar
@@ -163,4 +182,5 @@ function App() {
   );
 }
 
-export default App
+export default AppWrapper;
+//export default App

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import axios from "axios";
 import { email } from 'zod';
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -13,15 +14,18 @@ if (!TMDB_API_KEY) {
 
 async function seedMovies() {
 
+  const hashed = await bcrypt.hash("seeded", 10);
 
   const user = await prisma.user.upsert({
-    where: {email: "demo@example.com"},
-    update: {},
-    create: {
-      email: "demo@example.com",
-      password: "seeded"
-    }
-  });
+  where: { email: "demo@example.com" },
+  update: {
+    password: hashed   // 🔥 CRITICAL FIX
+  },
+  create: {
+    email: "demo@example.com",
+    password: hashed
+  }
+});
     
   
 
@@ -155,17 +159,21 @@ async function seedMovies() {
 }
 
 async function seedWishlists(userId: string) {
-  await prisma.watchlist.upsert({
-      where: { id: "My Watchlist" },
-      update: {},
-      create: {
-          id: "default-watchlist",
-          name: "My Watchlist",
-          user: {
-            connect: { id: userId },
-          },
-      },
-  });
+await prisma.watchlist.upsert({
+  where: {
+    userId_name: {
+      userId,
+      name: "My Watchlist",
+    },
+  },
+  update: {},
+  create: {
+    name: "My Watchlist",
+    user: {
+      connect: { id: userId },
+    },
+  },
+});
 }
 
 
@@ -176,6 +184,7 @@ async function main() {
 
   // Clean up existing data (optional, safe for dev only)
   
+  await prisma.watchHistory.deleteMany(); 
  await prisma.watchlistItem.deleteMany();
 await prisma.watchlist.deleteMany();
 await prisma.rating.deleteMany();
