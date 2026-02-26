@@ -3,16 +3,19 @@ import prisma from "../prismaClient";
 import axios from "axios";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
-import console from "node:console";
+//import console from "node:console";
 import {requireAuth } from "../middleware/auth";
 
 
 const router = Router();
 
 // GET /movies/recentlywatched
-router.get("/recentlywatched", async (req, res) => {
+router.get("/recentlywatched", requireAuth, async (req, res) => {
+  const userId = req.userId;
+
   try {
     const watched = await prisma.watchHistory.findMany({
+      where: { userId },
       orderBy: { watchedAt: "desc" },
       take: 20,
       include: {
@@ -35,10 +38,12 @@ router.get("/recentlywatched", async (req, res) => {
   }
 });
 
-router.get("/recommendations", async (req, res) => {
+router.get("/recommendations", requireAuth, async (req, res) => {
+  const userId = req.userId;
 
   try {
     const watched = await prisma.watchHistory.findMany({
+      where: { userId },
       orderBy: { watchedAt: "desc" },
       take: 8,
       select: {
@@ -54,26 +59,24 @@ router.get("/recommendations", async (req, res) => {
 
     const watchedSet = new Set(tmdbIds);
 
-    console.log(watchedSet);
-
     const results = await Promise.all(
       tmdbIds.map(id => getRecommendationsForMovie(id))
     );
 
     const flat = results.flat();
 
-// remove already watched movies
-const filtered = flat.filter(m => !watchedSet.has(m.id));
+    // remove already watched movies
+    const filtered = flat.filter(m => !watchedSet.has(m.id));
 
-// dedupe
-const map = new Map();
-for (const m of filtered) {
-  if (!map.has(m.id)) {
-    map.set(m.id, m);
-  }
-}
+    // dedupe
+    const map = new Map();
+    for (const m of filtered) {
+      if (!map.has(m.id)) {
+        map.set(m.id, m);
+      }
+    }
 
-const unique = Array.from(map.values());
+    const unique = Array.from(map.values());
 
     unique.sort(
       (a, b) =>
@@ -104,105 +107,117 @@ router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;
 
-  // check local DB first (WITH RELATIONS)
-  const localMovie = await prisma.movie.findUnique({
-    where: { tmdbId },
-    include: {
-      genres: {
-        include: { genre: true },
+  try {
+    // check local DB first (WITH RELATIONS)
+    const localMovie = await prisma.movie.findUnique({
+      where: { tmdbId },
+      include: {
+        genres: {
+          include: { genre: true },
+        },
+        ratings: {
+          where: { userId },
+        },
+        watchHistory: {
+          where: { userId },
+        },
       },
-      ratings: {
-        where: { userId },
-      },
-      watchHistory: {
-        where: { userId },
-      },
-    },
-  });
-
-  if (localMovie) {
-    return res.json({
-      ...localMovie,
-      genres: localMovie.genres.map((mg) => mg.genre),
-      rating: localMovie.ratings[0]?.score ?? null,
-      watched: localMovie.watchHistory.length > 0,
     });
-  }
 
-  // fetch from TMDB
-  const response = await axios.get(
-    `https://api.themoviedb.org/3/movie/${tmdbId}`,
-    {
-      params: {
-        api_key: process.env.TMDB_API_KEY,
-      },
+    if (localMovie) {
+      return res.json({
+        ...localMovie,
+        genres: localMovie.genres.map((mg) => mg.genre),
+        rating: localMovie.ratings[0]?.score ?? null,
+        watched: localMovie.watchHistory.length > 0,
+      });
     }
-  );
 
-  const m = response.data;
+    // fetch from TMDB
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${tmdbId}`,
+      {
+        params: {
+          api_key: process.env.TMDB_API_KEY,
+        },
+      }
+    );
 
-  return res.json({
-    tmdbId: m.id,
-    title: m.title,
-    posterPath: m.poster_path
-      ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-      : null,
-    backdropPath: m.backdrop_path
-      ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`
-      : null,
-    releaseDate: m.release_date
-      ? Number(m.release_date.slice(0, 4))
-      : null,
-    overview: m.overview,
-    voteAverage: m.vote_average,
-    genres:
-      m.genres?.map((g: any) => ({
-        id: g.id,
-        name: g.name,
-      })) ?? [],
-    runtime: m.runtime,
-    homepage: m.homepage,
-    imdbId: m.imdb_id,
-    voteCount: m.vote_count,
-    popularity: m.popularity,
-  });
+    const m = response.data;
+
+    return res.json({
+      tmdbId: m.id,
+      title: m.title,
+      posterPath: m.poster_path
+        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+        : null,
+      backdropPath: m.backdrop_path
+        ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`
+        : null,
+      releaseDate: m.release_date
+        ? Number(m.release_date.slice(0, 4))
+        : null,
+      overview: m.overview,
+      voteAverage: m.vote_average,
+      genres:
+        m.genres?.map((g: any) => ({
+          id: g.id,
+          name: g.name,
+        })) ?? [],
+      runtime: m.runtime,
+      homepage: m.homepage,
+      imdbId: m.imdb_id,
+      voteCount: m.vote_count,
+      popularity: m.popularity,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.put("/:tmdbId/watched", async (req, res) => {
+router.put("/:tmdbId/watched", requireAuth, async (req, res) => {
   try {
     const tmdbId = Number(req.params.tmdbId);
+    const userId = req.userId;
 
     if (Number.isNaN(tmdbId)) {
       return res.status(400).json({ error: "Invalid tmdbId" });
     }
 
-    // ensure the movie exists in DB
     const movie = await getOrCreateMovie(tmdbId);
 
-    // check if movie is already marked as watched
     const existing = await prisma.watchHistory.findUnique({
-      where: { movieId: movie.id }, // movie.id is the DB string UUID
+      where: {
+        userId_movieId: {
+          userId,
+          movieId: movie.id,
+        },
+      },
     });
 
     let watched: boolean;
 
     if (existing) {
-      // If exists → unwatch
       await prisma.watchHistory.delete({
-        where: { movieId: movie.id },
+        where: {
+          userId_movieId: {
+            userId,
+            movieId: movie.id,
+          },
+        },
       });
       watched = false;
     } else {
-      // If not → mark as watched
       await prisma.watchHistory.create({
-        data: { movieId: movie.id },
+        data: {
+          userId,          
+          movieId: movie.id,
+        },
       });
       watched = true;
     }
-    
-    // return JSON with current watched state
+
     res.json({
-      movieId: movie.id,
       tmdbId: movie.tmdbId,
       title: movie.title,
       watched,
@@ -213,7 +228,7 @@ router.put("/:tmdbId/watched", async (req, res) => {
   }
 });
 
-
+/*
 router.get("/search", async (req, res) => {
   const q = req.query.q as string;
 
@@ -238,7 +253,9 @@ router.get("/search", async (req, res) => {
     res.status(500).json({ error: "Search failed" });
   }
 });
+*/
 
+/*
 // Create a movie
 router.post("/", async (req, res) => {
   const { title, director, releaseYear } = req.body;
@@ -251,7 +268,9 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
 
+/*
 // Get all movies
 router.get("/", async (req, res) => {
 
@@ -310,7 +329,9 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
 
+/*
 // Update a movie
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -325,7 +346,9 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
 
+/*
 // Delete a movie
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
@@ -336,7 +359,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
+*/
 
 export default router;
