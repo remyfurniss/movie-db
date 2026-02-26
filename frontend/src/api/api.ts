@@ -147,7 +147,7 @@ export async function toggleWatched(tmdbId: number) {
 }
 
 // Login
-export async function login(email: string, password: string) {
+export async function loginRequest(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -158,7 +158,7 @@ export async function login(email: string, password: string) {
 }
 
 // Register
-export async function register(email: string, password: string) {
+export async function registerRequest(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

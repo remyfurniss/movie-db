@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register } from "../api/api";
+import { registerRequest } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
@@ -10,7 +10,7 @@ export default function Register() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await register(email, password);
+      await registerRequest(email, password);
       navigate("/login");
     } catch (err) {
       alert("Registration failed");

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { loginRequest } from "../api/api";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -9,31 +10,24 @@ export default function LoginPage() {
   const [error, setError] = useState("");
     const { setUser } = useAuth();
     const navigate = useNavigate();
+    
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:4000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  e.preventDefault();
 
-      if (!res.ok) throw new Error("Login failed");
+  try {
+    const data = await loginRequest(email, password);
 
-      const data = await res.json();
+    login(data.token);
+    setUser({ id: data.user.id, email: data.user.email });
 
-      console.log(data);
-
-      login(data.token); // store JWT
-
-      setUser({ id: data.user.id, email: data.user.email });
-
-      navigate("/");
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+    navigate("/");
+  } catch (err: any) {
+    setError(err.message);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit}>
