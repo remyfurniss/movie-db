@@ -102,6 +102,7 @@ function App() {
     return () => clearTimeout(timeout);
     }, [searchValue]);
 
+    
   //Fetch initial Data
   async function fetchInitialData() {
     try {
@@ -112,6 +113,7 @@ function App() {
     }
   }
 
+  
   //Refresh watchlists
   async function refreshWatchlists(): Promise<void> {
     const data = await fetchWatchlists();
@@ -130,16 +132,12 @@ function App() {
     await addMovieToWatchlist(watchlistId, tmdbID);
     await refreshWatchlists();
   }
+    
 
   return (
     <div className='app'>
       {user && (  // only render TopBar if logged in
-    <TopBar
-      searchValue={searchValue}
-      onSearchChange={setSearchValue}
-      results={searchResults}
-      onSelectMovie={() => setSearchValue("")}
-    />
+    <TopBar/>
   )}
       <AppRoutes/>
     </div>
