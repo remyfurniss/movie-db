@@ -36,8 +36,11 @@ router.get("/:id", requireAuth, async (req, res) => {
   const userId = req.userId
 
   try {
-    const watchlists = await prisma.watchlist.findMany({
-        where: { id, userId },
+    const watchlists = await prisma.watchlist.findFirst({
+        where: { 
+          id,
+          userId 
+        },
         include: {
             items: {
                 include: { movie: true },
@@ -54,9 +57,12 @@ router.get("/:id", requireAuth, async (req, res) => {
 /**
  * Get all watchlists
  */
-router.get("/", async (req, res) => {
+router.get("/", requireAuth, async (req, res) => {
+  const userId = req.userId
+
   try {
     const watchlists = await prisma.watchlist.findMany({
+      where: { userId },
       orderBy: { createdAt: "asc" },
       include: {
         items: {
@@ -74,8 +80,9 @@ router.get("/", async (req, res) => {
 /**
  * Add movie to watchlist
  */
-router.post("/:watchlistId/movies", async (req, res) => {
+router.post("/:watchlistId/movies", requireAuth, async (req, res) => {
   const { watchlistId } = req.params;
+  const userId = req.userId
   const tmdbId = Number(req.body.tmdbId);
 
   if (Number.isNaN(tmdbId)) {
@@ -83,22 +90,18 @@ router.post("/:watchlistId/movies", async (req, res) => {
   }
 
   try {
-    // ensure movie exists in DB
-    const movie = await getOrCreateMovie(tmdbId);
-
-    // prevent duplicates (Maybe not need)
-    const existing = await prisma.watchlistItem.findUnique({
-      where: {
-        watchlistId_movieId: {
-          watchlistId,
-          movieId: movie.id,
-        },
-      },
+    
+    // 🔥 verify ownership
+    const watchlist = await prisma.watchlist.findFirst({
+      where: { id: watchlistId, userId },
     });
 
-    if (existing) {
-      return res.json({ message: "Movie already in watchlist" });
+    if (!watchlist) {
+      return res.status(404).json({ error: "Watchlist not found" });
     }
+
+    // ensure movie exists in DB
+    const movie = await getOrCreateMovie(tmdbId);
 
     // create relation using LOCAL movie id
     await prisma.watchlistItem.create({
@@ -118,10 +121,19 @@ router.post("/:watchlistId/movies", async (req, res) => {
 /**
  * Remove movie from watchlist
  */
-router.delete("/:watchlistId/movies/:movieId", async (req, res) => {
+router.delete("/:watchlistId/movies/:movieId", requireAuth, async (req, res) => {
   const { watchlistId, movieId } = req.params;
+  const userId = req.userId
 
   try {
+    const watchlist = await prisma.watchlist.findFirst({
+      where: { id: watchlistId, userId },
+    });
+
+    if (!watchlist) {
+      return res.status(404).json({ error: "Watchlist not found" });
+    }
+
     await prisma.watchlistItem.delete({
       where: {
         watchlistId_movieId: { watchlistId, movieId },
@@ -137,8 +149,17 @@ router.delete("/:watchlistId/movies/:movieId", async (req, res) => {
 /**
  * delete watchlist
  */
-router.delete("/:watchlistId", async (req, res) => {
+router.delete("/:watchlistId", requireAuth, async (req, res) => {
   const { watchlistId } = req.params;
+  const userId = req.userId
+
+  const watchlist = await prisma.watchlist.findFirst({
+    where: { id: watchlistId, userId },
+  });
+
+  if (!watchlist) {
+    return res.status(404).json({ error: "Watchlist not found" });
+  }
 
   await prisma.watchlist.delete({
     where: { id: watchlistId },
