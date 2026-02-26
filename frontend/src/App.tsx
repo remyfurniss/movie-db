@@ -112,8 +112,6 @@ function App() {
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
 
-  
-
   //Fetch initial Data
   useEffect(() => {
   if (user) {

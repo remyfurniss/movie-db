@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -12,29 +13,35 @@ export default function Register() {
     try {
       await registerRequest(email, password);
       navigate("/login");
-    } catch (err) {
-      alert("Registration failed");
-    }
+    } catch (err: any) {
+    setError(err.message);
+  }
   }
 
   return (
     <div className="auth-page">
-      <h2>Create Account</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="auth-card" onSubmit={handleSubmit}>
+        <h2>Create Account</h2>
+
+        {error && <p className="auth-error">{error}</p>}
+
+        {/* EMAIL */}
+        <label>Email</label>
         <input
-          type="email"
-          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          placeholder="Enter your email"
         />
+
+        {/* PASSWORD */}
+        <label>Password</label>
         <input
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Enter your password"
         />
+
         <button type="submit">Register</button>
       </form>
     </div>

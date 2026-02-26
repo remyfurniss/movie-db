@@ -30,20 +30,36 @@ export default function LoginPage() {
 };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Login</button>
-      <p style={{ marginTop: "12px" }}>
-  Don't have an account?{" "}
-  <span
-    style={{ color: "blue", cursor: "pointer" }}
-    onClick={() => navigate("/register", { replace: false })}
-  >
-    Register
-  </span>
-</p>
-    </form>
+    <div className="auth-page">
+      <form className="auth-card" onSubmit={handleSubmit}>
+        <h2>Welcome back</h2>
+
+        {error && <p className="auth-error">{error}</p>}
+
+        {/* EMAIL */}
+        <label>Email</label>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+        />
+
+        {/* PASSWORD */}
+        <label>Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+        />
+
+        <button type="submit">Login</button>
+
+        <p className="auth-switch">
+          Don't have an account?
+          <span onClick={() => navigate("/register")}> Register</span>
+        </p>
+      </form>
+    </div>
   );
 }
