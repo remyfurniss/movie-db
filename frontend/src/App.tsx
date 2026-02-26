@@ -23,17 +23,7 @@ import WatchlistDetail from './pages/WatchlistDetail';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-
-
-import type { Movie } from "./types/movie";
-import type { Watchlist } from "./types/watchlist";
-
-
-
 function AppRoutes() {
-
-  const navigate = useNavigate();
-  const { user } = useAuth();
 
   return (
     <Routes>
@@ -73,66 +63,6 @@ function AppWrapper() {
 function App() {
 
   const { user } = useAuth();
-
-  const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState<Movie[]>([]);
-
-  //Fetch initial Data
-  useEffect(() => {
-  if (user) {
-    fetchInitialData();
-  } else {
-    setWatchlists([]); // clear when logged out
-  }
-}, [user]);
-
-  //Set search results
-  useEffect(() => {
-    if (!searchValue.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
-    const timeout = setTimeout(async () => {
-      const data = await searchTmdbMovies(searchValue);
-      setSearchResults(data);
-    }, 300);
-
-    return () => clearTimeout(timeout);
-    }, [searchValue]);
-
-    
-  //Fetch initial Data
-  async function fetchInitialData() {
-    try {
-      const watchlistsData = await fetchWatchlists();
-      setWatchlists(watchlistsData);
-    } catch (err) {
-      console.error("Failed to fetch watchlists:", err);
-    }
-  }
-
-  
-  //Refresh watchlists
-  async function refreshWatchlists(): Promise<void> {
-    const data = await fetchWatchlists();
-    setWatchlists(data);
-  }
-
-  //Create watchlists
-  async function handleCreateWatchlist(name: string): Promise<Watchlist> {
-    const newWatchlist = await createWatchlist(name);
-    setWatchlists(prev => [...prev, newWatchlist]);
-    return newWatchlist;
-  }
-
-  //Add movie to watchlist
-  async function handleAddMovieToWatchlist(watchlistId: string, tmdbID: number) {
-    await addMovieToWatchlist(watchlistId, tmdbID);
-    await refreshWatchlists();
-  }
-    
 
   return (
     <div className='app'>
