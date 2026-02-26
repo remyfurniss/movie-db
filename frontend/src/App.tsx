@@ -133,12 +133,14 @@ function App() {
 
   return (
     <div className='app'>
-      <TopBar
-          searchValue={searchValue}
-          onSearchChange={setSearchValue}
-          results={searchResults}
-          onSelectMovie={() => setSearchValue("")}
-        />
+      {user && (  // only render TopBar if logged in
+    <TopBar
+      searchValue={searchValue}
+      onSearchChange={setSearchValue}
+      results={searchResults}
+      onSelectMovie={() => setSearchValue("")}
+    />
+  )}
       <AppRoutes/>
     </div>
   );
