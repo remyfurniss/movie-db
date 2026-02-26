@@ -11,6 +11,8 @@ import {
 
 import { useAuth, AuthProvider } from "./context/authContext";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Home from './pages/Home'; 
 import MovieDetail from "./pages/MovieDetail";
 import TopBar from './components/TopBar'; 
@@ -34,60 +36,62 @@ function AppRoutes({
 }) {
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <Routes>
+      {/* public */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* protected */}
       <Route
         path="/"
         element={
+          <ProtectedRoute>
           <Home
             watchlists={watchlists}
             onMovieClick={(tmdbId: number) => navigate(`/movies/tmdb/${tmdbId}`)}
             onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
             onCreateWatchlist={handleCreateWatchlist}
           />
+          </ProtectedRoute>
         }
       />
       <Route
         path="/movies/:id"
         element={
+          <ProtectedRoute>
           <MovieDetail
             watchlists={watchlists}
             onAddMovieToWatchlist={handleAddMovieToWatchlist}
             onCreateWatchlist={handleCreateWatchlist}
           />
+          </ProtectedRoute>
         }
       />
       <Route
         path="/movies/tmdb/:tmdbId"
         element={
+          <ProtectedRoute>
           <MovieDetail
             watchlists={watchlists}
             onAddMovieToWatchlist={handleAddMovieToWatchlist}
             onCreateWatchlist={handleCreateWatchlist}
           />
+          </ProtectedRoute>
         }
       />
       <Route
         path="/watchlists/:id"
         element={
+          <ProtectedRoute>
           <WatchlistDetail 
             watchlists={watchlists}
             refreshWatchlists={refreshWatchlists}/>
+            </ProtectedRoute>
         }
       />
-      <Route 
-        path="/login" 
-        element={
-          <Login/>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <Register/>
-        } 
-        />
     </Routes>
   );
 }
@@ -112,8 +116,12 @@ function App() {
 
   //Fetch initial Data
   useEffect(() => {
+  if (user) {
     fetchInitialData();
-  }, []);
+  } else {
+    setWatchlists([]); // clear when logged out
+  }
+}, [user]);
 
   //Set search results
   useEffect(() => {
@@ -157,11 +165,6 @@ function App() {
   async function handleAddMovieToWatchlist(watchlistId: string, tmdbID: number) {
     await addMovieToWatchlist(watchlistId, tmdbID);
     await refreshWatchlists();
-  }
-
-  // If not logged in, render login page immediately
-  if (!user) {
-    return <Login />;
   }
 
   return (

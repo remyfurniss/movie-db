@@ -35,6 +35,15 @@ export default function LoginPage() {
       <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
       <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Login</button>
+      <p style={{ marginTop: "12px" }}>
+  Don't have an account?{" "}
+  <span
+    style={{ color: "blue", cursor: "pointer" }}
+    onClick={() => navigate("/register", { replace: false })}
+  >
+    Register
+  </span>
+</p>
     </form>
   );
 }
