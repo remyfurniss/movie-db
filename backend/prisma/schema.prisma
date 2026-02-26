@@ -8,58 +8,57 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id            String   @id @default(cuid())
+  
+  email         String   @unique
+  password      String
+  createdAt     DateTime @default(now())
 
-  watchlists Watchlist[]
-  ratings    Rating[]
+  watchlists    Watchlist[]
+  ratings       Rating[]
+  watchHistory  WatchHistory[]
 }
 
 model Movie {
 	id          	String   @id @default(uuid())
-  	tmdbId      	Int      @unique	
-  	title       	String
-  	overview 	String?
-  	releaseDate 	Int?
-  	runtime     	Int?
-	homepage	String?
-	imdbId		String?
-	popularity	Float?
-	posterPath 	String?
+  tmdbId      	Int      @unique	
+  title       	String
+  overview 	    String?
+  releaseDate 	Int?
+  runtime     	Int?
+	homepage	    String?
+	imdbId		    String?
+	popularity	  Float?
+	posterPath 	  String?
 	backdropPath 	String?
-	voteAverage	Float?
-	voteCount 	Int?
+	voteAverage	  Float?
+	voteCount 	  Int?
 
-	watched      Boolean  @default(false)
+	genres        MovieGenre[]
+  ratings       Rating[]
+  watchlists    WatchlistItem[]
+	watchHistory	WatchHistory[]
 
-	genres      MovieGenre[]
-  	rating     Rating[]
-  	watchlists  WatchlistItem[]
-	watchHistory	WatchHistory?
+	createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-
-	createdAt DateTime @default(now())
-        updatedAt DateTime @updatedAt
-
-        @@index([title])
+  @@index([title])
 }
 
 model Genre {
-	id    	String @id @default(uuid())
-	tmdbId  Int    @unique
-  	name  	String @unique
+	id    	    String @id @default(uuid())
+	tmdbId      Int    @unique
+  name  	    String @unique
 
-  	movieGenres MovieGenre[]
+  movieGenres MovieGenre[]
 }
 
 model MovieGenre {
   movieId String
   genreId String
 
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  genre   Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
 
   @@id([movieId, genreId])
 }
@@ -77,7 +76,7 @@ model Rating {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, movieId]) // ✅ CRITICAL FIX
+  @@unique([userId, movieId])
 }
 
 model Watchlist {
@@ -91,15 +90,15 @@ model Watchlist {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, name]) // ✅ THIS is correct
+  @@unique([userId, name])
 }
 
 model WatchlistItem {
   watchlistId String
   movieId     String
 
-  watchlist Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
-  movie     Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  movie       Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -108,8 +107,14 @@ model WatchlistItem {
 
 model WatchHistory {
 	id        	Int      	@id @default(autoincrement())
-	movieId   	String		@unique
-	watchedAt	DateTime	@default(now())
+  
+  userId      String
+	movieId     String		@unique
+	watchedAt	  DateTime	@default(now())
 
-	movie 		Movie 		@relation(fields: [movieId], references: [id])
+  user        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie       Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+
 }

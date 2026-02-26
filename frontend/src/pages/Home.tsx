@@ -69,18 +69,18 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
 
       {/* Recommended Movies */}
       {recommendedMovies.length > 0 ? (
-  <MovieRow
-        title={"Recommended Movies"}
-        movies={recommendedMovies}
-        onMovieClick={onMovieClick}/>
-) : (
-  <section className="recently-watched-placeholder">
-    <h2>Recommend</h2>
-    <div className="placeholder-message">
-      You haven’t watched any movies yet 🎬
-    </div>
-  </section>
-)}
+        <MovieRow
+          title={"Recommended Movies"}
+          movies={recommendedMovies}
+          onMovieClick={onMovieClick}/>
+        ) : (
+        <section className="recently-watched-placeholder">
+          <h2>Recommend</h2>
+          <div className="placeholder-message">
+            You haven’t watched any movies yet 🎬
+          </div>
+        </section>
+      )}
 
       {/* Watchlists */}
       <WatchlistRow
@@ -89,20 +89,19 @@ export default function Home({watchlists, onMovieClick, onWatchlistClick, onCrea
         onAddWatchlist={() => setShowAddWatchlistPopup(true)}/>
 
       {/* Recently Watched */}
-{recentlyWatchedMovies.length > 0 ? (
-  <MovieRow
-    title="Recently Watched"
-    movies={recentlyWatchedMovies}
-    onMovieClick={onMovieClick}
-  />
-) : (
-  <section className="recently-watched-placeholder">
-    <h2>Recently Watched</h2>
-    <div className="placeholder-message">
-      You haven’t watched any movies yet 🎬
-    </div>
-  </section>
-)}
+      {recentlyWatchedMovies.length > 0 ? (
+        <MovieRow
+          title="Recently Watched"
+          movies={recentlyWatchedMovies}
+          onMovieClick={onMovieClick}/>
+      ) : (
+        <section className="recently-watched-placeholder">
+          <h2>Recently Watched</h2>
+          <div className="placeholder-message">
+            You haven’t watched any movies yet 🎬
+          </div>
+        </section>
+      )}
 
       {/* Watchlist Popup */}
       <AddWatchlistPopup

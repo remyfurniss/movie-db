@@ -4,6 +4,8 @@ import axios from "axios";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
 import console from "node:console";
+import {requireAuth } from "../middleware/auth";
+
 
 const router = Router();
 
@@ -98,34 +100,34 @@ const unique = Array.from(map.values());
 });
 
 // GET /movies/tmdb/:tmdbId
-router.get("/tmdb/:tmdbId", async (req, res) => {
+router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
+  const userId = req.userId;
 
-   // check local DB first (WITH RELATIONS)
+  // check local DB first (WITH RELATIONS)
   const localMovie = await prisma.movie.findUnique({
     where: { tmdbId },
     include: {
       genres: {
-        include: {
-          genre: true,
-        },
+        include: { genre: true },
       },
-      rating: true,
-      watchHistory: true,
+      ratings: {
+        where: { userId },
+      },
+      watchHistory: {
+        where: { userId },
+      },
     },
   });
-
 
   if (localMovie) {
     return res.json({
       ...localMovie,
-      // flatten MovieGenre -> Genre
       genres: localMovie.genres.map((mg) => mg.genre),
-      rating: localMovie.rating?.score ?? null, // flatten for frontend
-      watched: !!localMovie.watchHistory, 
+      rating: localMovie.ratings[0]?.score ?? null,
+      watched: localMovie.watchHistory.length > 0,
     });
   }
-
 
   // fetch from TMDB
   const response = await axios.get(
@@ -137,11 +139,8 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
     }
   );
 
-  
-
   const m = response.data;
 
-  // normalize but DO NOT save
   return res.json({
     tmdbId: m.id,
     title: m.title,
@@ -149,24 +148,24 @@ router.get("/tmdb/:tmdbId", async (req, res) => {
       ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
       : null,
     backdropPath: m.backdrop_path
-          ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`
-          : null,
+      ? `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`
+      : null,
     releaseDate: m.release_date
-            ? Number(m.release_date.slice(0, 4))
-            : null,
+      ? Number(m.release_date.slice(0, 4))
+      : null,
     overview: m.overview,
     voteAverage: m.vote_average,
-    genres: m.genres?.map((g: any) => ({
-      id: g.id,
-      name: g.name,
-    })) ?? [],
+    genres:
+      m.genres?.map((g: any) => ({
+        id: g.id,
+        name: g.name,
+      })) ?? [],
     runtime: m.runtime,
     homepage: m.homepage,
     imdbId: m.imdb_id,
     voteCount: m.vote_count,
     popularity: m.popularity,
   });
-
 });
 
 router.put("/:tmdbId/watched", async (req, res) => {

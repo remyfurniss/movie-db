@@ -1,7 +1,7 @@
 import { Router } from "express";
 import prisma from "../prismaClient";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
-
+import {requireAuth } from "../middleware/auth";
 
 const router = Router();
 
@@ -9,8 +9,9 @@ const router = Router();
  * Create a watchlist
  * body: { name }
  */
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   const { name } = req.body;
+  const userId = req.userId
 
   if (!name) {
     return res.status(400).json({ error: "name required" });
@@ -18,7 +19,7 @@ router.post("/", async (req, res) => {
 
   try {
     const watchlist = await prisma.watchlist.create({
-      data: { name },
+      data: { name, userId },
     });
 
     res.json(watchlist);
@@ -30,12 +31,13 @@ router.post("/", async (req, res) => {
 /**
  * Get a specific watchlist
  */
-router.get("/:id", async (req, res) => {
+router.get("/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
+  const userId = req.userId
 
   try {
     const watchlists = await prisma.watchlist.findMany({
-        where: { id },
+        where: { id, userId },
         include: {
             items: {
                 include: { movie: true },
