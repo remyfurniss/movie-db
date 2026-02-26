@@ -95,7 +95,7 @@ export default function Home() {
         <section className="recently-watched-placeholder">
           <h2>Recommend</h2>
           <div className="placeholder-message">
-            You haven’t watched any movies yet 🎬
+            You haven't watched any movies yet 🎬
           </div>
         </section>
       )}
@@ -116,7 +116,7 @@ export default function Home() {
         <section className="recently-watched-placeholder">
           <h2>Recently Watched</h2>
           <div className="placeholder-message">
-            You haven’t watched any movies yet 🎬
+            You haven't watched any movies yet 🎬
           </div>
         </section>
       )}

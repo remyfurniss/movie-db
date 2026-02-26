@@ -19,7 +19,7 @@ export default function MovieRow({
                 <div className="movies-scroll">
                 {movies.map((movie) => (
                     <div
-                        key={movie.id}
+                        key={movie.tmdbId}
                         className="movie-card"
                         onClick={() => {
                             if (!movie.tmdbId) return;
