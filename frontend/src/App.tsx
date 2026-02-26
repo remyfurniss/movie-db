@@ -10,8 +10,11 @@ import {
 } from "./api/api";
 
 import { useAuth, AuthProvider } from "./context/authContext";
+import { WatchlistProvider } from "./context/watchlistContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedLayout from "./layouts/ProtectedLayout";
+import PublicLayout from "./layouts/PublicLayout";
 
 import Home from './pages/Home'; 
 import MovieDetail from "./pages/MovieDetail";
@@ -20,20 +23,14 @@ import WatchlistDetail from './pages/WatchlistDetail';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
+
+
 import type { Movie } from "./types/movie";
 import type { Watchlist } from "./types/watchlist";
 
-function AppRoutes({
-  watchlists,
-  handleAddMovieToWatchlist,
-  handleCreateWatchlist,
-  refreshWatchlists
-}: {
-  watchlists: Watchlist[];
-  handleAddMovieToWatchlist: (watchlistId: string, tmdbId: number) => void;
-  handleCreateWatchlist: (name: string) => Promise<Watchlist>;
-  refreshWatchlists: () => Promise<void>
-}) {
+
+
+function AppRoutes() {
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -41,57 +38,26 @@ function AppRoutes({
   return (
     <Routes>
       {/* public */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<PublicLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
       {/* protected */}
       <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-          <Home
-            watchlists={watchlists}
-            onMovieClick={(tmdbId: number) => navigate(`/movies/tmdb/${tmdbId}`)}
-            onWatchlistClick={(id: string) => navigate(`/watchlists/${id}`)}
-            onCreateWatchlist={handleCreateWatchlist}
-          />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/movies/:id"
-        element={
-          <ProtectedRoute>
-          <MovieDetail
-            watchlists={watchlists}
-            onAddMovieToWatchlist={handleAddMovieToWatchlist}
-            onCreateWatchlist={handleCreateWatchlist}
-          />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/movies/tmdb/:tmdbId"
-        element={
-          <ProtectedRoute>
-          <MovieDetail
-            watchlists={watchlists}
-            onAddMovieToWatchlist={handleAddMovieToWatchlist}
-            onCreateWatchlist={handleCreateWatchlist}
-          />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/watchlists/:id"
-        element={
-          <ProtectedRoute>
-          <WatchlistDetail 
-            watchlists={watchlists}
-            refreshWatchlists={refreshWatchlists}/>
-            </ProtectedRoute>
-        }
-      />
+  element={
+    <ProtectedRoute>
+      <WatchlistProvider>
+        <ProtectedLayout />
+      </WatchlistProvider>
+    </ProtectedRoute>
+  }
+>
+        <Route path="/" element={<Home />} />
+        <Route path="/movies/:id" element={<MovieDetail />} />
+        <Route path="/movies/tmdb/:tmdbId" element={<MovieDetail />} />
+        <Route path="/watchlists/:id" element={<WatchlistDetail />} />
+      </Route>
     </Routes>
   );
 }
@@ -173,12 +139,7 @@ function App() {
           results={searchResults}
           onSelectMovie={() => setSearchValue("")}
         />
-      <AppRoutes
-        watchlists={watchlists}
-        handleAddMovieToWatchlist={handleAddMovieToWatchlist}
-        handleCreateWatchlist={handleCreateWatchlist}
-        refreshWatchlists={refreshWatchlists}
-      />
+      <AppRoutes/>
     </div>
   );
 }

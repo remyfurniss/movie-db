@@ -2,14 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import type { Watchlist } from "../types/watchlist";
 import { removeMovieFromWatchlist, deleteWatchlist } from "../api/api";
 
-type WatchlistDetailProps = {
-  watchlists: Watchlist[];
-  refreshWatchlists: () => Promise<void>;
-}
+import { useWatchlists } from "../context/watchlistContext";
 
-export default function WatchlistDetail({ watchlists, refreshWatchlists }: WatchlistDetailProps) {
+export default function WatchlistDetail() {
   
   const { id } = useParams<{ id: string }>();
+  const { watchlists, refreshWatchlists } = useWatchlists();
 
   //Get watchlist
   const watchlist = watchlists.find(wl => wl.id === id) || null;

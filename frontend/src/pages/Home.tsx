@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api/api";
+import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/authContext";
+import { useWatchlists } from "../context/watchlistContext";
+
 
 import type { Movie } from "../types/movie";
-import type { Watchlist } from "../types/watchlist";
 
 import AddWatchlistPopup from "../components/AddWatchlistPopup";
 import MovieRow from "../components/MovieRow";
@@ -11,22 +14,37 @@ import WatchlistRow from "../components/WatchlistRow";
 
 import Login from "./Login"
 
-type HomeProps = {
-  watchlists: Watchlist[];
-  onMovieClick: (id: number) => void;
-  onWatchlistClick: (id: string) => void;
-  onCreateWatchlist: (name: string) => Promise<Watchlist>;
-};
 
-export default function Home({watchlists, onMovieClick, onWatchlistClick, onCreateWatchlist}: HomeProps) {
-
+export default function Home() {
+  
+  const { watchlists, createWatchlist } = useWatchlists();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [recentlyWatchedMovies, setRecentlyWatchedMovies] = useState<Movie[]>([]);
   const [showAddWatchlistPopup, setShowAddWatchlistPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  //Handlers
+
+  const onMovieClick = (tmdbId: number) => {
+    navigate(`/movies/tmdb/${tmdbId}`);
+  };
+
+  const onWatchlistClick = (watchlistId: string) => {
+    navigate(`/watchlists/${watchlistId}`);
+  };
+
+  const onCreateWatchlist = async (name: string) => {
+    try {
+      await createWatchlist(name);
+      setShowAddWatchlistPopup(false);
+    } catch (err) {
+      console.error("Failed to create watchlist:", err);
+    }
+  };
 
   // Always call useEffect
   useEffect(() => {

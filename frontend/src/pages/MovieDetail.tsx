@@ -7,21 +7,15 @@ import SetRatingPopup from "../components/SetRatingPopup";
 import WatchlistPopup from "../components/WatchlistPopup";
 
 import type { Movie } from "../types/movie";
-import type { Watchlist } from "../types/watchlist";
+
+import { useWatchlists } from "../context/watchlistContext";
 
 
-type MovieDetailProps = {
-    watchlists: Watchlist[];
-    onAddMovieToWatchlist: (watchlistId: string, tmdbId: number) => void;
-    onCreateWatchlist: (name: string) => Promise<Watchlist>;
-}
+export default function MovieDetail(){
 
-export default function MovieDetail({
-    watchlists,
-    onAddMovieToWatchlist,
-    onCreateWatchlist
-}: MovieDetailProps){
+    const { watchlists, createWatchlist, addMovieToWatchlist } = useWatchlists();
 
+    //THIS IS STRING
     const { tmdbId } = useParams<{ tmdbId: string }>();
     const tmdbIdNumber = tmdbId ? Number(tmdbId) : undefined;
 
@@ -70,6 +64,7 @@ export default function MovieDetail({
         const loadMovie = async () => {
             try {
                 const data = await fetchMovieByTmdbId(tmdbIdNumber);
+                console.log(data);
                 setMovie(data);
                 setWatched(data.watched);
                 setRating(data.rating);
@@ -188,14 +183,14 @@ export default function MovieDetail({
                 watchlists={watchlists}
                 movieTmdbId={movie!.tmdbId}
                 onClose={() => setShowWatchlistPopup(false)}
-                onAddToWatchlist={onAddMovieToWatchlist}
+                onAddToWatchlist={addMovieToWatchlist}
                 onCreateWatchlist={() => setShowAddWatchlistPopup(true)}/>
         
             {/* Show add watchlist popup */}
             <AddWatchlistPopup
                 isOpen={showAddWatchlistPopup}
                 onClose={() => setShowAddWatchlistPopup(false)}
-                onCreateWatchlist={onCreateWatchlist}/>
+                onCreateWatchlist={createWatchlist}/>
 
             {/* Show set rating popup */}
             <SetRatingPopup
