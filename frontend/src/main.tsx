@@ -1,13 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import './index.css'
-import App from './App.tsx'
+import App from "./App";
+import Providers from "./app/providers";
+import './index.css' //REMOVE AT SOME POINT
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Providers>
+        <App />
+      </Providers>
     </BrowserRouter>
   </React.StrictMode>
 );

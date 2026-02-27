@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
-import { searchTmdbMovies } from "../api/api";
+import { searchTmdbMovies } from "../lib/api";
 import type { Movie } from "../types/movie";
 
 export default function TopBar() {

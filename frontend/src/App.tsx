@@ -1,8 +1,8 @@
 import './App.css'
 import { Routes, Route } from "react-router-dom";
 
-import { useAuth, AuthProvider } from "./context/authContext";
-import { WatchlistProvider } from "./context/watchlistContext";
+import { useAuth, AuthProvider } from "./features/auth/context/authContext";
+import { WatchlistProvider } from "./features/watchlists/context/watchlistContext";
 
 import TopBar from './components/TopBar'; 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -11,10 +11,10 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
 import Home from './pages/Home'; 
-import MovieDetail from "./pages/MovieDetail";
-import WatchlistDetail from './pages/WatchlistDetail';
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import MovieDetail from "./features/movies/pages/MovieDetail";
+import WatchlistDetail from './features/watchlists/pages/WatchlistDetail';
+import Login from "./features/auth/pages/Login";
+import Register from "./features/auth/pages/Register";
 
 function AppRoutes() {
   return (
@@ -46,10 +46,7 @@ function AppRoutes() {
 function InnerApp() {
   const { user } = useAuth();
 
-
-  console.log("user:", user);
   return (
-    
     <div className={`app ${user ? "with-topbar" : ""}`}>
       {user && <TopBar />}
       <AppRoutes />

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import type { Watchlist } from "../types/watchlist";
-import { removeMovieFromWatchlist, deleteWatchlist } from "../api/api";
+import type { Watchlist } from "../../../types/watchlist";
+import { removeMovieFromWatchlist, deleteWatchlist } from "../../../lib/api";
 
 import { useWatchlists } from "../context/watchlistContext";
 

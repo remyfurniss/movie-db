@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "../api/api";
+import { fetchRating, submitRating, fetchMovieByTmdbId, toggleWatched } from "../../../lib/api";
 
-import AddWatchlistPopup from "../components/AddWatchlistPopup";
-import SetRatingPopup from "../components/SetRatingPopup";
-import WatchlistPopup from "../components/WatchlistPopup";
+import AddWatchlistPopup from "../../watchlists/components/AddWatchlistPopup";
+import SetRatingPopup from "../../../components/SetRatingPopup";
+import WatchlistPopup from "../../watchlists/components/WatchlistPopup";
 
-import type { Movie } from "../types/movie";
+import type { Movie } from "../../../types/movie";
 
-import { useWatchlists } from "../context/watchlistContext";
+import { useWatchlists } from "../../watchlists/context/watchlistContext";
 
 
 export default function MovieDetail(){

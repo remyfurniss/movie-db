@@ -1,4 +1,4 @@
-import type { Watchlist } from "../types/watchlist";
+import type { Watchlist } from "../../../types/watchlist";
 
 type WatchlistRowProps = {
     watchlists: Watchlist[];

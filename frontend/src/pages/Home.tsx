@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../api/api";
+import { fetchPopularMovies, fetchRecommendedMovies, fetchRecentlyWatchedMovies } from "../lib/api";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "../context/authContext";
-import { useWatchlists } from "../context/watchlistContext";
+import { useAuth } from "../features/auth/context/authContext";
+import { useWatchlists } from "../features/watchlists/context/watchlistContext";
 
 
 import type { Movie } from "../types/movie";
 
-import AddWatchlistPopup from "../components/AddWatchlistPopup";
-import MovieRow from "../components/MovieRow";
-import WatchlistRow from "../components/WatchlistRow";
+import AddWatchlistPopup from "../features/watchlists/components/AddWatchlistPopup";
+import MovieRow from "../features/movies/components/MovieRow";
+import WatchlistRow from "../features/watchlists/components/WatchlistRow";
 
-import Login from "./Login"
+import Login from "../features/auth/pages/Login"
 
 
 export default function Home() {

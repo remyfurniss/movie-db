@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { fetchWatchlists, createWatchlist as apiCreateWatchlist, addMovieToWatchlist as apiAddMovieToWatchlist } from "../api/api";
-import type { Watchlist } from "../types/watchlist";
-import { useAuth } from "./authContext";
+import { fetchWatchlists, createWatchlist as apiCreateWatchlist, addMovieToWatchlist as apiAddMovieToWatchlist } from "../../../lib/api";
+import type { Watchlist } from "../../../types/watchlist";
+import { useAuth } from "../../auth/context/authContext";
 
 type WatchlistContextType = {
   watchlists: Watchlist[];

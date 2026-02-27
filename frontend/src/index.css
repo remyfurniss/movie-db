@@ -19,6 +19,8 @@
 }
 
 html, body, #root {
+    background: #0f172a;
+
   width: 100%;
   height: 100%;
   margin: 0;
@@ -28,16 +30,19 @@ html, body, #root {
 #root {
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  display: flex;         /* ⭐ makes layout deterministic */
+  flex-direction: column;
 }
 
 .app {
+  height: 100%;
+  width: 100%;
+  min-width: 100%; 
+  min-width: 0;          /* ⭐ VERY IMPORTANT */
   display: flex;
   flex-direction: column;
-  overflow-x: hidden; /* ✅ only prevent horizontal page scroll */
-  min-height: 0;
-  min-height: 100vh;
+  align-items: stretch;  /* ⭐ forces full-width children */
+  overflow-x: hidden;
 }
 
 a {
@@ -58,7 +63,6 @@ body {
   margin: 0;
   display: block;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -514,7 +518,7 @@ button:focus-visible {
   align-items: center;
   gap: 8px; /* space between home button and search */
   padding: 8px 16px;
-  background-color: #222; /* dark top bar */
+  background: #1d1d1d;
 }
 
 .search-container input {
@@ -548,7 +552,7 @@ button:focus-visible {
   top: 0;
   left: 0;
 
-  width: 100vw;   
+  width: 100%;   
   box-sizing: border-box;
 
   padding: 12px 16px;
@@ -572,6 +576,7 @@ button:focus-visible {
   outline: none;
 
   background-color: #1c1c1c;
+  background: #383838;
   color: #ffffff;
 }
 
@@ -599,12 +604,14 @@ button:focus-visible {
   cursor: pointer;
   color: #fff;             
   background-color: #1c1c1c;
+  background: #383838;
   gap: 16px;
 }
 
 /* Hover effect */
 .search-item:hover {
   background-color: #2a2a2a;
+  background: #1d1d1d;
 }
 
 .search-poster {
@@ -961,16 +968,16 @@ width: 100%;
 
 /* Fills parent (which fills viewport) */
 .auth-page {
-  min-height: 100vh;   /* ⭐ key fix */
+  flex: 1;              /* ⭐ THE REAL FIX */
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   background: #0f172a;
   box-sizing: border-box;
   padding: 24px;
+  max-width: none; /* ⭐ safety */
 }
 
 .auth-card {
