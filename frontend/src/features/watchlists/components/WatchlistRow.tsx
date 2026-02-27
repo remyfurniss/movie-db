@@ -1,5 +1,7 @@
 import type { Watchlist } from "../../../types/watchlist";
 
+import "./WatchlistRow.css"
+
 type WatchlistRowProps = {
     watchlists: Watchlist[];
     onWatchlistClick: (id: string) => void;

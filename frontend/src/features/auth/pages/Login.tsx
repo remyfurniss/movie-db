@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { loginRequest } from "../../../lib/api";
 
+import "./Auth.css"
+
 export default function LoginPage() {
   const { login } = useAuth();
   const [email, setEmail] = useState("demo@example.com");

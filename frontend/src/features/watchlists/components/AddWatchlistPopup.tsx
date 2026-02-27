@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import "./AddWatchlistPopup.css";
+
 type AddWatchlistPopupProps = {
   isOpen: boolean;
   onClose: () => void;

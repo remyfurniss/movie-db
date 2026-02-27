@@ -1,5 +1,7 @@
 import type { Watchlist } from "../../../types/watchlist";
 
+import "./WatchlistPopup.css";
+
 type WatchlistPopuplProps = {
   isOpen: boolean;
   watchlists: Watchlist[];

@@ -1,5 +1,7 @@
 import type { Movie } from "../../../types/movie";
 
+import "./MovieRow.css"
+
 type MovieRowProps = {
   title: string;
   movies: Movie[];

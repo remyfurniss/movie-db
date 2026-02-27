@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import "./SetRatingPopup.css";
+
 type SetRatingPopupProps = {
     isOpen: boolean;
     rating: number | null;
@@ -18,8 +20,6 @@ export default function SetRatingPopup({
 
     if (!isOpen) return null;
 
-    const activeValue = hovered ?? rating ?? 0;
-
     return (
         <div
             className="rating-popup-backdrop"
@@ -33,7 +33,6 @@ export default function SetRatingPopup({
                 <div className="star-container">
                     {[...Array(10)].map((_, index) => {
                         const value = index + 1;
-                        const isActive = value <= activeValue;
 
                         return (
                             <button

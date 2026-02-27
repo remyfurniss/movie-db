@@ -14,6 +14,7 @@ import WatchlistRow from "../features/watchlists/components/WatchlistRow";
 
 import Login from "../features/auth/pages/Login"
 
+import "./Home.css"
 
 export default function Home() {
   

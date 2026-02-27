@@ -3,6 +3,8 @@ import { useRef, useEffect, useState } from "react";
 import { searchTmdbMovies } from "../lib/api";
 import type { Movie } from "../types/movie";
 
+import "./TopBar.css"
+
 export default function TopBar() {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
