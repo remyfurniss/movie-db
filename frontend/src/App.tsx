@@ -17,7 +17,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 function AppRoutes() {
-
   return (
     <Routes>
 
@@ -47,8 +46,11 @@ function AppRoutes() {
 function InnerApp() {
   const { user } = useAuth();
 
+
+  console.log("user:", user);
   return (
-    <div className='app'>
+    
+    <div className={`app ${user ? "with-topbar" : ""}`}>
       {user && <TopBar />}
       <AppRoutes />
     </div>
