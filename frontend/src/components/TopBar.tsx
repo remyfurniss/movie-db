@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import { searchTmdbMovies } from "../lib/api";
 import type { Movie } from "../types/movie";
+import { useAuth } from "../features/auth/context/authContext";
+
 
 import "./TopBar.css"
 
 export default function TopBar() {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +46,11 @@ export default function TopBar() {
     return () => clearTimeout(timeout);
   }, [searchValue]);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="search-container" ref={containerRef}>
       {/* Home Button */}
@@ -57,6 +65,12 @@ export default function TopBar() {
         onChange={(e) => setSearchValue(e.target.value)}
         placeholder="Search movies..."
       />
+
+      {user && (
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      )}
 
       {/* Show search results */}
       {searchValue.trim() && results.length > 0 && (

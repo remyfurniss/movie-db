@@ -110,3 +110,16 @@
   font-size: 12px;
   color: #777;
 }
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--color-text);
+  color: var(--color-text);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  opacity: 0.8;
+}
