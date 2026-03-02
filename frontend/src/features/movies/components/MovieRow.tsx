@@ -1,6 +1,7 @@
 import type { Movie } from "../../../types/movie";
 
-import "./MovieRow.css"
+import "../../../styles/ui/scrollRow.css";
+import "../../../styles/ui/movieCard.css";
 
 type MovieRowProps = {
   title: string;

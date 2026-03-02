@@ -1,6 +1,10 @@
 import type { Watchlist } from "../../../types/watchlist";
 
-import "./WatchlistPopup.css";
+import "../../../styles/ui/popup.css"
+import "../../../styles/ui/movieCard.css"
+import "../../../styles/ui/scrollRow.css"
+import "../../../styles/ui/addWatchlistCard.css"
+
 
 type WatchlistPopuplProps = {
   isOpen: boolean;
@@ -23,12 +27,12 @@ export default function WatchlistPopup({
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="popup-overlay" onClick={onClose}>
             <div
-                className="modal"
+                className="popup"
                 onClick={(e) => e.stopPropagation()}
             >
-                <h3 className="modal-title">ADD TO WATCHLIST</h3>
+                <h3 className="popup-title">ADD TO WATCHLIST</h3>
 
                 <div className="movies-scroll-wrapper">
                     <div className="movies-scroll">

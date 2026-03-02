@@ -4,6 +4,7 @@ import { removeMovieFromWatchlist, deleteWatchlist } from "../../../lib/api";
 import { useWatchlists } from "../context/watchlistContext";
 
 import "./WatchlistDetail.css";
+import "../../../styles/ui/scrollRow.css";
 
 export default function WatchlistDetail() {
   

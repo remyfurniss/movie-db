@@ -1,6 +1,8 @@
 import type { Watchlist } from "../../../types/watchlist";
 
-import "./WatchlistRow.css"
+import "../../../styles/ui/scrollRow.css";
+import "../../../styles/ui//movieCard.css";
+import "../../../styles/ui/addWatchlistCard.css";
 
 type WatchlistRowProps = {
     watchlists: Watchlist[];

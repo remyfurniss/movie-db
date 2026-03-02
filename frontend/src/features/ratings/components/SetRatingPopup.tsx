@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import "./SetRatingPopup.css";
+import "../../../styles/ui/popup.css"
 
 type SetRatingPopupProps = {
     isOpen: boolean;

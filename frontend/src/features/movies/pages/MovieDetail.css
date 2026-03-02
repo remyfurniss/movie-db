@@ -1,15 +1,6 @@
 h1 {
   font-size: 3.2em;
-  line-height: 1.1;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  line-height: 1;
 }
 
 button {
@@ -31,20 +22,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-.clickable {
+.clickable-rating {
   background: none;
   border: none;
   padding: 0;
@@ -52,49 +30,32 @@ button:focus-visible {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px; /* nice spacing */
+  gap: 4px; 
 }
 
-.clickable:hover {
+.clickable-rating:hover {
   opacity: 0.8;
 }
-
-
 
 .movie-header {
   margin-top: 0;
   display: flex;
   justify-content: space-between;
-  /*align-items: flex-start;*/
+  align-items: flex-start;
   align-items: center;
 }
 
 .movie-header-right .value {
   display: flex;
   align-items: center;
-  gap: 8px; /* ← increase space here */
-}
-
-/* base star */
-.star {
-  font-size: 16px;
-}
-
-/* TMDB yellow */
-.star.tmdb {
-  color: #f5c518; /* TMDB gold */
-}
-
-/* user grey */
-.star.user {
-  color: #bbb;
+  gap: 8px; 
 }
 
 .movie-header-left {
   text-align: left;
-  align-items: flex-start; /* important if using flex column */
-  flex: 1;        /* takes remaining space */
-  min-width: 0;   /* ⭐ VERY IMPORTANT in flex layouts */
+  align-items: flex-start; 
+  flex: 1;        
+  min-width: 0;
 }
 
 .movie-header-left h1 {
@@ -106,12 +67,10 @@ button:focus-visible {
 }
 
 .movie-header-right {
-  display: flex;        /* ⭐ THIS FIXES THE STACKING */
-  gap: 20px;            /* space between stats */
-  /*align-items: center;*/
-  align-items: stretch;
-    flex-shrink: 0; /* ⭐ prevents squashing */
-
+    display: flex;       
+    gap: 20px;          
+    align-items: stretch;
+    flex-shrink: 0;
 }
 
 .subtext {
@@ -140,7 +99,6 @@ button:focus-visible {
   line-height: 1;
 }
 
-
 .stat {
   display: flex;
   flex-direction: column;
@@ -154,14 +112,11 @@ button:focus-visible {
 }
 
 .value {
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.value {
-  display: flex;
-  align-items: center; /* aligns stars/fire icon with number */
-  gap: 4px; /* space between star/icon and number */
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center; 
+    gap: 4px; 
 }
 
 .movie-meta {
@@ -197,86 +152,6 @@ button:focus-visible {
   flex: 1;
 }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  padding: 24px;
-  border-radius: 10px;
-  min-width: 320px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-
-    transform: scale(0.8);
-  opacity: 0;
-  animation: popIn 0.2s forwards;
-}
-
-.modal ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.modal li {
-  width: 100%;
-}
-
-.modal li button {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background: #f7f7f7;
-  cursor: pointer;
-  color: #000;
-}
-
-.modal li button:hover {
-  background: #eee;
-}
-
-.modal h3 {
-  margin: 0;            /* reset margin */
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-@keyframes popIn {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.rating {
-  display: flex;
-  gap: 6px;
-}
-
-/*
-.star {
-  font-size: 28px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #ccc;
-  transition: color 0.15s ease, transform 0.1s ease;
-}
-*/
-
 .star.active {
   color: #f5c518; /* IMDb yellow */
 }
@@ -302,154 +177,29 @@ button:focus-visible {
   color: white;
 }
 
-/* Top Bar */
-
-.icon-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 4px 6px;
-}
-
-.icon-button:hover {
-  opacity: 0.7;
-}
-
-.rating-popup-backdrop {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.genre-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: center;   
+  align-items: center;      
+  text-align: center;       
 }
 
-.rating-popup {
-  padding: 20px 30px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;           /* more space between heading and stars */
-  min-width: 280px;     /* ensures popup is wide enough */
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.rating-popup h3 {
-  margin: 0;            /* reset margin */
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.star-selector {
-  display: flex;
-  gap: 6px;
-}
-
-.star-selector-star {
-  font-size: 30px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #bbb;
-}
-
-.star-selector-star.active {
-  color: gold;
-}
-
-.rating {
-  display: flex;
-  flex-direction: column; /* stack title above stars */
-  align-items: center;
-  gap: 10px;              /* space between title and stars */
-  background: transparent; /* keep see-through */
-  padding: 0;
-}
-
-.rating-popup-title {
-  font-weight: 600;
-  opacity: 0.8;
-  font-size: 0.9rem;
-  text-align: center;
-  margin: 0;
-  color: #eaeaea;
-}
-
-/* Modal sizing improvement */
-.add-watchlist-modal {
-  width: 90%;
-  max-width: 400px;
-  padding: 24px;
-  border-radius: 16px;
-}
-
-/* Input styling */
-.watchlist-input {
-  width: 100%;
-  padding: 12px 14px;
-  margin-top: 16px;
-  border-radius: 10px;
-  border: 1px solid #333;
-  background: #1a1a1a;
+.genre-bubble {
+  padding: 6px 14px;
+  background-color: #1f2937;  
   color: white;
   font-size: 14px;
-  outline: none;
+  border-radius: 999px;       
+  font-weight: 500;
+  letter-spacing: 0.3px;
   transition: all 0.2s ease;
+  cursor: default;
 }
 
-.watchlist-input::placeholder {
-  color: #888;
-}
-
-.watchlist-input:focus {
-  border-color: #e50914; /* Netflix red vibe */
-  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
-}
-
-/* Buttons row */
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-/* Cancel button */
-.cancel-btn {
-  background: transparent;
-  border: 1px solid #444;
-  color: #ccc;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.cancel-btn:hover {
-  background: #2a2a2a;
-}
-
-/* Confirm button */
-.confirm-btn {
-  background: #e50914;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.1s ease, opacity 0.2s ease;
-}
-
-.confirm-btn:hover {
+.genre-bubble:hover {
+  background-color: #374151;  
   transform: translateY(-1px);
-}
-
-.confirm-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import "./AddWatchlistPopup.css";
+import "../../../styles/ui/popup.css"
 
 type AddWatchlistPopupProps = {
   isOpen: boolean;
@@ -25,9 +26,9 @@ export default function AddWatchlistPopup({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="popup-overlay" onClick={onClose}>
       <div
-        className="modal add-watchlist-modal"
+        className="popup add-watchlist-popup"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="rating-popup-title">Enter Watchlist Name</h3>
@@ -42,7 +43,7 @@ export default function AddWatchlistPopup({
           autoFocus
         />
 
-        <div className="modal-buttons">
+        <div className="popup-buttons">
           <button className="cancel-btn" onClick={onClose}>
             Cancel
           </button>

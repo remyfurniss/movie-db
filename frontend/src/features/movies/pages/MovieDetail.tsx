@@ -112,7 +112,7 @@ export default function MovieDetail(){
                     <div className="stat">
                         <span className="label">YOUR RATING</span>
                         <button
-                            className="rating-block clickable"
+                            className="rating-block clickable-rating"
                             onClick={() => {
                                 setShowSetRating(true);}}>
                             <span className="star user">★</span>
