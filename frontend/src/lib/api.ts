@@ -168,3 +168,16 @@ export async function registerRequest(email: string, password: string) {
   return res.json();
 }
 
+export async function getCurrentUser() {
+  const res = await fetch(`${API_URL}/auth/me`, {
+    method: "GET",
+    headers: authHeaders(),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch current user");
+  }
+
+  return res.json();
+}
+

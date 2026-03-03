@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { getCurrentUser } from "../../../lib/api";
 
 type User = {
   id: string;
@@ -8,9 +9,9 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
   token: string | null;
-  login: (t: string) => void;
+  loading: boolean;
+  login: (t: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -21,21 +22,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token")
   );
+  const [loading, setLoading] = useState(true);
 
-  const login = (t: string) => {
-    setToken(t);
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    getCurrentUser()
+    .then((user) => {
+      setUser(user);
+    })
+    .catch(() => {
+      logout();
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [token]);
+
+  const login = async (t: string) => {
     localStorage.setItem("token", t);
+    setToken(t);
+
+    const user = await getCurrentUser();
+    setUser(user);
   };
 
   const logout = () => {
+    localStorage.removeItem("token");
     setToken(null);
     setUser(null);
-    localStorage.removeItem("token");
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, token, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

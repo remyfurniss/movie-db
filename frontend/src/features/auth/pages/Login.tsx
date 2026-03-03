@@ -10,7 +10,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("demo@example.com");
   const [password, setPassword] = useState("seeded");
   const [error, setError] = useState("");
-    const { setUser } = useAuth();
     const navigate = useNavigate();
     
 
@@ -22,8 +21,7 @@ export default function LoginPage() {
   try {
     const data = await loginRequest(email, password);
 
-    login(data.token);
-    setUser({ id: data.user.id, email: data.user.email });
+    await login(data.token);
 
     navigate("/");
   } catch (err: any) {

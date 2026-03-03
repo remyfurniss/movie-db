@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { email, z } from "zod";
 import prisma from "../prismaClient";
+import {requireAuth } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -58,21 +59,15 @@ router.post("/login", async (req, res) => {
   try {
     const parsed = loginSchema.parse(req.body);
 
-    console.log(parsed);
-
     const user = await prisma.user.findUnique({
       where: { email: parsed.email },
     });
-
-    console.log(user);
 
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
     const valid = await bcrypt.compare(parsed.password, user.password);
-
-    console.log(valid);
 
     if (!valid) {
       return res.status(400).json({ error: "Invalid credentials" });
@@ -92,6 +87,26 @@ router.post("/login", async (req, res) => {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+});
+
+router.get("/me", requireAuth, async (req, res) => {
+
+  console.log(req.userId );
+  console.log("IN" );
+
+  const user = await prisma.user.findUnique({
+    where: { id: req.userId },
+    select: {
+      id: true,
+      email: true,
+    },
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json(user);
 });
 
 export default router;

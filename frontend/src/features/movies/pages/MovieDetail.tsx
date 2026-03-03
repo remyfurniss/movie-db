@@ -77,9 +77,7 @@ export default function MovieDetail(){
         loadMovie();
     }, [tmdbIdNumber]);
 
-
-    ///MAKE THIS CONSISTENT
-    if (!movie) return <p>Loading…</p>;
+    if (!movie) return <p>Loading data…</p>;
 
     return (
         <div>
