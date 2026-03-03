@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4000";
+
 
 //NEED TO CHANGE IN FUTURE
 const DEV_USER_ID = "50de6f83-b409-465e-8269-3344453a08d7";
@@ -13,7 +13,7 @@ function authHeaders() {
 
 // Fetch Recently Watched Moives
 export async function fetchRecentlyWatchedMovies() {
-    const res = await fetch(`${API_URL}/movies/recentlywatched`,
+    const res = await fetch(`/api/movies/recentlywatched`,
        {headers: authHeaders()});
     if (!res.ok) throw new Error("Failed to fetch recently watched movies");
     return res.json();
@@ -21,7 +21,7 @@ export async function fetchRecentlyWatchedMovies() {
 
 // Fetch Recommened Movies
 export async function fetchRecommendedMovies() {
-    const res = await fetch(`${API_URL}/movies/recommendations`,
+    const res = await fetch(`/api/movies/recommendations`,
       {headers: authHeaders()});
     if (!res.ok) throw new Error("Failed to fetch recommended movies");
     return res.json();
@@ -29,14 +29,14 @@ export async function fetchRecommendedMovies() {
 
 // Fetch Popular Movies
 export async function fetchPopularMovies() {
-  const res = await fetch(`${API_URL}/tmdb/popular`);
+  const res = await fetch(`/api/tmdb/popular`);
   if (!res.ok) throw new Error("Failed to fetch popular movies");
   return res.json();
 }
 
 // Fetch Watchlists
 export async function fetchWatchlists() {
-  const res = await fetch(`${API_URL}/watchlists`,
+  const res = await fetch(`/api/watchlists`,
     {headers: authHeaders()});
   if (!res.ok) throw new Error("Failed to fetch watchlists");
   return res.json();
@@ -44,7 +44,7 @@ export async function fetchWatchlists() {
 
 // Fetch rating for a movie
 export async function fetchRating(tmdbId: number) {
-  const res = await fetch(`${API_URL}/ratings/${tmdbId}`, 
+  const res = await fetch(`/api/ratings/${tmdbId}`, 
     {headers: authHeaders()});
   if (!res.ok) throw new Error("Failed to fetch rating");
   return res.json(); // { score: number | null }
@@ -52,7 +52,7 @@ export async function fetchRating(tmdbId: number) {
 
 // Submit or update rating
 export async function submitRating(tmdbId: number, score: number | null) {
-  const res = await fetch(`${API_URL}/ratings`, 
+  const res = await fetch(`/api/ratings`, 
     {
       method: "POST",
       headers: authHeaders(),
@@ -64,7 +64,7 @@ export async function submitRating(tmdbId: number, score: number | null) {
 
 // Create a Watchlist
 export async function createWatchlist(name: string) {
-  const res = await fetch(`${API_URL}/watchlists`, 
+  const res = await fetch(`/api/watchlists`, 
     {
       method: "POST",
       headers: authHeaders(),
@@ -79,7 +79,7 @@ export async function createWatchlist(name: string) {
 // Add a movie to a Watchlist
 export async function addMovieToWatchlist(watchlistId: string, tmdbId: number) {
   const res = await fetch(
-    `${API_URL}/watchlists/${watchlistId}/movies`,
+    `/api/watchlists/${watchlistId}/movies`,
     {
       method: "POST",
       headers: authHeaders(),
@@ -93,7 +93,7 @@ export async function addMovieToWatchlist(watchlistId: string, tmdbId: number) {
 // Remove a movie from a Watchlist
 export async function removeMovieFromWatchlist(watchlistId: string, movieId: string) {
   const res = await fetch(
-    `${API_URL}/watchlists/${watchlistId}/movies/${movieId}`,
+    `/api/watchlists/${watchlistId}/movies/${movieId}`,
     { 
       method: "DELETE",
       headers: authHeaders(),
@@ -106,7 +106,7 @@ export async function removeMovieFromWatchlist(watchlistId: string, movieId: str
 
 // Delete a Watchlist
 export async function deleteWatchlist(watchlistId: string) {
-  const res = await fetch(`${API_URL}/watchlists/${watchlistId}`, 
+  const res = await fetch(`/api/watchlists/${watchlistId}`, 
   {
     method: "DELETE",
     headers: authHeaders(),
@@ -119,7 +119,7 @@ export async function deleteWatchlist(watchlistId: string) {
 // Search TMDB API by string
 export async function searchTmdbMovies(query: string) {
   const res = await fetch(
-    `${API_URL}/tmdb/search?q=${encodeURIComponent(query)}`
+    `/api/tmdb/search?q=${encodeURIComponent(query)}`
   );
   if (!res.ok) throw new Error("TMDB search failed");
   return res.json();
@@ -127,7 +127,7 @@ export async function searchTmdbMovies(query: string) {
 
 // Fetch movie by TMDBID
 export async function fetchMovieByTmdbId(tmdbId: number) {
-  const res = await fetch(`${API_URL}/movies/tmdb/${tmdbId}`, 
+  const res = await fetch(`/api/movies/tmdb/${tmdbId}`, 
     {headers: authHeaders()});
   if (!res.ok) throw new Error("Failed to fetch movie");
   return res.json();
@@ -135,7 +135,7 @@ export async function fetchMovieByTmdbId(tmdbId: number) {
 
 // Toggle watched 
 export async function toggleWatched(tmdbId: number) {
-  const res = await fetch(`${API_URL}/movies/${tmdbId}/watched`, 
+  const res = await fetch(`/api/movies/${tmdbId}/watched`, 
     {
       method: "PUT",
       headers: authHeaders()
@@ -148,7 +148,7 @@ export async function toggleWatched(tmdbId: number) {
 
 // Login
 export async function loginRequest(email: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/login`, {
+  const res = await fetch(`/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -169,7 +169,7 @@ export async function registerRequest(email: string, password: string) {
 }
 
 export async function getCurrentUser() {
-  const res = await fetch(`${API_URL}/auth/me`, {
+  const res = await fetch(`/api/auth/me`, {
     method: "GET",
     headers: authHeaders(),
   });
