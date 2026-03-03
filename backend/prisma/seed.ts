@@ -185,7 +185,7 @@ async function main() {
   // Clean up existing data (optional, safe for dev only)
   
   await prisma.watchHistory.deleteMany(); 
- await prisma.watchlistItem.deleteMany();
+ await prisma.watchlistMovie.deleteMany();
 await prisma.watchlist.deleteMany();
 await prisma.rating.deleteMany();
   await prisma.movieGenre.deleteMany();

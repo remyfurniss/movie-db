@@ -5,6 +5,9 @@ import ratingRoutes from "./routes/rating";
 import watchlistRoutes from "./routes/watchlist";
 import tmdbRoutes from "./routes/tmdb";
 import authRoutes from "./routes/auth";
+import { startCleanupJob } from "./jobs/cleanupMovies";
+
+startCleanupJob();
 
 const app = express();
 
