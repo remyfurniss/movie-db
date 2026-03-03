@@ -90,10 +90,6 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/me", requireAuth, async (req, res) => {
-
-  console.log(req.userId );
-  console.log("IN" );
-
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
     select: {

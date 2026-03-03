@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { getCurrentUser } from "../../../lib/api";
+import { fetchCurrentUser } from "../../../lib/api";
 
 type User = {
   id: string;
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    getCurrentUser()
+    fetchCurrentUser()
     .then((user) => {
       setUser(user);
     })
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("token", t);
     setToken(t);
 
-    const user = await getCurrentUser();
+    const user = await fetchCurrentUser();
     setUser(user);
   };
 

@@ -5,9 +5,6 @@ const router = Router();
 
 router.get("/search", async (req, res) => {
 
-    console.log("TMDB token exists:", !!process.env.TMDB_API_TOKEN);
-
-
   const q = req.query.q as string;
 
   if (!q) return res.status(400).json([]);

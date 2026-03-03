@@ -3,7 +3,6 @@ import prisma from "../prismaClient";
 import axios from "axios";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
-//import console from "node:console";
 import {requireAuth } from "../middleware/auth";
 
 
@@ -177,9 +176,12 @@ router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
 
 router.put("/:tmdbId/watched", requireAuth, async (req, res) => {
   try {
-    const tmdbId = Number(req.params.tmdbId);
-    const userId = req.userId;
 
+    const userId = req.userId;
+    const tmdbId = Number(req.params.tmdbId);
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    
     if (Number.isNaN(tmdbId)) {
       return res.status(400).json({ error: "Invalid tmdbId" });
     }

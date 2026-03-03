@@ -26,9 +26,9 @@ export default function WatchlistRow({
                             className="movie-card"
                             onClick={() => onWatchlistClick(watchlist.id)}>
                             <div className="poster-wrapper">
-                                {watchlist.items?.[0]?.movie?.posterPath ? 
+                                {watchlist.movies?.[0]?.posterPath ? 
                                 (<img
-                                    src={watchlist.items[0].movie.posterPath}
+                                    src={watchlist.movies[0].posterPath}
                                     alt={watchlist.name}/>) : 
                                 (<div className="placeholder">No Image</div>)}
                             </div>

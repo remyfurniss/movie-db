@@ -12,9 +12,12 @@ const router = Router();
  */
 router.post("/", requireAuth, async (req, res) => {
 
+
   const tmdbId = Number(req.body.tmdbId);
   const { score } = req.body;
   const userId = req.userId
+
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
   if (Number.isNaN(tmdbId)) {
     return res.status(400).json({ error: "Invalid tmdbId" });
@@ -67,8 +70,12 @@ router.post("/", requireAuth, async (req, res) => {
  */
 router.get("/:tmdbId", requireAuth, async (req, res) => {
 
+
+
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;
+
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
   if (Number.isNaN(tmdbId)) {
     return res.status(400).json({ error: "Invalid tmdbId" });

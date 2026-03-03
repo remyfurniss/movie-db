@@ -1,8 +1,3 @@
-
-
-//NEED TO CHANGE IN FUTURE
-const DEV_USER_ID = "50de6f83-b409-465e-8269-3344453a08d7";
-
 function authHeaders() {
   const token = localStorage.getItem("token");
   return {
@@ -47,7 +42,7 @@ export async function fetchRating(tmdbId: number) {
   const res = await fetch(`/api/ratings/${tmdbId}`, 
     {headers: authHeaders()});
   if (!res.ok) throw new Error("Failed to fetch rating");
-  return res.json(); // { score: number | null }
+  return res.json(); 
 }
 
 // Submit or update rating
@@ -59,7 +54,7 @@ export async function submitRating(tmdbId: number, score: number | null) {
       body: JSON.stringify({ tmdbId, score })
     });
   if (!res.ok) throw new Error("Failed to submit rating");
-  return res.json(); // returns the updated rating
+  return res.json(); 
 }
 
 // Create a Watchlist
@@ -68,9 +63,7 @@ export async function createWatchlist(name: string) {
     {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({
-        userId: DEV_USER_ID,
-        name})
+      body: JSON.stringify({name})
     });
   if (!res.ok) throw new Error("Failed to create watchlist");
   return res.json();
@@ -168,16 +161,13 @@ export async function registerRequest(email: string, password: string) {
   return res.json();
 }
 
-export async function getCurrentUser() {
+// Get current user
+export async function fetchCurrentUser() {
   const res = await fetch(`/api/auth/me`, {
     method: "GET",
     headers: authHeaders(),
   });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch current user");
-  }
-
+  if (!res.ok) throw new Error("Failed to fetch current user");
   return res.json();
 }
 

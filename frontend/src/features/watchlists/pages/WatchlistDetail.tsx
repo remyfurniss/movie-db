@@ -44,23 +44,23 @@ export default function WatchlistDetail() {
       <h2 className="watchlist-title">{watchlist.name}</h2>
       <div className="watchlist-scroll-wrapper">
         <div className="watchlist-scroll">
-          {watchlist.items?.map((item) => (
+          {watchlist.movies?.map((movie) => (
             <div
-              key={item.movie.id}
+              key={movie.id}
               className="watchlist-item-row"
               onClick={() => {
-                if (!item.movie.tmdbId) return;
-                navigateToMovie(item.movie.tmdbId);}}>
+                if (!movie.tmdbId) return;
+                navigateToMovie(movie.tmdbId);}}>
               <div className="watchlist-left">
                 {/* Movie poster */}
-                {item.movie.posterPath ? 
+                {movie.posterPath ? 
                 (<img
-                    src={item.movie.posterPath}
-                    alt={item.movie.title}/>) : 
+                    src={movie.posterPath}
+                    alt={movie.title}/>) : 
                 (<div className="poster-placeholder">No Image</div>)}
                 {/* Movie title */}
                 <span className="movie-title">
-                  {item.movie.title}
+                  {movie.title}
                 </span>
               </div>
               {/* Remove movie button */}
@@ -68,7 +68,7 @@ export default function WatchlistDetail() {
                 className="movie-remove"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemoveMovie(item.movie.id);}}>
+                  handleRemoveMovie(movie.id);}}>
                 x
               </button>
             </div>

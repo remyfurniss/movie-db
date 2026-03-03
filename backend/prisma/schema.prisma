@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id            String   @id @default(cuid())
-  
+
   email         String   @unique
   password      String
   createdAt     DateTime @default(now())
@@ -36,7 +36,7 @@ model Movie {
 
 	genres        MovieGenre[]
   ratings       Rating[]
-  watchlists    WatchlistItem[]
+  watchlistMovies    WatchlistMovie[]
 	watchHistory	WatchHistory[]
 
 	createdAt     DateTime @default(now())
@@ -86,14 +86,14 @@ model Watchlist {
   user      User   @relation(fields: [userId], references: [id])
   userId    String
 
-  items     WatchlistItem[]
+  watchlistMovies     WatchlistMovie[]
 
   createdAt DateTime @default(now())
 
   @@unique([userId, name])
 }
 
-model WatchlistItem {
+model WatchlistMovie {
   watchlistId String
   movieId     String
 
