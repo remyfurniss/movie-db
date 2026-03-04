@@ -13,6 +13,7 @@ router.get("/recentlywatched", requireAuth, async (req, res) => {
     const movies = await getRecentlyWatched(userId);
     res.json(movies);
   } catch (err: any) {
+    console.error("Get recently watched error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -24,6 +25,7 @@ router.get("/recommendations", requireAuth, async (req, res) => {
     const recommendations = await getUserRecommendations(userId);
     res.json(recommendations);
   } catch (err: any) {
+    console.error("get recommendations error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -36,6 +38,7 @@ router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
     const movie = await getMovieDetails(tmdbId, userId);
     res.json(movie);
   } catch (err: any) {
+    console.error("Get movie error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -49,6 +52,7 @@ router.put("/:tmdbId/watched", requireAuth, async (req, res) => {
     res.json(result);
   } catch (err: any) {
     console.error(err);
+    console.error("Toggle watched error:", err);
     res.status(500).json({ error: err.message });
   }
 });

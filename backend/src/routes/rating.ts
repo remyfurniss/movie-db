@@ -11,18 +11,12 @@ const router = Router();
  * body: { movieId, score }
  */
 router.post("/", requireAuth, async (req, res) => {
-
-
   const tmdbId = Number(req.body.tmdbId);
   const { score } = req.body;
   const userId = req.userId
-
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
-
-  if (Number.isNaN(tmdbId)) {
-    return res.status(400).json({ error: "Invalid tmdbId" });
-  }
-
+  if (Number.isNaN(tmdbId)) return res.status(400).json({ error: "Invalid tmdbId" });
+  
   try {
     // ensure movie exists
     const movie = await getOrCreateMovie(tmdbId);
@@ -56,11 +50,9 @@ router.post("/", requireAuth, async (req, res) => {
       },
     });
 
-    console.log(rating);
-
     res.json(rating);
   } catch (err: any) {
-    console.error("Rating upsert error:", err);
+    console.error("Add or update rating error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -69,17 +61,12 @@ router.post("/", requireAuth, async (req, res) => {
  * Get rating for a movie
  */
 router.get("/:tmdbId", requireAuth, async (req, res) => {
-
-
-
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;
 
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
+  if (Number.isNaN(tmdbId)) return res.status(400).json({ error: "Invalid tmdbId" });
 
-  if (Number.isNaN(tmdbId)) {
-    return res.status(400).json({ error: "Invalid tmdbId" });
-  }
 
   try {
     const movie = await getOrCreateMovie(tmdbId);

@@ -34,14 +34,12 @@ export async function toggleWatched(userId: string, tmdbId: number) {
       });
       watched = true;
     }
-
-    const data = {
+    
+    return {
       tmdbId: movie.tmdbId,
       title: movie.title,
       watched,
-    }
-
-    return data;
+    };
 }
 
 export async function getRecentlyWatched(userId: string) {

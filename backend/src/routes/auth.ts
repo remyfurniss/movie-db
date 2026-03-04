@@ -7,7 +7,7 @@ import {registerUser, loginUser} from "../services/auth/authService";
 const router = express.Router();
 
 const registerSchema = z.object({
-  email: z.string().email(),
+  email: z.string(),
   password: z.string().min(6),
 });
 
@@ -19,6 +19,7 @@ router.post("/register", async (req, res) => {
     const result = await registerUser(parsed.email, parsed.password);
     res.json(result);
   } catch (err: any) {
+    console.error("Register error:", err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -29,20 +30,26 @@ router.post("/login", async (req, res) => {
     const result = await loginUser(parsed.email, parsed.password);
     res.json(result);
   } catch (err: any) {
+    console.error("Login error:", err);
     res.status(400).json({ error: err.message });
   }
 });
 
 router.get("/me", requireAuth, async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.userId },
-    select: {
-      id: true,
-      email: true,
-    },
-  });
-  if (!user) return res.status(404).json({ message: "User not found" });
-  res.json(user);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err: any) {
+    console.error("Fetch /me error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 export default router;
