@@ -1,0 +1,64 @@
+import prisma from "../../prismaClient";
+import {getOrCreateMovie} from "../movies/movieService";
+
+export async function toggleWatched(userId: string, tmdbId: number) {
+    const movie = await getOrCreateMovie(tmdbId);
+
+    const existing = await prisma.watchHistory.findUnique({
+      where: {
+        userId_movieId: {
+          userId,
+          movieId: movie.id,
+        },
+      },
+    });
+
+    let watched: boolean;
+
+    if (existing) {
+      await prisma.watchHistory.delete({
+        where: {
+          userId_movieId: {
+            userId,
+            movieId: movie.id,
+          },
+        },
+      });
+      watched = false;
+    } else {
+      await prisma.watchHistory.create({
+        data: {
+          userId,          
+          movieId: movie.id,
+        },
+      });
+      watched = true;
+    }
+
+    const data = {
+      tmdbId: movie.tmdbId,
+      title: movie.title,
+      watched,
+    }
+
+    return data;
+}
+
+export async function getRecentlyWatched(userId: string) {
+  const watched = await prisma.watchHistory.findMany({
+    where: { userId },
+    orderBy: { watchedAt: "desc" },
+    take: 20,
+    include: {
+      movie: true,
+    },
+  });
+
+  return watched.map((w) => ({
+    tmdbId: w.movie.tmdbId,
+    title: w.movie.title,
+    posterPath: w.movie.posterPath,
+    voteAverage: w.movie.voteAverage,
+    releaseDate: w.movie.releaseDate,
+  }));
+}

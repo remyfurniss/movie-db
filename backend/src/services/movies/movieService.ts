@@ -125,3 +125,44 @@ export async function getOrCreateMovie(tmdbId: number) {
     include: movieInclude,
   });
 }
+
+export async function getMovieDetails(tmdbId: number, userId: string) {
+  // check local DB
+  const movie = await prisma.movie.findUnique({
+    where: { tmdbId },
+    include: {
+      genres: { include: { genre: true } },
+      ratings: { where: { userId } },
+      watchHistory: { where: { userId } },
+    },
+  });
+
+  if (movie) {
+    return {
+      ...movie,
+      genres: movie.genres.map((mg) => mg.genre),
+      rating: movie.ratings[0]?.score ?? null,
+      watched: movie.watchHistory.length > 0,
+    };
+  }
+
+  // fetch from TMDB
+  const response = await axios.get(
+    `https://api.themoviedb.org/3/movie/${tmdbId}`,
+    { params: { api_key: process.env.TMDB_API_KEY } }
+  );
+
+  const m = response.data;
+
+  // optionally create in DB so future requests hit local DB
+  const created = await getOrCreateMovie(tmdbId); // uses your existing transaction logic
+
+  return {
+    ...created,
+    genres: created.genres.map((mg) => mg.genre),
+    rating: null,
+    watched: false,
+  };
+}
+
+export async function getRecentlyWatched(params:type) {}
