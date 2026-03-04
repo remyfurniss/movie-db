@@ -6,6 +6,9 @@ import {toggleWatched, getRecentlyWatched} from "../services/movies/watchService
 
 const router = Router();
 
+/**
+ * Get recently watched movies
+ */
 router.get("/recentlywatched", requireAuth, async (req, res) => {
   const userId = req.userId;
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -18,6 +21,9 @@ router.get("/recentlywatched", requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * Get recommeneded movies
+ */
 router.get("/recommendations", requireAuth, async (req, res) => {
   const userId = req.userId;
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -30,6 +36,9 @@ router.get("/recommendations", requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * Get movies details by tmdbId
+ */
 router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;
@@ -43,6 +52,9 @@ router.get("/tmdb/:tmdbId", requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * Mark movie as watched
+ */
 router.put("/:tmdbId/watched", requireAuth, async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;

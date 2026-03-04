@@ -1,13 +1,14 @@
 import { Router } from "express";
-import axios from "axios";
 import {getPopularMovies, searchMovies} from "../services/movies/movieService";
 
 const router = Router();
 
+/**
+ * search movie by string (search bar)
+ */
 router.get("/search", async (req, res) => {
   const q = req.query.q as string;
   if (!q) return res.status(400).json([]);
-
   try {
     const movies = await searchMovies(q);
     res.json(movies);
@@ -17,6 +18,9 @@ router.get("/search", async (req, res) => {
   }
 });
 
+/**
+ * get popular movies
+ */
 router.get("/popular", async (req, res) => {
   try {
     const movies = await getPopularMovies();

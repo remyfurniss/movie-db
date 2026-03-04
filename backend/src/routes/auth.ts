@@ -13,6 +13,9 @@ const registerSchema = z.object({
 
 const loginSchema = registerSchema;
 
+/**
+ * Register user
+ */
 router.post("/register", async (req, res) => {
   try {
     const parsed = registerSchema.parse(req.body);
@@ -24,6 +27,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
+/**
+ * Login user
+ */
 router.post("/login", async (req, res) => {
   try {
     const parsed = loginSchema.parse(req.body);
@@ -35,6 +41,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
+/**
+ * Authernticate current user
+ */
 router.get("/me", requireAuth, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -48,7 +57,7 @@ router.get("/me", requireAuth, async (req, res) => {
     res.json(user);
   } catch (err: any) {
     console.error("Fetch /me error:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 

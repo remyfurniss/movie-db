@@ -16,11 +16,9 @@ router.post("/", requireAuth, async (req, res) => {
   const userId = req.userId
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   if (Number.isNaN(tmdbId)) return res.status(400).json({ error: "Invalid tmdbId" });
-  
-  try {
-    // ensure movie exists
-    const movie = await getOrCreateMovie(tmdbId);
 
+  try {
+    const movie = await getOrCreateMovie(tmdbId);
      if (score === null) {
       await prisma.rating.deleteMany({
         where: {
@@ -28,11 +26,8 @@ router.post("/", requireAuth, async (req, res) => {
           movieId: movie.id,
         },
       });
-
       return res.json({ movieId: movie.id, score: null });
     }
-
-    // upsert by LOCAL movieId
     const rating = await prisma.rating.upsert({
       where: {
         userId_movieId: {
@@ -49,7 +44,6 @@ router.post("/", requireAuth, async (req, res) => {
         score,
       },
     });
-
     res.json(rating);
   } catch (err: any) {
     console.error("Add or update rating error:", err);
@@ -63,14 +57,10 @@ router.post("/", requireAuth, async (req, res) => {
 router.get("/:tmdbId", requireAuth, async (req, res) => {
   const tmdbId = Number(req.params.tmdbId);
   const userId = req.userId;
-
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   if (Number.isNaN(tmdbId)) return res.status(400).json({ error: "Invalid tmdbId" });
-
-
   try {
     const movie = await getOrCreateMovie(tmdbId);
-
     const rating = await prisma.rating.findUnique({
       where: {
         userId_movieId: {
@@ -79,7 +69,6 @@ router.get("/:tmdbId", requireAuth, async (req, res) => {
         },
       },
     });
-
     res.json({ score: rating?.score ?? null });
   } catch (err: any) {
     console.error("Fetch rating error:", err);
