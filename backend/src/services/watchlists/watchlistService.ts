@@ -1,4 +1,4 @@
-import prisma from "../prismaClient";
+import prisma from "../../prismaClient";
 import { Prisma } from "@prisma/client";
 
 type WatchlistWithMovies = Prisma.WatchlistGetPayload<{

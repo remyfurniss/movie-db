@@ -1,6 +1,6 @@
 import { Router } from "express";
 import prisma from "../prismaClient";
-import {getOrCreateMovie} from "../services/getOrCreateMovie"
+import {getOrCreateMovie} from "../services/movies/movieService"
 import {requireAuth } from "../middleware/auth";
 
 

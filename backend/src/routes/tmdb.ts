@@ -1,6 +1,6 @@
 import { Router } from "express";
 import axios from "axios";
-import {getPopularMovies} from "../services/getPopularMovies";
+import {getPopularMovies} from "../services/movies/movieService";
 
 const router = Router();
 

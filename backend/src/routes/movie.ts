@@ -1,9 +1,9 @@
 import { Router } from "express";
 import prisma from "../prismaClient";
 import axios from "axios";
-import {getOrCreateMovie} from "../services/getOrCreateMovie"
+import {getOrCreateMovie} from "../services/movies/movieService";
 import {requireAuth } from "../middleware/auth";
-import {buildRecommendations} from "../services/recommendationService";
+import {buildRecommendations} from "../services/movies/recommendationService";
 
 
 const router = Router();

@@ -1,5 +1,5 @@
-import prisma from "../prismaClient";
-import { getRecommendationsForMovie } from "./tmdbService";
+import prisma from "../../prismaClient";
+import { getRecommendationsForMovie } from "../tmdb/tmdbService";
 
 export async function buildRecommendations(userId: string) {
   const watched = await prisma.watchHistory.findMany({
