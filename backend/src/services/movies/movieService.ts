@@ -40,87 +40,88 @@ export async function getOrCreateMovie(tmdbId: number) {
     genres: { include: { genre: true } },
   });
 
-  // 🔎 check local DB
-  let movie = await prisma.movie.findUnique({
+  // 1️⃣ Try to find existing
+  const existing = await prisma.movie.findUnique({
     where: { tmdbId },
     include: movieInclude,
   });
 
-  if (movie) return movie;
+  if (existing) return existing;
 
-  // 🌐 fetch from TMDB
   const token = process.env.TMDB_TOKEN;
 
   const response = await axios.get(
     `https://api.themoviedb.org/3/movie/${tmdbId}`,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
+    { headers: { Authorization: `Bearer ${token}` } }
   );
 
   const data = response.data;
 
-  console.log("genre data:")
-  console.log(data.genres)
+  let movie;
 
-  // 🧱 create movie
-  const createdMovie = await prisma.movie.create({
-    data: {
-      tmdbId,
-      title: data.title,
-      overview: data.overview,
-      releaseDate: data.release_date
-        ? Number(data.release_date.slice(0, 4))
-        : null,
-      runtime: data.runtime,
-      homepage: data.homepage,
-      imdbId: data.imdb_id,
-      popularity: data.popularity,
-      posterPath: data.poster_path
-        ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-        : null,
-      backdropPath: data.backdrop_path
-        ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
-        : null,
-      voteAverage: data.vote_average,
-      voteCount: data.vote_count,
-      watchHistory: data.watch_history,
-    },
-  });
-
-  // genres
-  if (data.genres?.length) {
-    for (const g of data.genres) {
-      const genre = await prisma.genre.upsert({
-        where: { tmdbId: g.id },
-        update: {},
-        create: {
-          tmdbId: g.id,
-          name: g.name,
-        },
+  // 2️⃣ Try to create movie OUTSIDE transaction
+  try {
+    movie = await prisma.movie.create({
+      data: {
+        tmdbId,
+        title: data.title,
+        overview: data.overview,
+        releaseDate: data.release_date
+          ? Number(data.release_date.slice(0, 4))
+          : null,
+        runtime: data.runtime,
+        homepage: data.homepage,
+        imdbId: data.imdb_id,
+        popularity: data.popularity,
+        posterPath: data.poster_path
+          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+          : null,
+        backdropPath: data.backdrop_path
+          ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
+          : null,
+        voteAverage: data.vote_average,
+        voteCount: data.vote_count,
+      },
+    });
+  } catch (error: any) {
+    if (error.code === "P2002") {
+      // Someone else created it first
+      movie = await prisma.movie.findUniqueOrThrow({
+        where: { tmdbId },
       });
-
-      await prisma.movieGenre.upsert({
-        where: {
-          movieId_genreId: {
-            movieId: createdMovie.id,
-            genreId: genre.id,
-          },
-        },
-        update: {},
-        create: {
-          movieId: createdMovie.id,
-          genreId: genre.id,
-        },
-      });
+    } else {
+      throw error;
     }
   }
 
-  // 🔁 refetch fully hydrated
-  movie = await prisma.movie.findUnique({
+  // 3️⃣ Now safely link genres in transaction
+  await prisma.$transaction(async (tx) => {
+    if (data.genres?.length) {
+      const genres = await Promise.all(
+        data.genres.map((g: any) =>
+          tx.genre.upsert({
+            where: { tmdbId: g.id },
+            update: {},
+            create: {
+              tmdbId: g.id,
+              name: g.name,
+            },
+          })
+        )
+      );
+
+      await tx.movieGenre.createMany({
+        data: genres.map((genre) => ({
+          movieId: movie.id,
+          genreId: genre.id,
+        })),
+        skipDuplicates: true,
+      });
+    }
+  });
+
+  return prisma.movie.findUniqueOrThrow({
     where: { tmdbId },
     include: movieInclude,
   });
-
-  return movie!;
 }
