@@ -118,3 +118,15 @@ model WatchHistory {
   @@unique([userId, movieId])
 
 }
+
+model CachedPopularMovies {
+  id        String   @id @default("popular")
+  data      Json
+  expiresAt DateTime
+}
+
+model CachedUserRecommendations {
+  userId    String   @id
+  data      Json
+  expiresAt DateTime
+}

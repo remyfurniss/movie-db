@@ -2,8 +2,8 @@ import { Router } from "express";
 import prisma from "../prismaClient";
 import axios from "axios";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
-import {getRecommendationsForMovie} from "../services/getRecommendationsForMovie"
 import {requireAuth } from "../middleware/auth";
+import {buildRecommendations} from "../services/recommendationService";
 
 
 const router = Router();
@@ -39,63 +39,73 @@ router.get("/recentlywatched", requireAuth, async (req, res) => {
 
 router.get("/recommendations", requireAuth, async (req, res) => {
   const userId = req.userId;
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  const THIRTY_MINUTES = 30 * 60 * 1000;
 
   try {
-    const watched = await prisma.watchHistory.findMany({
+    const cache = await prisma.cachedUserRecommendations.findUnique({
       where: { userId },
-      orderBy: { watchedAt: "desc" },
-      take: 8,
-      select: {
-        movie: { select: { tmdbId: true } },
+    });
+
+    // Valid cache
+    if (cache && cache.expiresAt > new Date()) {
+      const cachedData = cache.data as any[];
+
+      // Enough movies 
+      if (cachedData.length >= 20) {
+        return res.json(cachedData);
+      }
+
+      console.log(cachedData.length);
+
+      // ENRICH
+      const fresh = await buildRecommendations(userId);
+
+      const combined = [...cachedData, ...fresh];
+
+      const map = new Map();
+      for (const m of combined) {
+        if (!map.has(m.tmdbId)) {
+          map.set(m.tmdbId, m);
+        }
+      }
+
+      const final = Array.from(map.values())
+        .sort((a, b) => b.voteAverage - a.voteAverage)
+        .slice(0, 20);
+
+      await prisma.cachedUserRecommendations.update({
+        where: { userId },
+        data: {
+          data: final,
+          expiresAt: new Date(Date.now() + THIRTY_MINUTES),
+        },
+      });
+
+      return res.json(final);
+    }
+
+    // 🔵 No cache or expired 
+    const fresh = await buildRecommendations(userId);
+
+    const final = fresh.slice(0, 20);
+
+    await prisma.cachedUserRecommendations.upsert({
+      where: { userId },
+      update: {
+        data: final,
+        expiresAt: new Date(Date.now() + THIRTY_MINUTES),
+      },
+      create: {
+        userId,
+        data: final,
+        expiresAt: new Date(Date.now() + THIRTY_MINUTES),
       },
     });
 
-    const tmdbIds = watched.map(w => w.movie.tmdbId);
+    res.json(final);
 
-    if (tmdbIds.length === 0) {
-      return res.json([]);
-    }
-
-    const watchedSet = new Set(tmdbIds);
-
-    const results = await Promise.all(
-      tmdbIds.map(id => getRecommendationsForMovie(id))
-    );
-
-    const flat = results.flat();
-
-    // remove already watched movies
-    const filtered = flat.filter(m => !watchedSet.has(m.id));
-
-    // dedupe
-    const map = new Map();
-    for (const m of filtered) {
-      if (!map.has(m.id)) {
-        map.set(m.id, m);
-      }
-    }
-
-    const unique = Array.from(map.values());
-
-    unique.sort(
-      (a, b) =>
-        (b.vote_average * b.vote_count) -
-        (a.vote_average * a.vote_count)
-    );
-
-    const top20 = unique.slice(0, 20).map((m: any) => ({
-      tmdbId: m.id,
-      title: m.title,
-      posterPath: m.poster_path
-        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-        : null,
-      voteAverage: m.vote_average,
-      releaseDate: m.release_date
-        ? Number(m.release_date.slice(0, 4))
-        : null,
-    }));
-
-    res.json(top20);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

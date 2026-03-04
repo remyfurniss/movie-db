@@ -2,7 +2,7 @@ import { Router } from "express";
 import prisma from "../prismaClient";
 import {getOrCreateMovie} from "../services/getOrCreateMovie"
 import {requireAuth } from "../middleware/auth";
-import {getUserWatchlists, getWatchlistById, assertWatchlistOwnership} from "../services/watchlistServices";
+import {getUserWatchlists, getWatchlistById, assertWatchlistOwnership} from "../services/watchlistService";
 
 const router = Router();
 
