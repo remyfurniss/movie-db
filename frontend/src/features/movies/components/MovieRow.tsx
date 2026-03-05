@@ -26,10 +26,15 @@ export default function MovieRow({
                         className="movie-card"
                         onClick={() => {
                             if (!movie.tmdbId) return;
-                            onMovieClick(movie.tmdbId);}}>
-                        {movie.posterPath ? 
-                            (<img src={movie.posterPath} alt={movie.title} />) : 
-                            (<div className="placeholder">No Image</div>)}
+                            onMovieClick(movie.tmdbId);
+                        }}>
+                        <div className="poster-wrapper">
+                            {movie.posterPath ? (
+                            <img src={movie.posterPath} alt={movie.title} />
+                            ) : (
+                            <div className="placeholder">No Image</div>
+                            )}
+                        </div>
                         <p>{movie.title}</p>
                     </div>
                 ))}

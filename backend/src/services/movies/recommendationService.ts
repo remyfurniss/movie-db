@@ -1,9 +1,11 @@
 import prisma from "../../prismaClient";
 import { getRecommendationsForMovie } from "../tmdb/tmdbService";
 
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+// 30 minutes
+const CACHE_DURATION = 30 * 60 * 1000;
 
 export async function buildRecommendations(userId: string) {
+  // Get 8 most recently watched films 
   const watched = await prisma.watchHistory.findMany({
     where: { userId },
     orderBy: { watchedAt: "desc" },
@@ -12,36 +14,29 @@ export async function buildRecommendations(userId: string) {
       movie: { select: { tmdbId: true } },
     },
   });
-
+  // Get their tmdfbIds
   const tmdbIds = watched.map(w => w.movie.tmdbId);
-
   if (tmdbIds.length === 0) return [];
-
   const watchedSet = new Set(tmdbIds);
-
+  // Get recommendations for each movie in set
   const results = await Promise.all(
     tmdbIds.map(id => getRecommendationsForMovie(id))
   );
-
   const flat = results.flat();
-
+  // Remove movie if already watched
   const filtered = flat.filter(m => !watchedSet.has(m.id));
-
   const map = new Map();
   for (const m of filtered) {
     if (!map.has(m.id)) {
       map.set(m.id, m);
     }
   }
-
   const unique = Array.from(map.values());
-
+  // Sort by rating
   unique.sort(
     (a, b) =>
-      (b.vote_average * b.vote_count) -
-      (a.vote_average * a.vote_count)
+      b.vote_average - a.vote_average
   );
-
   return unique.map((m: any) => ({
     tmdbId: m.id,
     title: m.title,
@@ -55,28 +50,24 @@ export async function buildRecommendations(userId: string) {
   }));
 }
 
-
 export async function getUserRecommendations(userId: string) {
-  // 1️⃣ check cache
+  // Check cache
   const cache = await prisma.cachedUserRecommendations.findUnique({
     where: { userId },
   });
-
+  // If in cache and not expired
   if (cache && cache.expiresAt > new Date()) {
     const cachedData = cache.data as any[];
-
-    // return cached if enough
+    // if atleast 20 movies cache return it
     if (cachedData.length >= 20) return cachedData.slice(0, 20);
-
-    // otherwise enrich with fresh recommendations
+    // otherwise add more recommendations
     const fresh = await buildRecommendations(userId);
     const combinedMap = new Map();
     [...cachedData, ...fresh].forEach((m) => combinedMap.set(m.tmdbId, m));
-
+    // sort by ratings and take top 20
     const final = Array.from(combinedMap.values())
       .sort((a, b) => b.voteAverage - a.voteAverage)
       .slice(0, 20);
-
     // update cache
     await prisma.cachedUserRecommendations.update({
       where: { userId },
@@ -85,14 +76,11 @@ export async function getUserRecommendations(userId: string) {
         expiresAt: new Date(Date.now() + CACHE_DURATION),
       },
     });
-
     return final;
   }
-
-  // 2️⃣ no cache or expired
+  // no cache or expired
   const fresh = await buildRecommendations(userId);
   const final = fresh.slice(0, 20);
-
   await prisma.cachedUserRecommendations.upsert({
     where: { userId },
     update: {
@@ -105,6 +93,5 @@ export async function getUserRecommendations(userId: string) {
       expiresAt: new Date(Date.now() + CACHE_DURATION),
     },
   });
-
   return final;
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export async function fetchPopularMoviesFromTMDB() {
+  // Get most popular movies from TMDB
   const response = await axios.get(
     "https://api.themoviedb.org/3/movie/popular",
     {
@@ -9,7 +10,6 @@ export async function fetchPopularMoviesFromTMDB() {
       },
     }
   );
-
   return response.data.results.map((m: any) => ({
     tmdbId: m.id,
     title: m.title,
@@ -26,6 +26,7 @@ export async function fetchPopularMoviesFromTMDB() {
 }
 
 export async function getRecommendationsForMovie(tmdbId: number) {
+  // Get recommnedations from TMDB by a chosen movie tmdbId
   const res = await axios.get(
     `https://api.themoviedb.org/3/movie/${tmdbId}/recommendations`,
     {
