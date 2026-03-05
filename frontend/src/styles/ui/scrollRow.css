@@ -1,7 +1,7 @@
 .movies-scroll-wrapper {
   width: 100%;
   overflow-x: auto; 
-  overflow-y: hidden;
+  /*overflow-y: hidden;*/
   box-sizing: border-box;
   padding: 0 0px; 
 }
@@ -9,7 +9,7 @@
 .movies-scroll {
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden;
+  /*overflow-y: hidden;*/
   gap: 12px;
   scroll-behavior: smooth;
   padding-bottom: 8px;

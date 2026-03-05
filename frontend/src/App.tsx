@@ -1,4 +1,3 @@
-//import './App.css'
 import { Routes, Route } from "react-router-dom";
 
 import { useAuth, AuthProvider } from "./features/auth/context/authContext";
@@ -16,16 +15,17 @@ import WatchlistDetail from './features/watchlists/pages/WatchlistDetail';
 import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
 
+import ScrollToTop from "./components/ScrollToTop";
+
+
 function AppRoutes() {
   return (
     <Routes>
-
       {/* public */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
-
       {/* protected */}
       <Route element={
         <ProtectedRoute>
@@ -38,19 +38,20 @@ function AppRoutes() {
         <Route path="/movies/tmdb/:tmdbId" element={<MovieDetail />} />
         <Route path="/watchlists/:id" element={<WatchlistDetail />} />
       </Route>
-
     </Routes>
   );
 }
 
 function InnerApp() {
   const { user } = useAuth();
-
   return (
-    <div className={`app ${user ? "with-topbar" : ""}`}>
-      {user && <TopBar />}
-      <AppRoutes />
-    </div>
+    <>
+      <ScrollToTop />
+      <div className={`app ${user ? "with-topbar" : ""}`}>
+        {user && <TopBar />}
+        <AppRoutes />
+      </div>
+    </>
   );
 }
 
