@@ -86,7 +86,7 @@ model Watchlist {
   user      User   @relation(fields: [userId], references: [id])
   userId    String
 
-  watchlistMovies     WatchlistMovie[]
+  watchlistMovies WatchlistMovie[]
 
   createdAt DateTime @default(now())
 
@@ -109,7 +109,7 @@ model WatchHistory {
 	id        	Int      	@id @default(autoincrement())
   
   userId      String
-	movieId     String		@unique
+	movieId     String		
 	watchedAt	  DateTime	@default(now())
 
   user        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
