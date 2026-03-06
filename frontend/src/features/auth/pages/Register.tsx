@@ -24,6 +24,7 @@ export default function Register() {
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
+
         <h2>Create Account</h2>
 
         {error && <p className="auth-error">{error}</p>}
@@ -46,6 +47,14 @@ export default function Register() {
         />
 
         <button type="submit">Register</button>
+
+         {/* BACK BUTTON */}
+        <button
+          type="button"
+          className="auth-back"
+          onClick={() => navigate("/login")}>
+          Back
+        </button>
       </form>
     </div>
   );

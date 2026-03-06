@@ -1,5 +1,5 @@
 import express from "express";
-import { z } from "zod";
+import { z, ZodError} from "zod";
 import prisma from "../prismaClient";
 import {requireAuth } from "../middleware/auth";
 import {registerUser, loginUser} from "../services/auth/authService";
@@ -7,7 +7,7 @@ import {registerUser, loginUser} from "../services/auth/authService";
 const router = express.Router();
 
 const registerSchema = z.object({
-  email: z.string(),
+  email: z.email(),
   password: z.string().min(6),
 });
 
@@ -23,8 +23,13 @@ router.post("/register", async (req, res) => {
     res.json(result);
   } catch (err: any) {
     console.error("Register error:", err);
-    res.status(400).json({ error: err.message });
-  }
+    if (err instanceof ZodError) {
+      return res.status(400).json({
+        error: err.issues[0].message
+      });
+    }
+    res.status(500).json({ error: err.message });
+  } 
 });
 
 /**
@@ -37,8 +42,13 @@ router.post("/login", async (req, res) => {
     res.json(result);
   } catch (err: any) {
     console.error("Login error:", err);
-    res.status(400).json({ error: err.message });
-  }
+    if (err instanceof ZodError) {
+      return res.status(400).json({
+        error: err.issues[0].message
+      });
+    }
+    res.status(500).json({ error: err.message });
+  } 
 });
 
 /**
