@@ -18,6 +18,9 @@ export default function WatchlistRow({
     return(
         <section className="watchlist-row">
             <h2>Watchlists</h2>
+
+            {/* Watchlist scroll view */}
+
             <div className="movies-scroll-wrapper">
                 <div className="movies-scroll">
                     {watchlists.map((watchlist) => (

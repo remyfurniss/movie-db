@@ -22,18 +22,18 @@ export default function TopBar() {
         setSearchValue("");
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Fetch search results
   useEffect(() => {
+    //No search value
     if (!searchValue.trim()) {
       setResults([]);
       return;
     }
-
+    //slow down the searching between key strokes
     const timeout = setTimeout(async () => {
       try {
         const data = await searchTmdbMovies(searchValue);
@@ -42,7 +42,6 @@ export default function TopBar() {
         console.error("Failed to search movies:", err);
       }
     }, 300);
-
     return () => clearTimeout(timeout);
   }, [searchValue]);
 

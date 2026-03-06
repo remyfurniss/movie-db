@@ -31,17 +31,17 @@ services:
     env_file:
       - ./backend/.env  
 
-  #frontend:
-  ##  build: ./frontend
-   # container_name: movie_db_frontend
-# volumes:
-  #  command: npm run dev -- --host
-  #    - ./frontend:/app
-  #    - /app/node_modules
-  #  ports:
-  #    - "5173:5173"
-  #  depends_on:
-  #    - backend
+  frontend:
+    build: ./frontend
+    container_name: movie-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+    env_file:
+      - ./frontend/.env
 
 volumes:
   postgres_data:

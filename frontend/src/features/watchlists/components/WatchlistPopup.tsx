@@ -34,6 +34,8 @@ export default function WatchlistPopup({
             >
                 <h3 className="popup-title">ADD TO WATCHLIST</h3>
 
+                {/* Watchlist movie scroll */}
+
                 <div className="movies-scroll-wrapper">
                     <div className="movies-scroll">
                         {watchlists.map((watchlist) => (
@@ -56,7 +58,7 @@ export default function WatchlistPopup({
                             </div>
                         ))}
 
-                        {/* ➕ Add Watchlist */}
+                        {/* Add Watchlist movie card */}
                         <div
                             className="movie-card add-watchlist-card"
                             onClick={onCreateWatchlist}>

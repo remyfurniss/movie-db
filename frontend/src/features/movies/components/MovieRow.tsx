@@ -14,7 +14,6 @@ export default function MovieRow({
   movies,
   onMovieClick,
 }: MovieRowProps) {
-
     return(
         <section className="movie-row">
             <h2>{title}</h2>

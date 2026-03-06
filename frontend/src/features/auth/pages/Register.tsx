@@ -7,17 +7,18 @@ import "./Auth.css";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // on register submit
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       await registerRequest(email, password);
       navigate("/login");
     } catch (err: any) {
-    setError(err.message);
-  }
+      setError(err.message);
+    }
   }
 
   return (

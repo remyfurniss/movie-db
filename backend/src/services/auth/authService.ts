@@ -6,7 +6,7 @@ import {JWT_SECRET} from "../../lib/jwt";
 export async function registerUser(email: string, password: string) {
     //See if email already registered
     const existing = await prisma.user.findUnique({
-    where: { email },
+        where: { email },
     });
     if (existing) throw new Error("User already exists");
     //Hash password
@@ -25,10 +25,10 @@ export async function loginUser(email: string, password: string) {
     const user = await prisma.user.findUnique({
         where: { email },
     });
-    if (!user) throw new Error("Invalid credentials");
+    if (!user) throw new Error("User not found");
     //Check password match
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new Error("Invalid credentials");
+    if (!valid) throw new Error("Invalid password");
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
         expiresIn: "7d",
     });

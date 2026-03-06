@@ -18,6 +18,7 @@ export default function AddWatchlistPopup({
 
   if (!isOpen) return null;
 
+  //On wathclst submit button press
   const handleCreate = () => {
     if (!name.trim()) return;
     onCreateWatchlist(name.trim());
@@ -33,6 +34,8 @@ export default function AddWatchlistPopup({
       >
         <h3 className="rating-popup-title">Enter Watchlist Name</h3>
         
+        {/* Watchlist name input */}
+
         <input
           className="watchlist-input"
           type="text"
@@ -42,6 +45,8 @@ export default function AddWatchlistPopup({
           onKeyDown={(e) => e.key === "Enter" && handleCreate()}
           autoFocus
         />
+
+        {/* Add watchlist buttons s*/}
 
         <div className="popup-buttons">
           <button className="cancel-btn" onClick={onClose}>

@@ -16,7 +16,6 @@ export default function SetRatingPopup({
     onClose,
     onRate
 }: SetRatingPopupProps) {
-
     const [hovered, setHovered] = useState<number | null>(null);
 
     if (!isOpen) return null;

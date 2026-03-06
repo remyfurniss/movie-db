@@ -16,11 +16,8 @@ import "./MovieDetail.css";
 export default function MovieDetail(){
 
     const { watchlists, createWatchlist, addMovieToWatchlist } = useWatchlists();
-
-    //THIS IS STRING
     const { tmdbId } = useParams<{ tmdbId: string }>();
     const tmdbIdNumber = tmdbId ? Number(tmdbId) : undefined;
-
     const [watched, setWatched] = useState(false);
     const [movie, setMovie] = useState<Movie | null>(null);
     const [showWatchlistPopup, setShowWatchlistPopup] = useState(false);
@@ -45,7 +42,6 @@ export default function MovieDetail(){
     // Handles user rating
     async function handleRating(newScore: number | null) {
         if (!tmdbIdNumber) return;
-
         const updated = await submitRating(tmdbIdNumber, newScore ?? null); 
         setRating(updated.score);
         setMovie((prevMovie) =>
@@ -66,7 +62,6 @@ export default function MovieDetail(){
         const loadMovie = async () => {
             try {
                 const data = await fetchMovieByTmdbId(tmdbIdNumber);
-                console.log(data);
                 setMovie(data);
                 setWatched(data.watched);
                 setRating(data.rating);

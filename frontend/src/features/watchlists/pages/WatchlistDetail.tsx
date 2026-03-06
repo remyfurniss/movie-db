@@ -30,12 +30,9 @@ export default function WatchlistDetail() {
     const confirmed = window.confirm(
       "Are you sure you want to delete this watchlist? This cannot be undone."
     );
-
     if (!confirmed) return;
-
     await deleteWatchlist(id!);
     await refreshWatchlists();
-
     navigate("/"); 
   }
 

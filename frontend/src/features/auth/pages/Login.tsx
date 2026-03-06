@@ -10,24 +10,19 @@ export default function LoginPage() {
   const [email, setEmail] = useState("demo@example.com");
   const [password, setPassword] = useState("seeded");
   const [error, setError] = useState("");
-    const navigate = useNavigate();
-    
-
-
-
+  const navigate = useNavigate();
+  
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const data = await loginRequest(email, password);
-
-    await login(data.token);
-
-    navigate("/");
-  } catch (err: any) {
-    setError(err.message);
-  }
-};
+    try {
+      const data = await loginRequest(email, password);
+      await login(data.token);
+      navigate("/");
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="auth-page">

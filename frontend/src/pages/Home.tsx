@@ -28,8 +28,7 @@ export default function Home() {
   const [showAddWatchlistPopup, setShowAddWatchlistPopup] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  //Handlers
-
+  // on movie click
   const onMovieClick = (tmdbId: number) => {
     navigate(`/movies/tmdb/${tmdbId}`);
   };
@@ -47,10 +46,9 @@ export default function Home() {
     }
   };
 
-  // Always call useEffect
   useEffect(() => {
-
-    if (!user) return; // don't fetch if not logged in
+    // do nothing if not logged in
+    if (!user) return; 
 
     async function loadMovies() {
       try {
@@ -71,7 +69,7 @@ export default function Home() {
     }
 
     loadMovies();
-  }, [user]); // runs only when user is logged in
+  }, [user]); 
 
   if (!user) return <Login />;
 
