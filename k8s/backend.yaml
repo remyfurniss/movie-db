@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+      - name: backend
+        image: movie-db-backend:latest
+        imagePullPolicy: Never
+
+        env:
+        - name: DATABASE_URL
+          value: postgres://postgres:postgres@postgres:5432/moviedb
+
+        - name: PORT
+          value: "4000"
+
+
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: JWT_SECRET
+
+        - name: TMDB_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: TMDB_API_KEY
+
+        - name: TMDB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: TMDB_TOKEN
+
+        ports:
+        - containerPort: 4000
