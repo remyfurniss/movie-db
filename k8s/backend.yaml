@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: movie-db-backend:latest
-        imagePullPolicy: Never
+        image: ghcr.io/remyfurniss/movie-db-backend:latest
+        imagePullPolicy: Always
 
         env:
         - name: DATABASE_URL

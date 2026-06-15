@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: movie-db-frontend:latest
-          imagePullPolicy: Never
+          image: ghcr.io/remyfurniss/movie-db-frontend:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 5173
