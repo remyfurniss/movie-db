@@ -26,13 +26,3 @@ jobs:
       - name: Push backend image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/movie-db-backend:latest
-
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/
-          kubectl rollout restart deployment backend
