@@ -11,7 +11,8 @@ const app = express();
 app.use(cors({
   origin: ["http://localhost:5173",
            "http://localhost:30173",
-           "http://172.20.10.3:3000"],
+           "http://172.20.10.3:3000",
+           "https://d2sqy5eh1yfkk.cloudfront.net"],
   credentials: true,
 }));
 
