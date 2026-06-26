@@ -1,5 +1,5 @@
 //const API_URL = import.meta.env.VITE_API_URL || "";
-const API_URL = "http://100.31.3.58:4000";
+const API_URL = "https://api.remyfurniss.com";
 
 async function apiFetch(path: string, options: RequestInit = {}) {
   const res = await fetch(`${API_URL}${path}`, options);
