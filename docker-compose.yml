@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:16
     container_name: movie_db_postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -16,6 +17,7 @@ services:
   backend:
     build: ./backend
     container_name: movie_db_backend
+    restart: unless-stopped
     command: npm run dev
     volumes:
       - ./backend:/app

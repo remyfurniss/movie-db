@@ -67,7 +67,7 @@ router.post("/:watchlistId/movies", requireAuth, async (req, res) => {
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   if (Number.isNaN(tmdbId)) return res.status(400).json({ error: "tmdbId required" });
   try {
-    assertWatchlistOwnership(watchlistId, userId)
+    await assertWatchlistOwnership(watchlistId, userId)
     const movie = await getOrCreateMovie(tmdbId);
     // create movie wacthlist relation
     await prisma.watchlistMovie.create({
@@ -92,7 +92,7 @@ router.delete("/:watchlistId/movies/:movieId", requireAuth, async (req, res) => 
   const userId = req.userId
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   try {
-    assertWatchlistOwnership(watchlistId, userId)
+    await assertWatchlistOwnership(watchlistId, userId)
     await prisma.watchlistMovie.delete({
       where: {
         watchlistId_movieId: { watchlistId, movieId },
@@ -113,7 +113,7 @@ router.delete("/:watchlistId", requireAuth, async (req, res) => {
   const userId = req.userId
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   try {
-    assertWatchlistOwnership(watchlistId, userId)
+    await assertWatchlistOwnership(watchlistId, userId)
     await prisma.watchlist.delete({
       where: { id: watchlistId },
     });
