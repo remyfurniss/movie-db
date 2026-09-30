@@ -1,0 +1,9 @@
+[Unit]
+Description=Back up the movie-db database to S3
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/movie-db/backup.env
+ExecStart=/usr/local/bin/movie-db-backup
