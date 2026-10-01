@@ -39,12 +39,24 @@ if ! command -v certbot >/dev/null; then
   sudo ln -sf /opt/certbot/bin/certbot /usr/bin/certbot
 fi
 
+PLUGINS=/usr/local/lib/docker/cli-plugins
+sudo mkdir -p "$PLUGINS"
+
 if ! docker compose version >/dev/null 2>&1; then
   # The AL2023 docker package doesn't include the compose plugin
-  sudo mkdir -p /usr/local/lib/docker/cli-plugins
   sudo curl -fsSL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m)" \
-    -o /usr/local/lib/docker/cli-plugins/docker-compose
-  sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+    -o "$PLUGINS/docker-compose"
+  sudo chmod +x "$PLUGINS/docker-compose"
+fi
+
+# compose build needs buildx >= 0.17; the AL2023 docker package ships an older one
+buildx_ver="$(docker buildx version 2>/dev/null | awk '{print $2}' | tr -d v)"
+if [ -z "$buildx_ver" ] || [ "$(printf '%s\n' 0.17.0 "$buildx_ver" | sort -V | head -1)" != 0.17.0 ]; then
+  arch="$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/')"
+  tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/docker/buildx/releases/latest | sed 's#.*/##')"
+  sudo curl -fsSL "https://github.com/docker/buildx/releases/download/$tag/buildx-$tag.linux-$arch" \
+    -o "$PLUGINS/docker-buildx"
+  sudo chmod +x "$PLUGINS/docker-buildx"
 fi
 
 sudo systemctl enable --now docker
