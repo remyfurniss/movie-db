@@ -28,6 +28,16 @@ if [ "$RESTORE_DB" = "1" ] && [ -z "$BACKUP_BUCKET" ]; then
   exit 1
 fi
 
+if ! swapon --show | grep -q .; then
+  # Small instances (~1GB RAM) freeze while building the backend image without swap
+  echo "==> Adding 2GB swap"
+  sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 status=none
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile >/dev/null
+  sudo swapon /swapfile
+  grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap defaults 0 0' | sudo tee -a /etc/fstab >/dev/null
+fi
+
 echo "==> Installing packages"
 sudo dnf install -y docker git nginx
 
