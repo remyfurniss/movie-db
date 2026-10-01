@@ -120,6 +120,10 @@ Start the application:
 docker compose up --build
 ```
 
+This loads `docker-compose.yml` plus `docker-compose.override.yml`, which runs
+the backend with live reload. Production uses `docker-compose.yml` alone (see
+`deploy/README.md`).
+
 Services will start at:
 
 Frontend  

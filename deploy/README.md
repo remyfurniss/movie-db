@@ -6,6 +6,10 @@ Production API (`api.remyfurniss.com`) runs on one EC2 instance in `us-east-1`
 
 > `terraform/` and `k8s/` describe a Kubernetes setup and are not used by this server.
 
+The server runs the compiled backend (`production` stage of `backend/Dockerfile`).
+`~/movie-db/.env` contains `COMPOSE_FILE=docker-compose.yml` so the local-dev
+`docker-compose.override.yml` is ignored there.
+
 ## What's backed up where
 
 | What | Where |
@@ -37,7 +41,7 @@ launch from it, and move the Elastic IP. Everything comes back as of that snapsh
 ## Day-to-day
 
 ```bash
-# deploy new code
+# deploy new code (pending Prisma migrations are applied when the container starts)
 cd ~/movie-db && git pull && sudo docker compose up -d --build backend
 
 # back up now / restore latest / restore a specific one

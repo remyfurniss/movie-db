@@ -76,6 +76,9 @@ echo "==> Fetching backend/.env from SSM ($ENV_PARAM)"
   aws ssm get-parameter --name "$ENV_PARAM" --with-decryption --region "$REGION" \
     --query Parameter.Value --output text > backend/.env )
 
+# Use only the production compose file; docker-compose.override.yml is for local dev.
+echo "COMPOSE_FILE=docker-compose.yml" > .env
+
 echo "==> Starting database"
 # Only postgres + backend run here; the frontend is served from CloudFront.
 sudo docker compose build backend
@@ -91,10 +94,8 @@ if [ "$RESTORE_DB" = "1" ]; then
   sudo BACKUP_BUCKET="$BACKUP_BUCKET" AWS_REGION="$REGION" bash deploy/restore-db.sh
 fi
 
-echo "==> Applying migrations and starting backend"
-# docker-compose overrides the image CMD with `npm run dev`, so migrations
-# don't run on container start; apply them explicitly.
-sudo docker compose run --rm backend npx prisma migrate deploy
+echo "==> Starting backend"
+# The production image applies pending migrations on start.
 sudo docker compose up -d backend
 
 echo "==> Configuring nginx"

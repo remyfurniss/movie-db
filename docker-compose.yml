@@ -1,3 +1,9 @@
+# Production stack (what runs on EC2).
+# Locally, `docker compose` also loads docker-compose.override.yml, which
+# switches the backend to live-reload dev mode and adds the frontend.
+# On the server, ~/movie-db/.env sets COMPOSE_FILE=docker-compose.yml so the
+# override is ignored (deploy/setup.sh writes it).
+
 services:
   postgres:
     image: postgres:16
@@ -9,39 +15,24 @@ services:
       POSTGRES_DB: moviedb
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # No published port: only the backend (on the compose network) needs it.
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      target: production
     container_name: movie_db_backend
     restart: unless-stopped
-    command: npm run dev
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/moviedb
       PORT: 4000
     depends_on:
       - postgres
     ports:
-      - "4000:4000"
-      - "5555:5555"
+      # localhost only: nginx on the host proxies to it
+      - "127.0.0.1:4000:4000"
     env_file:
-      - ./backend/.env  
-
-  frontend:
-    build: ./frontend
-    container_name: movie-frontend
-    restart: always
-    depends_on:
-      - backend
-    ports:
-      - "5173:5173"
-    command: npm run dev -- --host
-    env_file:
-      - ./frontend/.env
+      - ./backend/.env
 
 volumes:
   postgres_data:

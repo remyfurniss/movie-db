@@ -1,0 +1,28 @@
+# Local development overrides, loaded automatically by `docker compose`.
+# Not used on the production server (see docker-compose.yml).
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "5555:5555" # Prisma Studio
+
+  frontend:
+    build: ./frontend
+    container_name: movie-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+    env_file:
+      - ./frontend/.env
